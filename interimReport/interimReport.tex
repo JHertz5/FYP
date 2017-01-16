@@ -1,0 +1,65 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{xfrac}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{minibox}
+\usepackage{color, soul}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage[super]{nth}
+\setlength{\intextsep}{5pt}
+\usepackage[nodisplayskipstretch]{setspace}
+\setstretch{1}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[utf8]{inputenc}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+\setcounter{page}{1}
+\begin{document}
+
+\begin{titlepage}
+
+\title{Space Brain - Implementing}
+\author{Jukka (Jacobus) Hertzog}
+\def\supervisor{Dr. Felix Winterstein}
+\def\secondmarker{Dr. David Thomas}
+\def\course{EE4T}
+\def\cid{00828711}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\fontfamily{phv}\selectfont
+{
+\large
+\raggedright
+Imperial College London\\[17pt]
+Department of Electrical and Electronic Engineering\\[17pt]
+Final Year Project Interim Report 2017\\[17pt]
+}
+\rule{\columnwidth}{3pt}
+\vfill
+\centering
+\makeatletter
+\begin{tabular}{p{40mm}p{\dimexpr\columnwidth-40mm}}
+Project Title: & \textbf{\@title} \\[12pt]
+Student: & \textbf{\@author} \\[12pt]
+CID: & \textbf{\cid} \\[12pt]
+Course: & \textbf{\course} \\[12pt]
+Project Supervisor: & \textbf{\supervisor} \\[12pt]
+Second Marker: & \textbf{\secondmarker} \\
+\end{tabular}
+\end{titlepage}
+
+
+
+\end{document}

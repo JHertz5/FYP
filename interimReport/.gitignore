@@ -1,4 +1,11 @@
 *.aux
+
 *.log
+
 *.pdf
+
 *.synctex.gz
+*.bbl
+*.blg
+*.dvi
+*.ps
