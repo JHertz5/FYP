@@ -62,6 +62,7 @@ Second Marker: & \textbf{\secondmarker} \\
 
 \section{Introduction}
 \label{sec:Introduction}
+
 Convolutional Neural Networks (CNNs) are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in computer vision and image classification applications, performing with very high accuracy. However, CNNs are extremely computationally heavy. As a result, implementing them on embedded systems, which typically have very limited resources, presents many challenges. A promising solution to this problem is the use of an FPGA, which provide a very high computational power with low power usage.
 
 Consider a miniature research satellite (a CubeSat), that uses a camera to capture images to be classified. Normally the images would be transmitted to a ground station to be processed, but in this case, channel capacity during the transmission window is too limited and the raw data is too large for this to be feasible, so the idea is to process and classify images on board the sattelite and just transmit the results. Therefore, the aim of this project is to implement a CNN on an FPGA-based system, and then to investigate the suitability of this system for space applications.
@@ -76,6 +77,31 @@ Consider a miniature research satellite (a CubeSat), that uses a camera to captu
 
 \subsection{Investigation of Fault Tolerance in the Presence of Bitstream Corruptions}
 \label{sec:InvestigationOfFaultToleranceInThePresenceOfBitstreamCorruptions}
+
+
+
+
+
+
+
+\begin{thebibliography}{9}
+
+\bibitem{fpgaConvNet}
+Stylianos I. Venieris, Christos-Savvas Bouganis\\
+\textit{fpgaConvNet: A Framework for Mapping Convolutional Neural Networks on FPGAs}\\
+2016 IEEE 24th Annual International Symposium on Field-Programmable Custom Computing Machines
+
+\bibitem{embeddedFpgaCnn}
+Jiantao Qiu, Jie Wang, Song Yao, Kaiyuan Guo, Boxun Li, Erjin Zhou, Jincheng Yu, Tianqi Tang, Ningyi Xu, Sen Song, Yu Wang, Huazhong Yang\\
+\textit{Going Deeper with Embedded FPGA Platform for Convolutional Neural Network}\\
+FPGA’16, February 21-23, 2016, Monterey, CA, USA
+
+\bibitem{fpgaCnnAccelerator}
+Naveen Suda, Vikas Chandra, Ganesh Dasika, Abinash Mohanty, Yufei Ma, Sarma Vrudhula, Jae-sun Seo, Yu Cao\\
+\textit{Throughput-Optimized OpenCL-based FPGA Accelerator for Large-Scale Convolutional Neural Networks}\\
+FPGA’16, February 21–23, 2016, Monterey, CA, USA.
+
+\end{thebibliography}
 
 
 \end{document}
