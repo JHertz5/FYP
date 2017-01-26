@@ -87,7 +87,12 @@ Consider a miniature research satellite (a CubeSat), that uses a camera to captu
 
 \hl{highlighted means check whether this is true}
 
-The first deliverable is the implementation of a CNN on an embedded platform called a \hl{Zedboard}. The \hl{Zedboard} consists of a Xilinx \hl{specs} FPGA and a \hl{specs} ARM processor, along with \hl{peripherals}.
+The first deliverable is the implementation of a CNN on an embedded platform called a \hl{Zedboard}. The \hl{Zedboard} consists of a Xilinx \hl{specs} FPGA and a \hl{specs} ARM processor, along with \hl{peripherals}. 
+
+An important tool in this process will be Xilinx's SDSoc development environment. SDSoc is able to optimise and compile C, C++ or OpenCL source code for a Zynq system. The compiler generates software for the ARM core and, using a High Level Synthesis (HLS) tool, a bitstream for the FPGA. This allows the user to design the entire system, easily accelerating functions with the FPGA. This is clearly a very powerful tool, facilitating  the rapid development and design of firmware.
+
+Another important tool will be Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision. It also includes some examples of pre-trained CNN models that are ready for use. Using Caffe, it will be possible to generate C++ code for a CNN, which can then be implemented on the Zynq system using SDSoc.
+\cite{jia2014caffe}
 
 \subsection{Investigation of Fault Tolerance in the Presence of Bit-stream Corruptions}
 \label{sec:InvestigationOfFaultToleranceInThePresenceOfBitstreamCorruptions}
