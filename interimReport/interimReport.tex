@@ -40,6 +40,11 @@ Final Year Project Interim Report 2017\\[17pt]
 \rule{\columnwidth}{3pt}
 \vfill
 \centering
+\includegraphics[width=\columnwidth,keepaspectratio]{../figures/frontCover}
+\vfill
+\setlength{\tabcolsep}{0pt}
+
+
 \makeatletter
 \begin{tabular}{p{40mm}p{\dimexpr\columnwidth-40mm}}
 Project Title: & \textbf{\@title} \\[12pt]
@@ -146,11 +151,13 @@ CNNs are computationally demanding and consume a lot of resources, and thus are 
 
 Most research has focussed on using hardware to accelerating the computation of the CONV layers. These layers, with their  typically make up around 90\% of the CNN's computational workload.
 
+\hl{TO BE COMPLETED}
+
 \subsection{FPGAs and Space Applications}
 \label{sec:Background-FPGAsAndSpaceApplications}
 \vspace{-12pt}
 
-Single Event Upsets (SEUs).
+\hl{TO BE COMPLETED}
 
 \section{Project Specification}
 \label{sec:ProjSpec}
@@ -164,7 +171,15 @@ The second deliverable of this project is the invesitgation of the system's faul
 \label{sec:ImpPlan}
 \vspace{-12pt}
 
-This section will provide a breakdown of what work will be done in the project, and will provide an esitmate of when each milestone will be completed.
+This section will provide a breakdown of what work will be done in the project, and will provide an esitmate of when each milestone will be completed. A Gantt chart is provided in Figure \ref{fig:gantt}
+\begin{figure}
+
+\centering
+\includegraphics[width=1\textwidth]{../figures/gantt}
+
+  \caption{A Gantt chart outlining an estimated timeline for the implementation plan \label{fig:gantt}}
+
+\end{figure}
 
 \subsection{Infrastrucure Setup}
 \label{sec:ImpPlan-InfSetup}
@@ -172,7 +187,7 @@ This section will provide a breakdown of what work will be done in the project, 
 
 The work will be performed on a Ubuntu computer, and the first part of the project is setting up the necessary tools on the computer. The first tool to setup up is the Xilinx SDSoC development environment. SDSoC will be used to design the system. SDSoc is able to optimise and compile C, C++ or OpenCL source code for a Zynq system. The compiler generates software for the ARM core and, using an HLS tool, a bitstream for the FPGA. This allows the user to design the entire system, easily accelerating functions with the FPGA. SDSoc is a very powerful tool, facilitating the rapid development and design of firmware.
 
-The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision \cite{jia2014caffe}. Caffe also includes some examples of pre-trained CNN models that are ready for use. Using Caffe, it will be possible to generate C++ code for a CNN, which can then be implemented on the Zedboard system using SDSoc. This should be completed, and tested with some simple experiments to build familiarity, by the 31st of January. 
+The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision \cite{jia2014caffe}. Caffe also includes some examples of pre-trained CNN models that are ready for use. Using Caffe, it will be possible to generate C++ code for a CNN, which can then be implemented on the Zedboard system using SDSoc. This should be completed by the 31st of January, and some experiments will be performed using Caffe and SDSoC until the 6th of February, to build familiarity with the software.
 
 \subsection{FPGA Implementation of a CNN}
 \label{sec:ImpPlan-FPGAImplOfCnn}
@@ -186,7 +201,7 @@ The next part of the project is implementing a CNN on the Zedboard platform. Usi
 
 The final stage of the project is to perform experiments, in order to evaluate the system's suitability for space applications. Rather than creating SEUs with actual radiation, they can be simulated through fault injection \cite{FaultInjection}. An important tool in this process will be the Xilinx Soft Error Mitigation (SEM) Controller. The SEM IP core is able to perform SEU detection, correction, and classification, and can also simulate SEUs with error injection \cite{ManualSEM}. By adding the SEM core to the system using Xilinx's Vivado HLS tool, the system's resistance to SEUs can be tested and measured. 
 
-The tests will be run using Zynq Linux host code. Xilinx provides a Linux image which can run on Zynq systems, including a kernel and a root file system. Using this, high quality results can be printed by the system as the tests are run. Once the setup is complete, the testing will begin. The FPGA has over 28K logic cells, so testing a reasonable number of SEU situations would take a very long time. In order to expedite the testing process, the experiments will be performed using an array of Zedboards, known the SoCDrawer. By running the tests in parallel, results can be gained much more quickly.
+The tests will be run using Zynq Linux host code. Xilinx provides a Linux image which can run on Zynq systems, including a kernel and a root file system. Using this, high quality results can be printed by the system as the tests are run. Once the setup is complete, the testing will begin. The FPGA has over 28K logic cells, so testing a reasonable number of SEU situations would take a very long time. In order to expedite the testing process, the experiments will be performed using an array of Zedboards, known the SoCDrawer. By running the tests in parallel, results can be gained much more quickly. This should be completed by the 14th of June.
 
 \section{Evaluation Plan}
 \label{sec:EvalPlan}
@@ -212,7 +227,13 @@ Other criteria that may be evaluated are the total execution time, the total res
 \label{sec:EvalPlan-FaultTolInv}
 \vspace{-12pt}
 
-The other deliverable to be assessed is the SEU tolerance. A good measure for this is Failure In Time (FIT), which is the number of failures that can be expected in $10^9$ hours of operation. This will be tested with the Xilinx SEM IP core and the SoCDrawer, as described in Section \ref{sec:ImpPlan-FaultTolInv}.
+The other deliverable to be assessed is the SEU tolerance. A good measure for this is Failure In Time (FIT), which is the number of failures that can be expected in $10^9$ hours of operation. This will be tested with the Xilinx SEM IP core and the SoCDrawer, as described in Section \ref{sec:ImpPlan-FaultTolInv}. This result will be analysed and used to 
+
+\section{Conclusion}
+\label{sec:Conclusion}
+\vspace{-12pt}
+
+In this report, the outline of this project was presented. In Section \ref{sec:Background}, the target platform was defined, and important concepts concerning CNN structures, FPGA implementations, and FPGA applications in space were briefly described. Section \ref{sec:ProjSpec} gave the Project Specification, laying out the objectives of the project and what I expect to achieve. Section \ref{sec:ImpPlan} provided a plan of how each part of the project will be implemented, and what work needs to be done to achieve these objectives. Finally Section \ref{sec:EvalPlan} set out the metrics that will be used to determine whether each stage of the project has been successfully completed. 
 
 \bibliography{interimReport_ref}
 \bibliographystyle{ieeetr}
