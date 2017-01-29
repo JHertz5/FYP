@@ -73,7 +73,7 @@ The rest of the report is organised as follows. Section \ref{sec:ProjSpec} will 
 \subsection{Target Platform}
 \label{sec:Background-TargetPlatform}
 
-The hardware used in this project is a product from Xilinx called a Zedboard, a development board for the Zynq-7000 System On a Chip (SoC). This board was chosen because of its useful hardware features and its integrated support for the Xilinx High Level Synthesis (HLS) tools. The Zynq-7000 consists of a Xilinx Artix-7 FPGA as its Programmable Logic (PL), and a dual-core Cortex-A9 ARM processor as its Processing System (PS) integrated together. The ARM processor facilitates easy control of the system, whilst the FPGA will be able to efficiently perform heavy computations.
+The hardware used in this project is a product from Xilinx called a Zedboard, a development board for the Zynq-7000 System On a Chip (SoC). This board was chosen because of its useful hardware features and its integrated support for the Xilinx High Level Synthesis (HLS) tools. The Zynq-7000 consists of a Xilinx Artix-7 FPGA as its Programmable Logic, and a dual-core Cortex-A9 ARM processor as its Processing System integrated together. The ARM processor facilitates easy control of the system, whilst the FPGA will be able to efficiently perform heavy computations.
 
 The system will be designed using Xilinx's SDSoc development environment. SDSoc is able to optimise and compile C, C++ or OpenCL source code for a Zynq system. The compiler generates software for the ARM core and, using an HLS tool, a bitstream for the FPGA. This allows the user to design the entire system, easily accelerating functions with the FPGA. SDSoc is a very powerful tool, facilitating the rapid development and design of firmware.
 
@@ -153,14 +153,12 @@ The second deliverable of this project is the invesitgation of the system's faul
 \subsection{Infrastrucure Setup}
 \label{sec:ImpPlan-InfSetup}
 
-This first part of the project implementation will be setting up two important tools that will be vital whilst working towards the first deliverable.
-
-The other important tool is Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision\cite{jia2014caffe}. It also includes some examples of pre-trained CNN models that are ready for use. Using Caffe, it will be possible to generate C++ code for a CNN, which can then be implemented on the Zynq system using SDSoc.
+The work will be performed on a Ubuntu computer, and the first part of the project is setting up the necessary tools on the computer. The first tool to setup up is the Xilinx SDSoC development environment, described in section \ref{sec:Background-TargetPlatform}. The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision\cite{jia2014caffe}. Caffe also includes some examples of pre-trained CNN models that are ready for use. Using Caffe, it will be possible to generate C++ code for a CNN, which can then be implemented on the Zedboard system using SDSoc. This should be completed, and tested with some simple experiments to build familiarity, by the 31st of January. 
 
 \subsection{FPGA Implementation of a CNN}
 \label{sec:ImpPlan-FPGAImplOfCnn}
 
-
+The next part of the project is implementing a CNN on the Zedboard platform. Using SDSoC, control software will be designed to run on the ARM processor, and the layers of the CNN will be implemented in HLS to run on the Programmable Logic. A pre-trained model of a CNN will be downloaded using Caffe and tested  on a computer, and then it will be implemented using SDSoC and tested on the Zedboard. Once this is complete, optimisation will be performed wherever possible, the literature concerning FPGA based CNN accelerators will be re-reviewed to check for ways to improve performance. It is expected that this should be complete by the 24th of March.
 
 \subsection{Fault Injection Experiments}
 \label{sec:ImpPlan-FaultInjExp}
