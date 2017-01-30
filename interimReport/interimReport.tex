@@ -79,7 +79,7 @@ The rest of the report is organised as follows. Section \ref{sec:Background} wil
 \label{sec:Background}
 \vspace{-12pt}
 
-This section will provide some details and information that will provide context to the project, and will be useful for understanding key concepts in the rest of the report.
+This section will provide some details and information that will provide context to the project, and will be useful for understanding key concepts in the rest of the report. The High Level Synthesis tools, CNN structures, FPGA implementations of CNNs, and the issues surrounding the use of FPGAs in space will all be discussed.
 
 \subsection{Target Platform}
 \label{sec:Background-TargetPlatform}
@@ -92,16 +92,16 @@ The hardware used in this project is a product from Xilinx called a Zedboard, a 
 \label{sec:Background-HLS}
 \vspace{-12pt}
 
-Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog of VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, specifying cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process.
+Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, specifying cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process.
 
-High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour. This allows the designer to work at a higher level of abstraction.  This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex system \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's VivadoHLS. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado to produce HDL for the Programmable Logic in the Zynq SoC.
+High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado to produce HDL for the Programmable Logic in the Zynq SoC.
 
 
 \subsection{Convolutional Neural Networks}
 \label{sec:Background-CNN}
 \vspace{-12pt}
 
-CNNs can be used to classify images in a forward inference process. But before using the CNN for any task, one should first train the CNN on a set of training data. The training of a CNN is usually implemented on large servers with a huge computational capacity, with an enormous set of training data. For the embedded FPGA platform, I only focus on accelerating the inference process of a CNN, and not on the training process.
+CNNs can be used to classify images in a forward inference process. But before using the CNN for any task, one should first train the CNN on a set of training data. The training of a CNN is usually implemented on large servers with a huge computational capacity, with an enormous set of training data. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
 
 A typical CNN consists of a number of layers that run in sequence. Convolution (CONV), activation function, pooling, and Fully Connected (FC) layers make up a typical CNN model, with CONV and FC being the most important. CONV and FC layers have parameters of called weights, which are set by the training process. These weights will determine which patterns each layer of the CNN will be activated by, and ultimately, what the CNN is able to recognise and classify. 
 
@@ -271,7 +271,7 @@ The other deliverable to be assessed is the SEU tolerance. A good measure for th
 \label{sec:Conclusion}
 \vspace{-12pt}
 
-In this report, the outline of this project was presented. In Section \ref{sec:Background}, the target platform was defined, and important concepts concerning CNN structures, FPGA implementations, and FPGA applications in space were briefly described. Section \ref{sec:ProjSpec} gave the Project Specification, laying out the objectives of the project and what I expect to achieve. Section \ref{sec:ImpPlan} provided a plan of how each part of the project will be implemented, and what work needs to be done to achieve these objectives. Finally Section \ref{sec:EvalPlan} set out the metrics that will be used to determine whether each stage of the project has been successfully completed. 
+In this report, the outline of this project was presented. In Section \ref{sec:Background}, the target platform was defined, and important concepts concerning CNN structures, HLS tools, FPGA implementations of CNNs, and FPGA applications in space were briefly described. Section \ref{sec:ProjSpec} gave the Project Specification, laying out the objectives of the project and what I expect to achieve. Section \ref{sec:ImpPlan} provided a plan of how each part of the project will be implemented, and what work needs to be done to achieve these objectives. Finally Section \ref{sec:EvalPlan} set out the metrics that will be used to determine whether each stage of the project has been successfully completed. 
 
 \bibliography{interimReport_ref}
 \bibliographystyle{ieeetr}
