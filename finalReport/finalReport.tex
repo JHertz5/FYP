@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[12pt]{article}
 
 \usepackage{times}
 \usepackage{epsfig}
@@ -56,6 +56,23 @@ Second Marker: & \textbf{\secondmarker} \\
 \end{tabular}
 \end{titlepage}
 
+\begin{abstract}
+text
+\end{abstract}
+
+\newpage
+
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+thanks mum
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
 \section{Introduction}
 \label{sec:Intro}
 \vspace{-12pt}
@@ -73,7 +90,20 @@ Now suppose that the FPGA based CNN will be implemented on a satellite. In orbit
 \label{sec:Intro-Structure}
 \vspace{-12pt}
 
+\hl{TODO}\\
+\textbf{Section 2 - Background:} In order to guarantee that the reader has the contextual knowledge required to understand the project. This section will outline \hl{TODO}.\\
+\textbf{Section 3 - Requirements:}\\
+\textbf{Section 4 - Analysis and Design:}\\
+\textbf{Section 5 - Implementation:}\\
+\textbf{Section 6 - Testing:}\\
+\textbf{Section 7 - Results:}\\
+\textbf{Section 8 - Evaluation:}\\
+\textbf{Section 9 - Conclusion and Future Work:}\\
+\textbf{Section 10 - User Guide:}\\
+
 The rest of the report is organised as follows. Section \ref{sec:Background} will describe the key concepts underlying the project. Section \ref{sec:ProjSpec} will lay out the project specification, and the motivation for the project. Section \ref{sec:Imp} will go into detail about how the project will be implemented, including a rough time line. Finally, section \ref{sec:Eval} will describe the metrics through which the project will be evaluated.
+
+\newpage
 
 \section{Background}
 \label{sec:Background}
@@ -94,7 +124,7 @@ The hardware used in this project is a product from Xilinx called a Zedboard, a 
 
 Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, specifying cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process.
 
-High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado to produce HDL for the Programmable Logic in the Zynq SoC.
+High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado to produce HDL for the Programmable Logic in the Zynq SoC. \hl{This is discussed in more details in} \ref{}.
 
 
 \subsection{Convolutional Neural Networks}
@@ -199,29 +229,58 @@ Functional Triple Modular Redundancy is another popular method of mitigating SEU
 
 Radiation hardening is the act of physically making a chip less susceptible to radiation, typically by encasing it in a substance that will shield the internal electronics \cite{RadHardFpga}. Many FPGA vendors sell radiation hardened versions of their products, and it should greatly reduce the impact of SEUs, but it is often a very expensive solution due to the cost of the 'rad hard' hardware. In this project, we would like to use standard commercial hardware, so this will not be used.
 
-\section{Requirements}
+\subsection{Project Motivation}
+\label{sec:Background-ProjectMotivation}
+\vspace{-12pt}
+
+\newpage
+
+\section{Project Specification}
 \label{sec:ProjSpec}
 \vspace{-12pt}
 
-The first deliverable is the implementation of a CNN on an embedded platform.  The processor, with it's easily developed code, will control the system, while the FPGA, being able to efficiently perform heavy computations, will be used to accelerate functions. The end result will be a fully functional CNN that runs on the Zedboard and is able to process and classify images with a reasonable execution time and accuracy, compared to implementations from literature, as discussed in section \ref{sec:Eval-FPGAImplOfCnn}.
+In this section, the requirements and design specifications captured during the planning of the project will be discussed. The requirements will be divided into two set of functionalities - those that are necessary for the project to be considered successful, and those that are not essential but would greatly enhance the system and the results gathered - and briefly described. Following this, the testing and evaluation specifications are laid out and discussed.
+
+\subsection{Neccessary Functionality}
+\label{ProjSpec-Neccessary}
+\vspace{-12pt}
+
+\begin{itemize}
+\item Runs on Zedboard, making use of Programmable Logic
+\item Conv and FC layers
+\end{itemize}
+
+\subsection{Desirable Functionality}
+\label{ProjSpec-Desirable}
+\vspace{-12pt}
+
+\begin{itemize}
+\item Runs on Zedboard, making use of Programmable Logic
+\item Conv and FC layers
+\end{itemize}
+
+\subsection{Testing Specification}
+\label{ProjSpec-TestSpec}
+\vspace{-12pt}
+
+\subsection{Evaluation Specification}
+\label{ProjSpec-EvalSpec}
+\vspace{-12pt}
+
+ The first deliverable is the implementation of a CNN on an embedded platform.  The processor, with it's easily developed code, will control the system, while the FPGA, being able to efficiently perform heavy computations, will be used to accelerate functions. The end result will be a fully functional CNN that runs on the Zedboard and is able to process and classify images with a reasonable execution time and accuracy, compared to implementations from literature, as discussed in section \ref{sec:Eval-FPGAImplOfCnn}.
 
 The second deliverable of this project is the investigation of the system's fault tolerance against SEUs. As discussed in section \ref{sec:Background-FPGAsAndSpaceApplications}, SEUs from are one of the main challenges to be overcome when using SRAM based FPGAs for applications in space. The system's resistance to SEUs should indicate whether or not the system might be suitable as an on board processor for a satellite in orbit.
+
+\newpage
 
 \section{Analysis And Design}
 \label{AnD}
 \vspace{-12pt}
 
+\newpage
 
 \section{Implementation}
 \label{sec:Imp}
-\vspace{-12pt}
-
-This section will provide a breakdown of what work will be done in the project, and will provide an estimate of when each milestone will be completed. A Gantt chart is provided in Figure \ref{fig:gantt}
-\begin{figure}[h]
-\centering
-\includegraphics[width=1\textwidth]{../figures/gantt}
- \caption{A Gantt chart outlining an estimated timeline for the implementation plan \label{fig:gantt}}
-\end{figure}
 \vspace{-12pt}
 
 \subsection{Infrastructure Setup}
@@ -245,6 +304,20 @@ The next part of the project is implementing a CNN on the Zedboard platform. Usi
 The final stage of the project is to perform experiments, in order to evaluate the system's suitability for space applications. Rather than creating SEUs with actual radiation, they can be simulated through fault injection \cite{FaultInjection}. An important tool in this process will be the Xilinx Soft Error Mitigation (SEM) Controller. The SEM IP core is able to perform SEU detection, correction, and classification, and can also simulate SEUs with error injection \cite{ManualSEM}. By adding the SEM core to the system using Xilinx's Vivado HLS tool, the system's resistance to SEUs can be tested and measured. 
 
 The tests will be run using Zynq Linux host code. Xilinx provides a Linux image which can run on Zynq systems, including a kernel and a root file system. Using this, high quality results can be printed by the system as the tests are run. Once the setup is complete, the testing will begin. The FPGA has over 28K logic cells, so testing a reasonable number of SEU situations would take a very long time. In order to expedite the testing process, the experiments will be performed using an array of Zedboards, known the SoCDrawer. By running the tests in parallel, results can be gained much more quickly. This should be completed by the 14th of June.
+
+\newpage
+
+\section{Testing}
+\label{sec:Test}
+\vspace{-12pt}
+
+\newpage
+
+\section{Results}
+\label{sec:Results}
+\vspace{-12pt}
+
+\newpage
 
 \section{Evaluation}
 \label{sec:Eval}
@@ -272,11 +345,15 @@ Other criteria that may be evaluated are the total execution time, the total res
 
 The other deliverable to be assessed is the SEU tolerance. A good measure for this is Failure In Time (FIT), which is the number of failures that can be expected in $10^9$ hours of operation. This will be tested with the Xilinx SEM IP core and the SoCDrawer, as described in Section \ref{sec:Imp-FaultTolInv}. This result will be analysed and used to evaluate the suitability of the system for space applications.
 
-\section{Conclusion}
+\newpage
+
+\section{Conclusion and Future Work}
 \label{sec:Conclusion}
 \vspace{-12pt}
 
 In this report, the outline of this project was presented. In Section \ref{sec:Background}, the target platform was defined, and important concepts concerning CNN structures, HLS tools, FPGA implementations of CNNs, and FPGA applications in space were briefly described. Section \ref{sec:ProjSpec} gave the Project Specification, laying out the objectives of the project and what I expect to achieve. Section \ref{sec:Imp} provided a plan of how each part of the project will be implemented, and what work needs to be done to achieve these objectives. Finally Section \ref{sec:Eval} set out the metrics that will be used to determine whether each stage of the project has been successfully completed. 
+
+\newpage
 
 \bibliography{finalReport_ref}
 \bibliographystyle{ieeetr}
