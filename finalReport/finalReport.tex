@@ -1,5 +1,9 @@
 \documentclass[12pt]{article}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm} %for numbered code
+\usepackage{algorithmic} %for pseudocode
 \usepackage{times}
 \usepackage{epsfig}
 \usepackage{graphicx}
@@ -79,20 +83,20 @@ This project implements an FPGA based CNN, and simulates radiation-induced error
 \label{sec:Intro}
 \vspace{-12pt}
 
-Inspired by the structure of the optical nervous system in animals, a neural network is made up of layers of artificial neurons that recognise certain features from the input data. The idea of an artificial neural network was first introduced in 1980 \cite{neocognitron}, and driven by increases in computing power and a growth in machine learning applications, neural networks have become very powerful tools. In the last decade, the development of Convolutional Neural Networks (CNNs) has lead to great advancements in image classification accuracy.
+Inspired by the structure of the optical nervous system in animals, a neural network is made up of layers of artificial neurons that recognise certain features from the input data. The concept of an artificial neural network was first introduced in 1980 \cite{neocognitron}, and driven by increases in computing power and a growth in machine learning applications, neural networks have become very powerful tools. In the last decade, the development of Convolutional Neural Networks (CNNs) has lead to great advancements in image classification accuracy.
 
 CNNs are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in image classification applications \cite{ImageNetChallenge}. Other popular applications within machine vision include video classification, face detection and gesture recognition. They are also being used in a wide range of other fields including speech recognition, natural language processing and text classification.
 
 However, whilst achieving exceptional performance, CNNs are extremely computation and resource heavy. Typically, they will be implemented on large servers or on GPU based systems to accommodate the need for computational power. As a result, implementing them on embedded systems, which typically have very limited resources, presents many challenges. A promising solution to this problem is the use of an FPGA, which provide a very high computational efficiency with low power usage, in addition to other benefits.
 
-Now suppose that the FPGA based CNN will be implemented on a satellite. In orbit, the satellite will be exposed to intense radiation, and as a result, errors will be produced on the FPGA. Before such a satellite could be designed and launched, it is important to know how these errors would affect the performance of the CNN, and if the CNN could be designed in such a way that could mitigate the impact of these errors. Therefore, the aim of this project is to implement a CNN on an FPGA-based system, and then to investigate the suitability of this system for space applications.
+Now suppose that the FPGA based CNN will be implemented on a satellite. In orbit, the satellite will be exposed to intense radiation, and as a result, errors will be produced on the radiation-sensitive FPGA. Before such a satellite can be designed and launched, it is important to know how these errors would affect the performance of the CNN, and if the CNN design could be modified to mitigate the impact of these errors. Therefore, the aim of this project is to implement a CNN on an FPGA-based system, and then to investigate the suitability of this system for space applications.
 
 \subsection{Project Motivation}
 \label{sec:Intro-ProjectMotivation}
 \vspace{-12pt}
 
 \begin{itemize}
-\item Describe need for analysis of impact of SEUs
+\item \hl{Describe need for analysis of impact of SEUs}
 \end{itemize}
 
 \vspace{-12pt}
@@ -100,13 +104,19 @@ Now suppose that the FPGA based CNN will be implemented on a satellite. In orbit
 \label{sec:Intro-Structure}
 \vspace{-12pt}
 
-\textbf{Section \ref{sec:Background} - Background:} In order to guarantee that the reader has the contextual knowledge required to understand the project, this section will describe the Target Platform, High Level Synthesis, and CNNs, and will discuss FPGA implementations of CNNs and the difficulties of using FPGAs in satellites.\\
-\textbf{Section \ref{sec:ProjSpec} - Project Specification:} This section will details the project requirements that should be met by the final system.\\
-\textbf{Section \ref{sec:Design} - Design:} The decisions taken in the design process are described and explained in this section. The high level design is described, followed by important aspects of the low level design.\\
-\textbf{Section \ref{sec:Imp} - Implementation:} This section will go into detail about how the system was implemented, aiming to provide the reader with an understanding of the development process.\\
+\textbf{Section \ref{sec:Background} - Background:} In order to guarantee that the reader has the contextual knowledge required to understand the project, this section will describe the Target Platform, High Level Synthesis, and CNNs. FPGA implementations of CNNs and the difficulties of using FPGAs in satellites will also be explored.\\
+\\
+\textbf{Section \ref{sec:ProjSpec} - Project Specification:} This section details the project requirements that should be met by the final system.\\
+\\
+\textbf{Section \ref{sec:Design} - Design:} The decisions taken in the design process are described and explained in this section. The high level design is described, as well important aspects of the low level design.\\
+\\
+\textbf{Section \ref{sec:Imp} - Implementation:} This section illustrate how the system was implemented, aiming to provide the reader with an understanding of the development process.\\
+\\
 \textbf{Section \ref{sec:Test} - Testing:} The testing methodology used to verify various components of the system is detailed in this section.\\
+\\
 \textbf{Section \ref{sec:Eval} - Evaluation:} The focus of this section is the result of the investigation, including an evaluation of the system's performance.\\
-\textbf{Section \ref{sec:Conclusion} - Conclusion and Future Work:} This section will summarise the results of the project, highlight areas for improvement and further work, and present concluding remarks.\\
+\\
+\textbf{Section \ref{sec:Conclusion} - Conclusion and Future Work:} This section will summarize the results of the project, highlight areas for improvement and further work, and present concluding remarks.\\
 
 \newpage
 
@@ -120,7 +130,7 @@ This section will provide some details and information that will provide context
 \label{sec:Background-TargetPlatform}
 \vspace{-12pt}
 
-The hardware used in this project is a product from Xilinx called a Zedboard, a development board for the Zynq-7000 System On a Chip (SoC). This board was chosen because of its useful hardware features and its integrated support for useful Xilinx proprietary tools. These tools include High Level Synthesis systems, SoC design tools and the Soft Error Mitigation IP core. The Zynq-7000 consists of a Xilinx FPGA as its Programmable Logic, and a dual-core Cortex-A9 ARM processor as its Processing System integrated together. The ARM processor facilitates easy control of the system, whilst the FPGA will be able to efficiently perform heavy computations.
+The hardware used in this project is a product from Xilinx called a Zedboard, a development board for the Zynq-7000 System On a Chip (SoC). This board was chosen because of its useful hardware features and its integrated support for valuable Xilinx proprietary tools. These tools include High Level Synthesis systems, SoC design tools and the Soft Error Mitigation IP core. The Zynq-7000 consists of a Xilinx FPGA as its Programmable Logic, and a dual-core Cortex-A9 ARM processor as its Processing System integrated together. The ARM processor facilitates easy control of the system, whilst the FPGA will be able to efficiently perform heavy computations.
 
 
 \subsection{High Level Synthesis}
@@ -129,17 +139,17 @@ The hardware used in this project is a product from Xilinx called a Zedboard, a 
 
 Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, specifying cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process.
 
-High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado to produce HDL for the Programmable Logic in the Zynq SoC.
+High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado HLS to produce a configuration for the Programmable Logic in the Zynq SoC.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:Background-CNN}
 \vspace{-12pt}
 
-CNNs can be used to classify images in a forward inference process. But before using the CNN for any task, one should first train the CNN on a set of training data. The training of a CNN is usually implemented on large servers with a huge computational capacity, with an enormous set of training data. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
+CNNs can be used to classify images in a forward inference process. But before using the CNN for any task, the CNN should be trained on a set of training data. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
 
 A typical CNN consists of a number of layers that run in sequence. Convolution (CONV), activation function, pooling, and Fully Connected (FC) layers make up a typical CNN model, with CONV and FC being the most important. CONV and FC layers have parameters of called weights, which are set by the training process. These weights will determine which patterns each layer of the CNN will be activated by, and ultimately, what the CNN is able to recognise and classify. 
 
-The first layer of a CNN reads an input image and outputs a series of feature maps. The input image will be three dimensional - the height and width of the image make up two dimensions, and colours make up the third layer. For an RGB image, the input will have a depth of 3. Then there will be CONV layers interspersed by activation function and pooling layers, which will make up most of the CNN. These layers will decompose the image into feature maps, varying from low-level features such as edges, lines, curves, etc., in the initial layers to high-level features in the deeper layers \cite{SudaFpgaAccelerator}. Each subsequent layer reads the feature maps generated by preceding layers and generates new feature maps at its output. Finally a classifier, consisting of at least one FC layer, reads the final feature maps and determines the probability of the input imaging belonging to each category of the training data. A example of a CNN model is shown in Figure \ref{fig:typicalCNN}.
+The first layer of a CNN reads an input image and outputs a series of feature maps. The input image will be three dimensional - the height and width of the image make up two dimensions, and colours make up the third layer. For an RGB image, the input will have a depth of 3. Then there will be CONV layers interspersed by activation function and pooling layers, which will make up most of the CNN. These layers will decompose the image into feature maps, varying from low-level features such as edges, lines, curves, etc., in the initial layers to high-level features in the deeper layers \cite{SudaFpgaAccelerator}. Each subsequent layer reads the feature maps generated by preceding layers and generates new feature maps at its output. Finally a classifier, consisting of at least one FC layer, reads the final feature maps and determines the probability of the input imaging belonging to each category of the training data. An example of a CNN model is shown in Figure \ref{fig:typicalCNN}.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/typicalCnn}
@@ -213,13 +223,15 @@ FPGAs also provide flexibility to implement the CNNs with limited data precision
 \label{sec:Background-FPGAsAndSpaceApplications-SEUs}
 \vspace{-12pt}
 
-Electronic circuits are sensitive to high-energy ionizing radiation, which can induce errors called Single Event Upsets (SEUs) \cite{SeuTutorial}. In space this is a particular problem, as the radiation shielding provided by the Earth's magnetosphere, and enjoyed by systems within the Earth's atmosphere, is no longer present. A voltage pulse from an SEU can cause errors including altering digital values. SEU induced voltage pulses are problem for all circuits in space, but the nature of reconfigurable circuits means that they are particularly vulnerable. These SEUs are typically manifested as a bit flip in a memory cell or a transient logic pulse in combinational logic. Habinc et al. describes three main categories of SEU \cite{SuitabilityGaisler}.
+Electronic circuits are sensitive to high-energy ionizing radiation, which can induce errors called Single Event Upsets (SEUs) \cite{SeuTutorial}. In space, this is a particular problem. The radiation shielding provided by the Earth's magnetosphere, and enjoyed by systems at lower altitudes, is no longer present, leaving systems open to radiation from a  variety of sources. A voltage pulse from an SEU can cause errors including altering digital values. SEU induced voltage pulses are problematic for all circuits in space, but the nature of reconfigurable circuits means that they are particularly vulnerable. These SEUs are typically manifested as a bit flip in a memory cell or a transient logic pulse in combinational logic. Habinc et al. describes three main categories of SEU \cite{SuitabilityGaisler}.
 
-The first category is the configuration upset. FPGAs are configured by loading the configuration bitstream into an internal configuration memory. This memory controls the configurable logic elements and how the connect together. A configuration upset occurs when an SEU alters a value in the configuration memory, and thus changes the function of the configuration. 
+The first category is the configuration upset. FPGAs are configured by loading the configuration bitstream into an internal configuration memory. This memory controls the configurable logic elements and how they connect together. A configuration upset occurs when an SEU alters a value in the configuration memory, and thus changes the function of the configuration. 
 
-The second category is the functional upsets in user logic are SEUs within the FPGA's logic. The FPGA's user logic cannot be tested through a readback of the configuration memory, because their contents will change as part of normal logic operation. These errors can cause transient glitches in combinatorial logic, and can upset sequential logic where the state of the system is vital to its function \cite{FTripleMR}.
+The second category is the functional upsets in user logic are SEUs within the FPGA's logic. The FPGA's user logic cannot be tested through a readback of the configuration memory, because the logic contents will change as part of normal operation. These errors can cause transient glitches in combinatorial logic, and can upset sequential logic where the state of the system is vital to its function \cite{FTripleMR}.
 
-The final category is the architectural upset. This is when an SEU occurs in the control elements of the FPGA, e.g. the configuration circuits or reset control \cite{SuitabilityGaisler}. This can have an enormous range of consequences. For example, an SEU in the reset control could cause the FPGA to be unintentionally reset and all state information would be lost as the FPGA is reconfigured. In this project, the other two forms of SEUs will be the main focus of the investigation. 
+The final category is the architectural upset. This is when an SEU occurs in the control elements of the FPGA, e.g. the configuration circuits or reset control \cite{SuitabilityGaisler}. This can have an enormous range of consequences. For example, an SEU in the reset control could cause the FPGA to be unintentionally reset and all state information would be lost due to the FPGA being reconfigured.
+
+Architectural upsets are outside the scope of this project, but configuration and functional upsets will be investigated. This is explained in more detail in Section \ref{sec:ProjSpec-TestSpec}.
 
 \subsubsection{SEU Mitigation Techniques}
 \label{sec:Background-FPGAsAndSpaceApplications-Mitigation}
@@ -231,8 +243,7 @@ A very effective way of detecting configuration upsets is to readback and verify
 
 Functional Triple Modular Redundancy is another popular method of mitigating SEU errors \cite{FTripleMR}. This involves making three copies of a given design within the FPGA fabric, and having them 'vote' on the result through a combinatorial circuit. This is very effecting at reducing the error rate from combinatorial and user upsets, as two of the three circuits need to be compromised in the same way in order for a false result to be given as the output of the system.
 
-Radiation hardening is the act of physically making a chip less susceptible to radiation, typically by encasing it in a substance that will shield the internal electronics \cite{RadHardFpga}. Many FPGA vendors sell radiation hardened versions of their products, and it should greatly reduce the impact of SEUs, but it is often a very expensive solution due to the cost of the 'rad hard' hardware. In this project, we would like to use standard commercial hardware, so this will not be used.
-
+Radiation hardening is the act of physically making a chip less susceptible to radiation, typically by encasing it in a substance that will shield the internal electronics \cite{RadHardFpga}. Many FPGA vendors sell radiation hardened versions of their products, and it should greatly reduce the impact of SEUs, but it is often a very expensive solution due to the cost of the 'rad hard' hardware.
 
 \newpage
 
@@ -393,14 +404,6 @@ The other important tool to set up is called Caffe (or Convolutional Architectur
 \item Describe DataMemory Class
 \end{itemize}
 
-\subsection{Matrix Multiplication Function}
-\label{sec:Imp-gemm}
-\vspace{-12pt}
-
-\begin{itemize}
-\item Describe implementation of \verb|gemm()| function
-\end{itemize}
-
 \subsubsection{Data Input}
 \label{sec:Imp-Input}
 \vspace{-12pt}
@@ -418,8 +421,43 @@ The other important tool to set up is called Caffe (or Convolutional Architectur
 \label{sec:Imp-Layers-Conv}
 \vspace{-12pt}
 
+Two approaches to implementing the convolution were implemented in software and compared. The more intuitive approach uses nested \lstinline|for| loops to iterate through the dimensions of the weights, inputs, and outputs and compute the results incrementally. The other approach reshapes the input and weight data, and performs the convolution in one large matrix multiplication. 
+
+\subsubsection{Matrix Multiplication Method}
+\vspace{-12pt}
+The matrix multiplication method is split into two steps. Firstly the data is transformed into a rows of data and organized into a matrix. In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $MxK$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory in the right order, this reshaping process can be done without copying any data to new locations. In such conditions, it is a simple case of setting the dimensions of the weights blob, thereby changing how the memory will be accessed.
+
+Then the input feature map is considered in terms of input regions, i.e. each area that will be multiplied with weights kernels. The size of these regions matches the weights kernel, and the number is dependent on the input size, kernel size, padding and stride.  These input regions are flattened and stored as columns. However, this is not as simple as reshaping the blobs. If the convolution has padding, the input regions may contain extra zeros. Additionally, the stride and kernel size may result in input regions are overlapping or are not continuous. Therefore, each input region is individually mapped and copied from the input data into columns. This forms a $KxN$ matrix, where $K$ is the volume of an input region, and $N$ is the number of input regions in the input feature map.
+
+The output of the convolution is then found with \( \mathbf{C} = \mathbf{A}\times\mathbf{B}\), where $\mathbf{C}$ is the output matrix, $\mathbf{A}$ is the weights matrix, and $\mathbf{B}$ is the matrix of input regions. In order for this computation to be valid, it should be clear that the volume of an input region is the same as the volume of a kernel. The $MxN$ output matrix can be treated as blob with depth $M$, equal to the number of weights, and width and height that give a product $N$, equal to the number of input regions.
+
+\subsubsection{Pure Convolution Method}
+\label{sec:Imp-Layers-Conv-PC}
+\vspace{-12pt}
+Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudocode in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input.
+
+\renewcommand{\lstlistingname}{Code}
+\begin{lstlisting}[frame=single, caption=Basic Convolution, label=code:conv-initial, captionpos=b, numbers=left, language=C]
+for(outRow = 0; outRow < OutputWidth; outRow++) {
+  for(outCol = 0; outCol < OutputlHeight; outCol++) {
+    for(outDepth = 0; outDepth < OutputDepth; outDepth++) {
+      for(inDepth = 0; inDepth < InputDepth; inDepth++) {
+        for(kernelRow = 0; kernelRow < KernelRows; kernelRow++) {
+          inRow = stride * outRow + kernelRow - pad;
+          for(kernelCol = 0; kernelCol < KernelCols; kernelCol++) {
+            inCol = stride * outCol + kernelCol - pad;
+            
+            if((0 <= inRow < InputHeight) &&  (0 <= inCol < InputWidth)) {
+              output[outDepth][outRow][outCol] +=
+                weights[outDepth][inDepth][kernelRow][kernelCol] \times
+                input[inDepth][inRow][inCol];
+}}}}}}}
+\end{lstlisting} 
+
 \begin{itemize}
 \item Describe layer code, including use of gemm function
+\item Explain redesign, benefits of zhang implementation over im2col and gemm
+\item tiled approach and optimizations
 \end{itemize}
 
 \subsubsection{Fully Connected Layer}
@@ -428,6 +466,8 @@ The other important tool to set up is called Caffe (or Convolutional Architectur
 
 \begin{itemize}
 \item Describe layer code
+\item Explain FC->CONV conversion
+\item Explain redesign, benefits of new implementation
 \end{itemize}
 
 \subsubsection{Rectified Linear Unit Layer}
