@@ -427,19 +427,19 @@ Two approaches to implementing the convolution were implemented in software and 
 \vspace{-12pt}
 The matrix multiplication method is requires the data to be in a specific shape. Thus, the data is flattened and organized into a matrices, as shown in figure \ref{fig:im2col}. 
 
+In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $MxK$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory, this reshaping process can be done without copying any data to new locations. In such conditions, it is a simple case of setting the dimensions of the weights blob, thereby changing how the memory will be accessed.
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{../figures/im2col.png}
 \caption{A visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding} \label{fig:im2col}
 \end{figure}
 
-In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $MxK$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory in the right order, this reshaping process can be done without copying any data to new locations. In such conditions, it is a simple case of setting the dimensions of the weights blob, thereby changing how the memory will be accessed.
-
 Then the input feature map is considered in terms of input regions, i.e. each area that will be multiplied with weights kernels. The size of these regions matches the weights kernel, and the number is dependent on the input size, kernel size, padding and stride.  These input regions are flattened and stored as columns. However, this is not as simple as reshaping the blobs. If the convolution has padding, the input regions may contain extra zeros. Additionally, the stride and kernel size may result in input regions are overlapping or are not continuous. Therefore, each input region is individually mapped and copied from the input data into columns. This forms a $KxN$ matrix, where $K$ is the volume of an input region, and $N$ is the number of input regions in the input feature map.
 
 The output of the convolution is then found with \( \mathbf{C} = \mathbf{A}\times\mathbf{B}\), where $\mathbf{C}$ is the output matrix, $\mathbf{A}$ is the weights matrix, and $\mathbf{B}$ is the matrix of input regions. In order for this computation to be valid, it should be clear that the volume of an input region is the same as the volume of a kernel. The $MxN$ output matrix can be treated as blob with depth $M$, equal to the number of weights, and width and height that give a product $N$, equal to the number of input regions.
 
-By reducing the convolution to a single matrix multiplication, the algorithm can take advantage of a software library called Basic Linear Algebra Subprograms, or BLAS. This can bring significant performance improvements, as the BLAS library can provide highly optimised functions for a given platform. One such function is called \lstinline|gemm()|, and performs a general matrix multiplication. To be precise, gemm \lstinline|gemm()| performs $\mathbf{C} \gets \alpha\mathbf{A}\mathbf{B} + \beta\mathbf{C}$, where $\alpha$ and $beta$ are constants. By setting $\alpha = 1$ and $beta = 0$, the \lstinline|gemm()| function can be used to compute the output of the convolution. This method is therefore ideal for a software implementation of the convolution, but is not suitable for 
+By reducing the convolution to a single matrix multiplication, the algorithm can take advantage of a software library called Basic Linear Algebra Subprograms, or BLAS. This can bring significant performance improvements, as the BLAS library can provide highly optimised functions for a given platform. One such function is called \lstinline|gemm()|, and performs a general matrix multiplication. To be precise, gemm \lstinline|gemm()| performs $\mathbf{C} \gets \alpha\mathbf{A}\mathbf{B} + \beta\mathbf{C}$, where $\alpha$ and $beta$ are constants. By setting $\alpha = 1$ and $beta = 0$, the \lstinline|gemm()| function can be used to compute the output of the convolution. This method is ideal for a software implementation of the convolution that will not be running on an embedded system. However, the weights matrix and input matrix will both be occupy a lot of memory in most practical CNNs, and a typical FPGA will not have enough on-chip memory to perform the entire convolution at once.
 
 \subsubsection{Pure Convolution Method}
 \label{sec:Imp-Layers-Conv-PC}
@@ -463,7 +463,19 @@ for(outRow = 0; outRow < OutputWidth; outRow++) {
 }}}}}}}
 \end{lstlisting} 
 
+Put straight on to an FPGA, this algorithm will require the entire input feature map and all of the weights kernels to be loaded onto the FPGA at once, which is not feasible for a typically sized convolution layer. However, Zhang et al. describes a method of tiling the data, so that the convolution can be performed in chunks and is therefore suitable for FPGA computation. The code is split into two parts shown in Code \ref{code:conv-sw} and Code \ref{code:conv-hw1}.
 
+\renewcommand{\lstlistingname}{Code}
+\begin{lstlisting}[frame=single, caption=External Data Transfer, label=code:conv-sw, captionpos=b, numbers=left, language=C]
+for(outRow = 0; outRow < OutputWidth; outRow+=outRowTileSize) {
+  for(outCol = 0; outCol < OutputlHeight; outCol+=outColTileSize){
+    for(outDepth=0; outDepth<OutputDepth; outDepth+=outDepthTileSize) {
+      for(inDepth = 0; inDepth < InputDepth; inDepth += outRowTileSize) {
+        // load weights
+        // load input feature maps
+        // load output feature maps
+}}}}
+\end{lstlisting} 
 
 \begin{itemize}
 \item Describe layer code, including use of gemm function
