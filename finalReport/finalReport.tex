@@ -332,12 +332,12 @@ IF APPLICABLE
 \item mention blobs
 \end{itemize}
 
-\subsubsection{Data Structures}
+\subsubsection{Data Objects}
 \label{sec:Imp-Network-Blobs}
 
 In order for data to be easily processed by network layers, a class called \lstinline|DataMemory| was created. This is a simple wrapper around dynamically allocated memory that provides homogenous storage of all data in the network. The data is accessed through functions called \lstinline|getConstData| and \lstinline|getMutableData|, which both return a pointer that can be used to access the data as an array. A \lstinline|const| pointer is returned by \lstinline|getConstData| for situations where the memory is only going to be read, and \lstinline|getMutableData| returns a normal pointer which can be used to read and write values to and from the memory space.
 
-In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the network, including weights data for Convolution and Fully Connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one blob to another.
+In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for Convolution and Fully Connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one blob to another.
 
 \subsubsection{Layer Design}
 \label{sec:Design-Network-Layers}
@@ -346,7 +346,14 @@ Each layer type was implemented as a class, which provided several benefits. Eve
 
 In addition to multiple version of the same layers types, several very diverse layer types are required for a CNN to be properly implemented. If these were all implemented in vastly different ways, each with a unique interface for external code, setting up and running the network woud be challenging, if not impossible. Such a network would be very difficult to control automatically, and the interaction with each individual layer would likely have to be hard coded. 
 
-To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a famiy of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions don't define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs. With a small extension, it wouldn't be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
+To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a famiy of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions don't define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs, as shown in Figure \ref{fig:layer}. With a small extension, it wouldn't be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/layer.eps}
+\caption{General Layer Architecture
+\label{fig:layer}}
+\end{figure}
 
 The \lstinline|LayerSetUp| function is run after the layer is originally constructed. Each layer class has a constructor that will initialise most of its paramters when a layer instance is created, but sometimes of these parameters are dependant on the shape of the bottom Blob. These parameters are then set by the \lstinline|LayerSetUp| function. This function also performs a sanity checks on the layer parameters to ensure that nothing is amiss.
 
@@ -501,8 +508,11 @@ The Linux kernel is very powerful, can take advantage of the huge library of Lin
 
 In order to for the Processing System to control and utilise the Programmable Logic, an interface is needed to transfer data between the two. The Zedboard offers bus architectures based on Advanced Microcontroller Bus Architecture (AMBA) protocol, designed by ARM. AMBA is commonly used as an interconnect in SoCs and was created for multi-processor designs. The particular specification used in Vivado and SDSoC is called Advanced Extensible Interface 4 (AXI4). 
 
-There are three different AXI4 interfaces availablle for selection. AXI-MM, the AXI4-Lite has a smaller memory footprint and is useful for moving .
-The AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. The AXI4 was used as a 
+There are three different AXI4 interfaces availablle for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
+
+The data that needed to be transferred to and from the hardware kernel were categorized as array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
+
+The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
 
 \begin{itemize}
 \item Justify division of tasks
@@ -551,12 +561,6 @@ The majority of the work was done in a computing lab on the 9th floor of the Ele
 Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the Convolution function was moved into hardware. It was planned for the Fully Connected Layer to also be hardware accelerated, but time constraints prevented this from taking place. 
 
 The convolution function hardware was then intergrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in \hl{Section} \ref{sec:socDrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
-
-\begin{itemize}
-\item Use of Git
-\item Use of level 9 computer and Zedboard
-\item Software only implementation followed by hardware implementation of some functions
-\end{itemize}
 
 \subsection{Hardware Optimisations}
 \label{sec:Imp-Optimisations}
