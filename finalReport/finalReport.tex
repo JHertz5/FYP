@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}
 
+
 \usepackage{setspace} 		% for line spacing
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -11,6 +12,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{color, soul}	%for highlighting
+\usepackage{epstopdf}
 \usepackage{listings} 		%for writing code
 \lstset{
 frame=single, 
@@ -344,7 +346,7 @@ In this approach, the weights kernels are considered to be three dimensional, wh
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{../figures/im2col.eps}
+\includegraphics[width=0.75\textwidth]{./figures/im2col.eps}
 \caption{A visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding} \label{fig:im2col}
 \end{figure}
 
