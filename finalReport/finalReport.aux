@@ -18,128 +18,126 @@
 \newlabel{sec:Background-CNN}{{2.2}{9}}
 \citation{SudaFpgaAccelerator}
 \citation{embeddedFpgaCnn}
+\citation{SudaFpgaAccelerator}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A typical CNN structure from the feature map perspective \cite  {embeddedFpgaCnn} }}{10}}
 \newlabel{fig:typicalCNN}{{1}{10}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Convolution Layer}{10}}
 \newlabel{sec:Background-CNN-Conv}{{2.2.1}{10}}
-\citation{SudaFpgaAccelerator}
+\newlabel{eq:ConvLayer}{{1}{10}}
 \citation{AlexNet}
 \citation{PoolAnalysis}
 \citation{SudaFpgaAccelerator}
-\citation{SudaFpgaAccelerator}
-\newlabel{eq:ConvLayer}{{1}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The Convolution Computation. The input feature map is shown in purple surrounded by grey zero padding, and the input regions are shown in green. The stride is shown as the thick black line in the input feature map. }}{11}}
+\newlabel{fig:conv}{{2}{11}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Activation Functions}{11}}
 \newlabel{sec:Background-CNN-Activation}{{2.2.2}{11}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Pooling Layer}{11}}
-\newlabel{sec:Background-CNN-Pool}{{2.2.3}{11}}
-\newlabel{eq:Pool}{{2}{11}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}Fully Connected Layer}{11}}
-\newlabel{sec:Background-CNN-FC}{{2.2.4}{11}}
 \citation{SudaFpgaAccelerator}
 \citation{SudaFpgaAccelerator}
+\citation{SudaFpgaAccelerator}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Pooling Layer}{12}}
+\newlabel{sec:Background-CNN-Pool}{{2.2.3}{12}}
+\newlabel{eq:Pool}{{2}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}Fully Connected Layer}{12}}
+\newlabel{sec:Background-CNN-FC}{{2.2.4}{12}}
 \newlabel{eq:FullyConnected}{{3}{12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}FPGAs and CNN Implementations}{12}}
 \newlabel{sec:Background-FpgaCnnImpl}{{2.3}{12}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Implementation Challenges}{12}}
-\newlabel{sec:Background-FpgaCnnImpl-Challenges}{{2.3.1}{12}}
 \citation{SudaFpgaAccelerator}
 \citation{ZhangFpgaAccelerator}
 \citation{ChenFpgaAccelerator}
 \citation{FarabetFpgaAccelerator}
 \citation{SeuTutorial}
 \citation{SuitabilityGaisler}
-\citation{FTripleMR}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Implementation Challenges}{13}}
+\newlabel{sec:Background-FpgaCnnImpl-Challenges}{{2.3.1}{13}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}FPGA CNN Accelerators}{13}}
 \newlabel{sec:Background-FpgaCnnImpl-Accel}{{2.3.2}{13}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}FPGAs and Space Applications}{13}}
-\newlabel{sec:Background-FPGAsAndSpaceApplications}{{2.4}{13}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Single Event Upsets}{13}}
-\newlabel{sec:Background-FPGAsAndSpaceApplications-SEUs}{{2.4.1}{13}}
-\citation{SuitabilityGaisler}
-\citation{SuitabilityGaisler}
 \citation{FTripleMR}
-\citation{RadHardFpga}
+\citation{SuitabilityGaisler}
+\citation{SuitabilityGaisler}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}FPGAs and Space Applications}{14}}
+\newlabel{sec:Background-FPGAsAndSpaceApplications}{{2.4}{14}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Single Event Upsets}{14}}
+\newlabel{sec:Background-FPGAsAndSpaceApplications-SEUs}{{2.4.1}{14}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.2}SEU Mitigation Techniques}{14}}
 \newlabel{sec:Background-FPGAsAndSpaceApplications-Mitigation}{{2.4.2}{14}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Project Specification}{15}}
-\newlabel{sec:ProjSpec}{{3}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Necessary Functionality}{15}}
-\newlabel{sec:ProjSpec-Necessary}{{3.1}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Desirable Functionality}{15}}
-\newlabel{sec:ProjSpec-Desirable}{{3.2}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Testing Specification}{15}}
-\newlabel{sec:ProjSpec-TestSpec}{{3.3}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Evaluation Specification}{16}}
-\newlabel{sec:ProjSpec-EvalSpec}{{3.4}{16}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Design}{17}}
-\newlabel{sec:Design}{{4}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Network Design}{17}}
-\newlabel{sec:Design-Network}{{4.1}{17}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Layer Design}{17}}
-\newlabel{sec:Design-Network-Layers}{{4.1.1}{17}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Convolution Layer}{17}}
-\newlabel{sec:Imp-Conv}{{4.2}{17}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Matrix Multiplication Method}{17}}
-\newlabel{sec:Imp-Conv-MM}{{4.2.1}{17}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding}}{18}}
-\newlabel{fig:im2col}{{2}{18}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Tiled Convolution Method}{19}}
-\newlabel{sec:Imp-Conv-PC}{{4.2.2}{19}}
-\newlabel{code:conv-initial}{{1}{19}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Basic Convolution}{19}}
-\newlabel{code:conv-sw}{{2}{20}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}External Data Transfer}{20}}
-\newlabel{code:conv-hw1}{{3}{20}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Computational Kernel}{20}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Processing System (PS) Design}{21}}
-\newlabel{sec:Design-PS}{{4.3}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Zynq-7000 Operating System}{21}}
-\newlabel{sec:Design-PS-OS}{{4.3.1}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Software}{22}}
-\newlabel{sec:Design-PS-SW}{{4.3.2}{22}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Programmable Logic (PL) Design}{22}}
-\newlabel{sec:Design-PL}{{4.4}{22}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}PS and PL Interfacing}{22}}
-\newlabel{sec:Design-PSnPL}{{4.5}{22}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Soft Error Mitigation (SEM) Core Integration}{22}}
-\newlabel{sec:Design-SEM}{{4.6}{22}}
+\citation{FTripleMR}
+\citation{RadHardFpga}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Project Specification}{16}}
+\newlabel{sec:ProjSpec}{{3}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Necessary Functionality}{16}}
+\newlabel{sec:ProjSpec-Necessary}{{3.1}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Desirable Functionality}{16}}
+\newlabel{sec:ProjSpec-Desirable}{{3.2}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Testing Specification}{16}}
+\newlabel{sec:ProjSpec-TestSpec}{{3.3}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Evaluation Specification}{17}}
+\newlabel{sec:ProjSpec-EvalSpec}{{3.4}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Design}{18}}
+\newlabel{sec:Design}{{4}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Network Design}{18}}
+\newlabel{sec:Design-Network}{{4.1}{18}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Data Structures}{18}}
+\newlabel{sec:Imp-Network-Blobs}{{4.1.1}{18}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Layer Design}{19}}
+\newlabel{sec:Design-Network-Layers}{{4.1.2}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Convolution Layer}{20}}
+\newlabel{sec:Imp-Conv}{{4.2}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Matrix Multiplication Method}{20}}
+\newlabel{sec:Imp-Conv-MM}{{4.2.1}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces A visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding}}{21}}
+\newlabel{fig:im2col}{{3}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Tiled Convolution Method}{22}}
+\newlabel{sec:Imp-Conv-PC}{{4.2.2}{22}}
+\newlabel{code:conv-initial}{{1}{22}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Basic Convolution}{22}}
+\newlabel{code:conv-sw}{{2}{23}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}External Data Transfer}{23}}
+\newlabel{code:conv-hw1}{{3}{23}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Computational Kernel}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Fully Connected Layer}{24}}
+\newlabel{sec:Imp-FC}{{4.3}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Rectified Linear Unit Layer}{24}}
+\newlabel{sec:Imp-Relu}{{4.4}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Pooling Layer}{24}}
+\newlabel{sec:Imp-Pool}{{4.5}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Processing System (PS) Design}{24}}
+\newlabel{sec:Design-PS}{{4.6}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Zynq-7000 Operating System}{24}}
+\newlabel{sec:Design-PS-OS}{{4.6.1}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.2}Software}{25}}
+\newlabel{sec:Design-PS-SW}{{4.6.2}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Programmable Logic (PL) Design}{25}}
+\newlabel{sec:Design-PL}{{4.7}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}PS and PL Interfacing}{25}}
+\newlabel{sec:Design-PSnPL}{{4.8}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Soft Error Mitigation (SEM) Core Integration}{26}}
+\newlabel{sec:Design-SEM}{{4.9}{26}}
 \citation{jia2014caffe}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{23}}
-\newlabel{sec:Imp}{{5}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Infrastructure Setup}{23}}
-\newlabel{sec:Imp-InfSetup}{{5.1}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programming Language}{23}}
-\newlabel{sec:Imp-Language}{{5.2}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Development Methodology}{23}}
-\newlabel{sec:Imp-Devlopment}{{5.3}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Data Structures}{24}}
-\newlabel{sec:Imp-blobs}{{5.4}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Data Input}{25}}
-\newlabel{sec:Imp-Input}{{5.4.1}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Fully Connected Layer}{25}}
-\newlabel{sec:Imp-FC}{{5.5}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Rectified Linear Unit Layer}{25}}
-\newlabel{sec:Imp-Relu}{{5.6}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Pooling Layer}{25}}
-\newlabel{sec:Imp-Pool}{{5.7}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Softmax Layer}{25}}
-\newlabel{sec:Imp-Prob}{{5.8}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Hardware Optimisations}{25}}
-\newlabel{sec:Imp-Optimisations}{{5.9}{25}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Testing}{26}}
-\newlabel{sec:Test}{{6}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Layer Testing}{26}}
-\newlabel{sec:Test-Layers}{{6.1}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Network Testing}{26}}
-\newlabel{sec:Test-Network}{{6.2}{26}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Evaluation}{27}}
-\newlabel{sec:Eval}{{7}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}FPGA Implementation of a CNN}{27}}
-\newlabel{sec:Eval-FPGAImplOfCnn}{{7.1}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Fault Tolerance Investigation}{27}}
-\newlabel{sec:Eval-FaultTolInv}{{7.2}{27}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion and Future Work}{28}}
-\newlabel{sec:Conclusion}{{8}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{27}}
+\newlabel{sec:Imp}{{5}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Infrastructure Setup}{27}}
+\newlabel{sec:Imp-InfSetup}{{5.1}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programming Language}{27}}
+\newlabel{sec:Imp-Language}{{5.2}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Development Methodology}{27}}
+\newlabel{sec:Imp-Devlopment}{{5.3}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Hardware Optimisations}{28}}
+\newlabel{sec:Imp-Optimisations}{{5.4}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Testing}{29}}
+\newlabel{sec:Test}{{6}{29}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Layer Testing}{29}}
+\newlabel{sec:Test-Layers}{{6.1}{29}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Network Testing}{29}}
+\newlabel{sec:Test-Network}{{6.2}{29}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Evaluation}{30}}
+\newlabel{sec:Eval}{{7}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}FPGA Implementation of a CNN}{30}}
+\newlabel{sec:Eval-FPGAImplOfCnn}{{7.1}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Fault Tolerance Investigation}{30}}
+\newlabel{sec:Eval-FaultTolInv}{{7.2}{30}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion and Future Work}{31}}
+\newlabel{sec:Conclusion}{{8}{31}}
 \bibdata{finalReport_ref}
 \bibcite{neocognitron}{1}
 \bibcite{ImageNetChallenge}{2}
