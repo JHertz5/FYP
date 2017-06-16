@@ -351,8 +351,8 @@ To overcome this problem, a class template was implemented for the network layer
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/layer.eps}
-\caption{General Layer Architecture
-\label{fig:layer}}
+\caption{A layer within the network structure, showing the top and bottom Blobs and their respective DataMemory objects}
+\label{fig:layer}
 \end{figure}
 
 The \lstinline|LayerSetUp| function is run after the layer is originally constructed. Each layer class has a constructor that will initialise most of its paramters when a layer instance is created, but sometimes of these parameters are dependant on the shape of the bottom Blob. These parameters are then set by the \lstinline|LayerSetUp| function. This function also performs a sanity checks on the layer parameters to ensure that nothing is amiss.
@@ -510,9 +510,13 @@ In order to for the Processing System to control and utilise the Programmable Lo
 
 There are three different AXI4 interfaces availablle for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
 
-The data that needed to be transferred to and from the hardware kernel were categorized as array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
+The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the hardware kernel was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
 
 The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
+
+The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function takes 
+
+HLS code is configured to read these registers using \lstinline|#pragma| commands in the code 
 
 \begin{itemize}
 \item Justify division of tasks
