@@ -173,21 +173,24 @@ The first layer of a CNN reads an input image and outputs a series of feature ma
 \label{sec:Background-CNN-Conv}
 
 
-The CONV layer takes a series of feature maps as input and convolves with convolutional kernels to obtain the output feature maps. The simplest version of the convolution operation a involves 3-dimensional multiply and accumulate operation of $N_{if}$ input features with $K\times K$ convolution kernels to get an output feature neuron value as shown in Equation \ref{eq:ConvLayer}
+The CONV layer takes a series of feature maps as input and convolves with convolutional kernels to obtain the output feature maps. The simplest version of the convolution operation a involves 3-dimensional multiply and accumulate operation of $N_{if}$ input feature maps with $K\times K$ convolution kernels to get an output feature neuron value as shown in Equation \ref{eq:ConvLayer}
 \begin{equation}
 out(f_o,x,y)=\sum^{N_{if}}_{f_i=0} \sum^{K}_{k_x=0} \sum^{K}_{k_y=0} wt(f_o,f_i,k_x,k_y)\times in(f_i,x+k_x,y+k_y)
 \label{eq:ConvLayer}
 \end{equation}
 where $out(f_o,x,y)$ and $in(f_i,x,y)$ represent the neurons at position $(x,y)$ in the feature maps $f_o$ and $f_i$, respectively and $wt(f_o,f_i,k_x,k_y)$ is the weights at position $(k_x,k_y)$ that gets convolved with input feature map $f_i$ to get the output feature map $f_o$ \cite{SudaFpgaAccelerator}.
 
+This can be thought of as scanning over the input feature map with the weights kernel and computing the sum of the elementwise products of the weights kernel and a section of the input feature map that matches the size of the kernel (an input region). Each position that the kernel takes corresponds to one output position. The more widely used version of the convolution includes zero padding, adding layers of zeros around the input, and stride, moving the kernel over the input in steps. The full operation is depicted in Figure \ref{fig:conv}
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/conv.eps}
-\caption{The Convolution Computation. The input feature map is shown in purple surrounded by grey zero padding, and the input regions are shown in green. The stride is shown as the thick black line in the input feature map.
-\label{fig:conv}}
+\includegraphics[width=0.9\textwidth]{figures/conv.eps}
+\caption{A visualisation of a convolution computation, calculating the output for one output location}
+\label{fig:conv}
 \end{figure}
 
-This can be visualised as scanning over the input feature map with the weights kernel and computing the sum of the elementwise products of the weights kernel and a section of the input feature map that matches the size of the kernel (an input region). Each position that the kernel takes corresponds to one output position. The more widely used version of the convolution includes zero padding, adding layers of zeros around the input, and stride, moving the kernel over the input in steps. The full operation is depicted in Figure \ref{fig:conv}
+Figure 2 shows a visualisation of the convolution operation. The input feature maps are shown on the left in purple, surrounded by grey zero padding. The green squares show the input regions, the positions of the weights kernel as it scans across the input. The element-wise product of the input region and the kernel is found and summed, and then added to the relevant output value. Each orange square in the output feature maps represents a single value. In this diagram, the input has two layers, and the output has three layers. It can be seen that the computation results for multiple input layers are added together to form the final output values. For multiple output layers, the computation process is repeated with new weights kernels. The number of weights is the product of the number of input layers and the number of output layers. Note that the diagram only depicts the computation for a single output location. The computation is repeated for every output location. 
+
 
 \subsubsection{Activation Functions}
 \label{sec:Background-CNN-Activation}
@@ -208,7 +211,7 @@ out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max/average}(in(f_o,x+k_x,y+k_y))
 \label{sec:Background-CNN-FC}
 
 
-An FC layer is a classification layer where all the input features $(N_{if})$ are connected to all of the output features $(N_{of})$ through synaptic weights $(wt)$. These are at the end of the CNN and perform the final classification, based on the features that have been recognised by the rest of the network. Each output neuron is the weighted summation of all the input neurons as shown in Equation \ref{eq:FullyConnected} \cite{SudaFpgaAccelerator}.
+An FC layer is a classification layer where all the input features $(N_{if})$ are connected to all of the output features $(N_{of})$ through synaptic weights $(wt)$. These are at the end of the CNN and perform the final classification, based on the features that have been recognised by the rest of the network. Each output neuron is the weighted summation of all the input neurons, as shown in Equation \ref{eq:FullyConnected} \cite{SudaFpgaAccelerator}.
 \begin{equation}
 out(f_o)=\sum^{N_{if}}_{f_i=0}wt(f_o,f_i)\times in(f_i)
 \label{eq:FullyConnected}
