@@ -1,5 +1,13 @@
 \documentclass[12pt]{article}
 
+\usepackage{url}
+\usepackage{hyperref}	  	% create links on references
+\hypersetup{
+  colorlinks   = true,    	% Colours links instead of ugly boxes
+  urlcolor     = blue,    	% Colour for external hyperlinks
+  linkcolor    = blue,    	% Colour of internal links
+  citecolor    = red      	% Colour of citations
+}
 \usepackage{setspace} 		% for line spacing
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -94,7 +102,7 @@ This project implements an FPGA based CNN, and simulates radiation-induced error
 
 Inspired by the structure of the optical nervous system in animals, a neural network is made up of layers of artificial neurons that recognise certain features from the input data. The concept of an artificial neural network was first introduced in 1980 \cite{neocognitron}, and driven by increases in computing power and a growth in machine learning applications, neural networks have become very powerful tools. In the last decade, the development of Convolutional Neural Networks (CNNs) has lead to great advancements in image classification accuracy.
 
-CNNs are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in image classification applications \cite{ImageNetChallenge}. Other popular applications within machine vision include video classification, face detection and gesture recognition. They are also being used in a wide range of other fields including speech recognition, natural language processing and text classification.
+CNNs are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in image classification applications \cite{ImageNetChallenge}. Other popular applications within machine vision include video classification, face detection, and optical text recognition. Neural Networks are being used in a wide range of other fields as well including speech recognition, natural language processing and text classification.
 
 However, whilst achieving exceptional performance, CNNs are extremely computation and resource heavy. Typically, they will be implemented on large servers or on GPU based systems to accommodate the need for computational power. As a result, implementing them on embedded systems, which typically have very limited resources, presents many challenges. A promising solution to this problem is the use of an FPGA, which provide a very high computational efficiency with low power usage, in addition to other benefits.
 
@@ -142,21 +150,67 @@ Vivado HLS was used to design and build a hardware block from C++ code. Then Viv
 \label{sec:Background}
 
 
-This section will provide some details and information that will provide context to the project, and will be useful for understanding key concepts in the rest of the report. High Level Synthesis tools, CNN structures, FPGA implementations of CNNs, and the issues surrounding the use of FPGAs in space will all be discussed.
+This section will provide some details and information that will provide context to the project, and will be useful for understanding key concepts in the rest of the report. High Level Synthesis tools, the basics of machine learning, and CNN structures will be described. FPGA implementations of CNNs, and the issues surrounding the use of FPGAs in space will also be discussed.
 
 \subsection{High Level Synthesis}
 \label{sec:Background-HLS}
 
-
-Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, specifying cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process.
+Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, controlling cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process. Additionally, a lack of specialist knowledge can lead to an extremely inefficient design.
 
 High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado HLS to produce a configuration for the Programmable Logic in the Zynq SoC.
+
+\subsection{Machine Learning}
+\label{sec:Background-ML}
+
+The core functionality of a machine learning system is to perform tasks on new, unseen data based on a large set of previosuly seen training data. The training data will be split up in to different classes and the system uses this training data to build up a model that predicts which class the new data best fits in to. This can be applied to many situations, such as classifying images, recognising speech patterns, or piloting a vehicle. Machine learning allows an electronic system to be put in a brand new situation and use past experience to make a decision.
+
+A machine learning system takes an array of values as an input. If the input is a image, the vector values will represent pixels. This is done for a grayscale image by representing each pixel's intensity with an integer on a scale from 0, for a black pixel, to 255, for a white pixel. If the image is coloured, there will be three vector values for each pixel, with the brightness in red, green and blue in the pixel being represented as separate values. Parameters called weights are used to compare the input with the training data, and system will output a set of scores, which represent the likelihood that the input is a member of each class in the training data. The input is assigned the class with the highest score. 
+
+The performance of such a system is based on a process called training.  Training is an iterative process, traditionally performed with the following method, called supervised learning. A piece of training data is fed through the system and is assigned a score at the output. The scores are compared with the expected results and the weights are adjusted according to the error. The process is repeated until the error is sufficiently small for each piece of data in the training data set. The best results are produced by training with a large set of data, with lots of variety within each class, e.g. images of the similar objects with different angles, lighting, etc.
+
+\subsubsection{Linear Classifier}
+\label{sec:Background-ML-LC}
+
+One of the simplest types of machine learning structure is the linear classifier. These treat each value in the input vector as the position of the input in a separate dimension, with the length of the vector $N$ being the total number of dimensions. The linear classifier works by forming an $N$-dimensional space and dividing it up. The number of subspaces resulting from these class boundaries is the number of classes that the classifier is trained to recognise, and the class boundaries are placed by the training process. New data is treated as a point in the $N$-dimensional space and is assigned the class of the subspace that it falls in to.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/SVM.eps}
+\caption{A linear classifier, with multiple class boundaries of differing quality shown}
+\label{fig:SVM}
+\end{figure}
+
+Figure \ref{fig:SVM} shows this process taking place with two classes and a two dimensional input space. A good class boundary should separate the classes completely, and should find the maximum margin of separation, so that the chances of new data falling on the wrong side of the boundary is minimised. Clearly, Line 1 is a poor class boundary as the classes are not separated. Line 2 is acceptable, but only separates the classes by a small margin and is therefore is far from optimal. Line 3 is the best class boundary as it seperates the classes with the largest margin.
+
+As previously stated, Linear Classifiers are a simple solution and are useful for fast classification, but have drawbacks associated with them. They are only designed as a binary classifier, discerning between only two problems. Algorithms exist to apply a binary classifier to multi-class problems, but these reduce the performance significantly. Traditional linear systems such as this are unable to accurately account for high levels of variation in inputs, which led to the development of non-linear machine learning systems, such as Neural Networks.
+
+\subsubsection{Artificial Neural Networks}
+\label{sec:Background-ML-NN}
+
+Artificial Neural Networks are based on the structure of biological brains. A brain is made up of billions of interconnected building blocks called neurons. The structure of a neuron and an accompanying mathematical mode are shown in Figure \ref{fig:neuron}. Synapses act as the connections between neurons, supplying the dendrites with information. The dendrites act as an input, carrying the information to the cell body. The computation in the cell body is a weighted summation of the dendrite inputs, and the activation function determines the activation of the output neuron\cite{neuron}. Many activation functions exist in artificial models, but usually they define a threshold that must be surpassed by the computation result before it is passed on to the output, and these activation functions are the source of non-linearity in the network.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/neuron.png}
+\caption{A neuron, and a mathematical model of a neuron\cite{neuron}}
+\label{fig:neuron}
+\end{figure}
+
+These neurons are connected together into a network as shown in Figure \ref{fig:ANN}. The neurons are arranged into layers, and connected to each neuron in the next and previous layers. The network has a layer for the input values and for the output values, and intermediate layers which are referred to as hidden layers since their only interaction is with the other layers. The number of hidden layers can vary, but has a big impact on how accurate the classification can be, and how many classes can be accurately classified. Deep networks with 10-20 layers have been shown to perform much better than shallow networks\cite{DeepNetworks}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/ANN.eps}
+\caption{Simple Neural Network with one hidden layer}
+\label{fig:ANN}
+\end{figure}
+
+Neural Networks are trained in a sightly different way to other machine learning systems, using a method called backpropagation. Inputs are propogated forwards through the network until the output is reached. The resuting output values are each compared against the desired values and an error value is calculated for each output neuron. The error values are then progagated backwards through the network and the weights of each neuron are adjusted according to the received error. This process is repeated until the network is sufficiently trained.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:Background-CNN}
 
-
-CNNs can be used to classify images in a forward inference process. But before using the CNN for any task, the CNN should be trained on a set of training data. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
+CNNs are a specialised Neural Network. The input is assumed to be an image, the network is deep, and a number of specialised layers are used to improve accuracy and increase performance. CNNs are used to classify images in a forward inference process. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
 
 A typical CNN consists of a number of layers that run in sequence. Convolution (CONV), activation function, pooling, and Fully Connected (FC) layers make up a typical CNN model, with CONV and FC being the most important. CONV and FC layers have parameters of called weights, which are set by the training process. These weights will determine which patterns each layer of the CNN will be activated by, and ultimately, what the CNN is able to recognise and classify. 
 
@@ -164,14 +218,12 @@ The first layer of a CNN reads an input image and outputs a series of feature ma
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/typicalCnn}
+\includegraphics[width=0.9\textwidth]{figures/typicalCnn}
 \caption{A typical CNN structure from the feature map perspective \cite{embeddedFpgaCnn} \label{fig:typicalCNN}}
 \end{figure}
 
-
 \subsubsection{Convolution Layer}
 \label{sec:Background-CNN-Conv}
-
 
 The CONV layer takes a series of feature maps as input and convolves with convolutional kernels to obtain the output feature maps. The simplest version of the convolution operation a involves 3-dimensional multiply and accumulate operation of $N_{if}$ input feature maps with $K\times K$ convolution kernels to get an output feature neuron value as shown in Equation \ref{eq:ConvLayer}
 \begin{equation}
@@ -180,16 +232,16 @@ out(f_o,x,y)=\sum^{N_{if}}_{f_i=0} \sum^{K}_{k_x=0} \sum^{K}_{k_y=0} wt(f_o,f_i,
 \end{equation}
 where $out(f_o,x,y)$ and $in(f_i,x,y)$ represent the neurons at position $(x,y)$ in the feature maps $f_o$ and $f_i$, respectively and $wt(f_o,f_i,k_x,k_y)$ is the weights at position $(k_x,k_y)$ that gets convolved with input feature map $f_i$ to get the output feature map $f_o$ \cite{SudaFpgaAccelerator}.
 
-This can be thought of as scanning over the input feature map with the weights kernel and computing the sum of the elementwise products of the weights kernel and a section of the input feature map that matches the size of the kernel (an input region). Each position that the kernel takes corresponds to one output position. The more widely used version of the convolution includes zero padding, adding layers of zeros around the input, and stride, moving the kernel over the input in steps. The full operation is depicted in Figure \ref{fig:conv}
+Each position that the kernel takes corresponds to one output position and is referred to as an input region. This process can be thought of as the weights kernel scanning over the input feature map with, filtering each input region, and passing the result to the output. Many convolutions also include features called zero padding, adding layers of zeros around the input, and stride, moving the kernel over the input in steps. Zero padding can ensure that features on the edge of the feature map do not have a reduced contribution to the output, and stride reduces the computational cost of the layer by reducing the number of weights kernels needed, and reducing the dimensions of the output feature map.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/conv.eps}
-\caption{A visualisation of a convolution computation, calculating the output for one output location}
+\caption{A visualisation of a convolution computation for one output location}
 \label{fig:conv}
 \end{figure}
 
-Figure 2 shows a visualisation of the convolution operation. The input feature maps are shown on the left in purple, surrounded by grey zero padding. The green squares show the input regions, the positions of the weights kernel as it scans across the input. The element-wise product of the input region and the kernel is found and summed, and then added to the relevant output value. Each orange square in the output feature maps represents a single value. In this diagram, the input has two layers, and the output has three layers. It can be seen that the computation results for multiple input layers are added together to form the final output values. For multiple output layers, the computation process is repeated with new weights kernels. The number of weights is the product of the number of input layers and the number of output layers. Note that the diagram only depicts the computation for a single output location. The computation is repeated for every output location. 
+Figure \ref{fig:conv} shows a visualisation of the convolution operation. The input feature maps are shown on the left in purple, surrounded by grey zero padding. The green squares show the input regions, the positions of the weights kernel as it scans across the input. The element-wise product of the input region and the kernel is found and summed, and then added to the relevant output value. Each orange square in the output feature maps represents a single value. In this diagram, the input has two layers, and the output has three layers. It can be seen that the computation results for multiple input layers are added together to form the final output values. For multiple output layers, the computation process is repeated with new weights kernels. The number of weights is the product of the number of input layers and the number of output layers. Note that the diagram only depicts the computation for a single output location. The computation is repeated for every output location. 
 
 
 \subsubsection{Activation Functions}
@@ -201,7 +253,7 @@ CONV layers are followed by an activation function layer. This layer can be thou
 \label{sec:Background-CNN-Pool}
 
 
-Spatial pooling or sub-sampling is utilized to reduce the feature dimensions as we traverse deeper into the network. As shown in Equation \ref{eq:Pool}, pooling computes the maximum or average of neighbouring $K\times K$ neurons in the same feature map, which also provides a form of translational invariance \cite{PoolAnalysis}. The pooling layer helps abstract higher-level features without redundancy, as well as reducing the dimensionality of lower-level features without losing important information \cite{SudaFpgaAccelerator}.
+Spatial pooling or sub-sampling is utilized to reduce the feature dimensions as we traverse deeper into the network. As shown in Equation \ref{eq:Pool}, pooling computes the maximum or average of neighbouring $K\times K$ neurons in the same feature map, which also provides a form of translational invariance \cite{PoolAnalysis}. The pooling layer reduces the dimensionality of lower-level features without losing important information, thus reducing the computationa cost of the network \cite{SudaFpgaAccelerator}.
 \begin{equation}
 out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max/average}(in(f_o,x+k_x,y+k_y))
 \label{eq:Pool}
@@ -211,13 +263,13 @@ out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max/average}(in(f_o,x+k_x,y+k_y))
 \label{sec:Background-CNN-FC}
 
 
-An FC layer is a classification layer where all the input features $(N_{if})$ are connected to all of the output features $(N_{of})$ through synaptic weights $(wt)$. These are at the end of the CNN and perform the final classification, based on the features that have been recognised by the rest of the network. Each output neuron is the weighted summation of all the input neurons, as shown in Equation \ref{eq:FullyConnected} \cite{SudaFpgaAccelerator}.
+A Fully Connected layer is a classification layer where all the input features $(N_{if})$ are connected to all of the output features $(N_{of})$ through synaptic weights $(wt)$. These are at the end of the CNN and perform the final classification, based on the features that have been recognised by the rest of the network. Each output neuron is the weighted summation of all the input neurons, as shown in Equation \ref{eq:FullyConnected} \cite{SudaFpgaAccelerator}.
 \begin{equation}
 out(f_o)=\sum^{N_{if}}_{f_i=0}wt(f_o,f_i)\times in(f_i)
 \label{eq:FullyConnected}
 \end{equation}
 
-This equation is visualised in figure \ref{fig:fc}. As the name suggests, every input neuron is connected to every output neuron. The outputs of the inner-product layer traverse through ReLU based activation function to the next inner-product layer or directly to a Softmax function that converts them to probability in the range (0, 1). The final accuracy layer compares the labels of the top probabilities from softmax layer with the actual label and gives the accuracy of the CNN model \cite{SudaFpgaAccelerator}.
+This equation is visualised in figure \ref{fig:fc}. As the name suggests, every input neuron is connected to every output neuron. It can be seen that the Fully Connected is essentially the same as a layer of the standard artificial neural network described in \ref{sec:Background-ML-NN}. The outputs of the Fully Connected layer traverse through ReLU based activation function to the next Fully Connected layer or directly to a Linear Classifier as described in \ref{sec:Background-ML-LC}. The Linear Classifier will take the output feature map of the network use it to determine the scores for each class.
 
 \begin{figure}[h]
 \centering
@@ -335,7 +387,6 @@ This section will provide an overview of the system design from the top level, h
 \subsection{Network Design}
 \label{sec:Design-Network}
 
-
 IF APPLICABLE
 \begin{itemize}
 \item Describe Network organisation and design (If full network is implemented)
@@ -380,19 +431,18 @@ Two approaches to implementing the convolution were implemented in software and 
 \subsubsection{Matrix Multiplication Method}
 \label{sec:Imp-Conv-MM}
 
-The matrix multiplication method is requires the data to be in a specific shape. Thus, the data is flattened and organized into a matrices, as shown in figure \ref{fig:im2col}. 
+The matrix multiplication method is requires the data to be in a specific shape. Thus, the data is flattened and organized into a matrices. In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $M \times K$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory, this reshaping process can be done without copying any data to new locations. In such a situation, it is a simple case of changing how the memory will be accessed, by setting the depth and height of the weights Blob to 1, and the Blob width to $K$.
 
-In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $M \times K$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory, this reshaping process can be done without copying any data to new locations. In such a situation, it is a simple case of changing how the memory will be accessed, by setting the depth and height of the weights Blob to 1, and the Blob width to $K$.
+Then the input feature map is considered in terms of input regions, i.e. each area that will be multiplied with weights kernels. The size of these regions matches the weights kernel, and the number is dependent on the input size, kernel size, padding and stride.  These input regions are flattened and stored as columns. However, this is not as simple as changing the data access. If the convolution has padding, the input regions may contain extra zeros. Additionally, the stride and kernel size may result in input regions are overlapping or are not continuous. Therefore, each input region is individually mapped and copied from the input data into columns. This forms a $K \times N$ matrix, where $K$ is the volume of an input region, and $N$ is the number of input regions in the input feature map.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/im2col.eps}
-\caption{A visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding} \label{fig:im2col}
+\caption{A visualisation of the reshaping process} 
+\label{fig:im2col}
 \end{figure}
 
-Then the input feature map is considered in terms of input regions, i.e. each area that will be multiplied with weights kernels. The size of these regions matches the weights kernel, and the number is dependent on the input size, kernel size, padding and stride.  These input regions are flattened and stored as columns. However, this is not as simple as changing the data access. If the convolution has padding, the input regions may contain extra zeros. Additionally, the stride and kernel size may result in input regions are overlapping or are not continuous. Therefore, each input region is individually mapped and copied from the input data into columns. This forms a $K \times N$ matrix, where $K$ is the volume of an input region, and $N$ is the number of input regions in the input feature map.
-
-The output of the convolution is then found with \( \mathbf{C} = \mathbf{A}\times\mathbf{B}\), where $\mathbf{C}$ is the output matrix, $\mathbf{A}$ is the weights matrix, and $\mathbf{B}$ is the matrix of input regions. In order for this computation to be valid, it should be clear that the volume of an input region is the same as the volume of a kernel. By changing the output Blob dimensions, the $M \times N$ output matrix can be treated as feature map with depth $M$, equal to the number of weights, and width and height that give a product $N$, equal to the number of input regions.
+Figure \ref{fig:im2col} shows a visualisation of the reshaping process. The weights data is shown in blue, and the input region data is shown in green, embedded in a purple feature map with grey padding. The output of the convolution is then found with \( \mathbf{C} = \mathbf{A}\times\mathbf{B}\), where $\mathbf{C}$ is the output matrix, $\mathbf{A}$ is the weights matrix, and $\mathbf{B}$ is the matrix of input regions. In order for this computation to be valid, it should be clear that the volume of an input region is the same as the volume of a kernel. By changing the output Blob dimensions, the $M \times N$ output matrix can be treated as feature map with depth $M$, equal to the number of weights, and width and height that give a product $N$, equal to the number of input regions.
 
 By reducing the convolution to a single matrix multiplication, the algorithm can take advantage of a software library called Basic Linear Algebra Subprograms, or BLAS. This can bring significant performance improvements, as the BLAS library can provide highly optimised functions for a given platform. One such function is called \lstinline|gemm()|, and performs a general matrix multiplication, $\mathbf{C} \gets \alpha\mathbf{A}\mathbf{B} + \beta\mathbf{C}$, where $\alpha$ and $beta$ are constants. By setting $\alpha = 1$ and $beta = 0$, the \lstinline|gemm()| function can be used to compute the output of the convolution. This method is ideal for a software implementation of the convolution that will not be running on an embedded system. However, the weights matrix and input matrix will both be occupy a lot of memory in most practical CNNs, and a typical FPGA will not have enough on-chip memory to perform the entire convolution at once. This can be mitigated by breaking the matrix multiplication is broken down into individual row and column multiplications, but the process of moving the input regions to a new memory space will take up a lot of memory, so it is not well suited for an embedded system.
 
@@ -461,6 +511,8 @@ Because tiling allows for the data space to be broken down into parts, this conv
 \label{sec:Imp-FC}
 
 
+
+
 \begin{itemize}
 \item Describe layer code
 \item Explain FC->CONV conversion
@@ -509,6 +561,8 @@ The Linux kernel is very powerful, can take advantage of the huge library of Lin
 \label{sec:Design-PL}
 
 
+\hl{TODO}
+
 \begin{itemize}
 \item Describe HLS, and alternative (VHDL/Verilog)
 \item Justify using HLS rather than VHDL/Verilog (faster development, etc)
@@ -525,9 +579,14 @@ The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be tra
 
 The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
 
-The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function takes 
+The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function paramters, and specifies that they are to be read and written in the AXI-Lite with the use of the following commands:
 
-HLS code is configured to read these registers using \lstinline|#pragma| commands in the code 
+\begin{lstlisting}[deletekeywords={register}]
+#pragma HLS INTERFACE ap_none register port=output_addr
+#pragma HLS RESOURCE core=AXI4LiteS variable=output_addr metadata="-bus_bundle CONFIG_BUS"
+\end{lstlisting}
+
+\hl{TODO}
 
 \begin{itemize}
 \item Justify division of tasks
@@ -536,6 +595,8 @@ HLS code is configured to read these registers using \lstinline|#pragma| command
 
 \subsection{Soft Error Mitigation (SEM) Core Integration}
 \label{sec:Design-SEM}
+
+\hl{TODO}
 
 \begin{itemize}
 \item Describe SEM IP core (a core to simulate SEUs)
@@ -556,7 +617,12 @@ This section will explore any relevant details that were not mentioned in Sectio
 
 The work was performed on a Ubuntu computer, set up with two main tools. The first tool to setup up was the Xilinx SDSoC development environment, which was used to design the system. SDSoC is able to optimise and compile C, C++ or OpenCL source code for a Zynq SoC. The compiler generates software for the ARM core and, using an HLS tool, a bitstream for the FPGA. This allows the user to design the entire system, easily accelerating functions with the FPGA. This facilitated rapid development and design of firmware for the Zynq SoC.
 
-The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision \cite{jia2014caffe}.
+The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision \cite{jia2014caffe}. \hl{TODO} Explain in design instead?
+
+
+
+\hl{TODO}
+
 \begin{itemize}
 \item Describe use of Caffe with reference to Section \ref{sec:Design-Network}
 \end{itemize}
@@ -581,6 +647,8 @@ The convolution function hardware was then intergrated into a hardware design wi
 \label{sec:Imp-Optimisations}
 
 
+\hl{TODO}
+
 \begin{itemize}
 \item Describe optimisations performed with HLS, i.e. pipelining, partitioning arrays, etc
 \end{itemize}
@@ -597,6 +665,8 @@ The focus of this section is on the verification methods used to confirm that th
 \label{sec:Test-Layers}
 
 
+\hl{TODO}
+
 \begin{itemize}
 \item Describe test functions for layers
 \item Describe comparison to pure C++ implementation
@@ -605,6 +675,8 @@ The focus of this section is on the verification methods used to confirm that th
 \subsection{Network Testing}
 \label{sec:Test-Network}
 
+
+\hl{TODO}
 
 \begin{itemize}
 \item Describe test functions for Network
@@ -625,6 +697,8 @@ The focus of this section is on the verification methods used to confirm that th
 \label{sec:Eval-FPGAImplOfCnn}
 
 
+\hl{TODO}
+
 \begin{itemize}
 \item How much of CNN was implemented
 \item Hardware resources used
@@ -635,6 +709,8 @@ The focus of this section is on the verification methods used to confirm that th
 \subsection{Fault Tolerance Investigation}
 \label{sec:Eval-FaultTolInv}
 
+
+\hl{TODO}
 
 \begin{itemize}
 \item Describe implementation of data collection, i.e. SocDrawer, test scripts, data collection scripts, etc
@@ -647,6 +723,8 @@ The focus of this section is on the verification methods used to confirm that th
 \label{sec:Conclusion}
 
 
+\hl{TODO}
+
 \begin{itemize}
 \item Summary of report sections
 \item Summary of results and conclusion
@@ -655,9 +733,8 @@ The focus of this section is on the verification methods used to confirm that th
 
 \newpage
 
-\bibliography{finalReport_ref}
+\bibliography{finalReport}
 \bibliographystyle{ieeetr}
-\nocite{*}
 
 
 \end{document}
