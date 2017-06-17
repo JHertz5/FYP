@@ -216,7 +216,15 @@ An FC layer is a classification layer where all the input features $(N_{if})$ ar
 out(f_o)=\sum^{N_{if}}_{f_i=0}wt(f_o,f_i)\times in(f_i)
 \label{eq:FullyConnected}
 \end{equation}
-The outputs of the inner-product layer traverse through ReLU based activation function to the next inner-product layer or directly to a Softmax function that converts them to probability in the range (0, 1). The final accuracy layer compares the labels of the top probabilities from softmax layer with the actual label and gives the accuracy of the CNN model \cite{SudaFpgaAccelerator}.
+
+This equation is visualised in figure \ref{fig:fc}. As the name suggests, every input neuron is connected to every output neuron. The outputs of the inner-product layer traverse through ReLU based activation function to the next inner-product layer or directly to a Softmax function that converts them to probability in the range (0, 1). The final accuracy layer compares the labels of the top probabilities from softmax layer with the actual label and gives the accuracy of the CNN model \cite{SudaFpgaAccelerator}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/fc.eps}
+\caption{Connections in a Fully Connected Layer}
+\label{fig:fc}
+\end{figure}
 
 \subsection{FPGAs and CNN Implementations}
 \label{sec:Background-FpgaCnnImpl}
