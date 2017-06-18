@@ -25,7 +25,6 @@
 frame=single, 
 captionpos=b, 
 numbers=left, 
-language=C,
 basicstyle=\ttfamily,
 columns=flexible,
 breaklines=true,
@@ -87,7 +86,7 @@ This project implements an FPGA based CNN, and simulates radiation-induced error
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-\hl{TODO}
+I would like to thank Dr Felix Winterstein for the enormous amount of help and guidance that he provided, particularly in the final stages of the project. I'm extremely grateful for the time he invested in helping me overcome obstacles and without his aid, the project would not have been completed. I would also like to thank Shane Fleming for allowing me to take advantage of the great work he put in to building the socDrawer, and for the assistance he provided in setting it up to run my experiments.
 \end{abstract}
 
 \newpage
@@ -180,7 +179,7 @@ One of the simplest types of machine learning structure is the linear classifier
 \label{fig:SVM}
 \end{figure}
 
-Figure \ref{fig:SVM} shows this process taking place with two classes and a two dimensional input space. A good class boundary should separate the classes completely, and should find the maximum margin of separation, so that the chances of new data falling on the wrong side of the boundary is minimised. Clearly, Line 1 is a poor class boundary as the classes are not separated. Line 2 is acceptable, but only separates the classes by a small margin and is therefore is far from optimal. Line 3 is the best class boundary as it seperates the classes with the largest margin.
+Figure \ref{fig:SVM} shows this process taking place with two classes and a two dimensional input space. A good class boundary should separate the classes completely, and should find the maximum margin of separation, so that the chances of new data falling on the wrong side of the boundary is minimised. Clearly, Line 1 is a poor class boundary as the classes are not separated. Line 2 is acceptable, but only separates the classes by a small margin and is therefore is far from optimal. Line 3 is the best class boundary as it seperates the classes with the largest margin, allowing a wider range of inputs to be correctly classified.
 
 As previously stated, Linear Classifiers are a simple solution and are useful for fast classification, but have drawbacks associated with them. They are only designed as a binary classifier, discerning between only two problems. Algorithms exist to apply a binary classifier to multi-class problems, but these reduce the performance significantly. Traditional linear systems such as this are unable to accurately account for high levels of variation in inputs, which led to the development of non-linear machine learning systems, such as Neural Networks.
 
@@ -426,7 +425,7 @@ The most important function in this interface is \lstinline|Forward|, which is r
 \subsection{Convolution Layer}
 \label{sec:Imp-Conv}
 
-Two approaches to implementing the convolution were implemented in software and compared. The more intuitive approach uses nested \lstinline|for| loops to iterate through the dimensions of the weights, inputs, and outputs and compute the results incrementally. The other approach reshapes the input and weight data, and performs the convolution in one large matrix multiplication. 
+The Convolution layer is the most important layer in this network model for the purposes of this project, as it is where the bulk of the computation takes place, and is therefore most likely to be disrupted by SEUs. Therefore, this part of this layer had to be impemented in hardware to invesitgate the effects. First, two approaches to performing the convolution were implemented in software and compared. The more intuitive approach uses nested \lstinline|for| loops to iterate through the dimensions of the weights, inputs, and outputs and compute the results incrementally. The other approach reshapes the input and weight data, and performs the convolution in one large matrix multiplication. Once implemented and compared, it was clear that the intuitive approach was much more suitable for an FPGA implementation.
 
 \subsubsection{Matrix Multiplication Method}
 \label{sec:Imp-Conv-MM}
@@ -452,7 +451,7 @@ By reducing the convolution to a single matrix multiplication, the algorithm can
 Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudocode in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudocode is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial]
+\begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial, language=C]
 for(outRow=0; outRow<OutputHeight; outRow++){
 	for(outCol=0; outCol<OutputWidth; outCol++){
 		for(outDep=0; outDep<OutputDepth; outDep++){
@@ -473,7 +472,7 @@ Put straight on to an FPGA, this algorithm will require the entire input feature
 Code \ref{code:conv-sw} iterates through the same dimensions as the outer four loops in the Code \ref{code:conv-initial}, but is incremented by the tile size for that particular dimension. If an appropriate set of tile sizes can be found, the tiling approach can allow convolutions of various sizes to be performed using the same kernel, which leads to very efficient use of FPGA resources. Tiling also allows the computation to be performed using multiple hardware kernels in parallel.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[frame=single, caption=External Data Transfer, label=code:conv-sw, captionpos=b, numbers=left, language=C]
+\begin{lstlisting}[caption=External Data Transfer, label=code:conv-sw, language=C]
 for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 	for(outCol=0; outCol<OutputWidth; outCol+=outColTileSize){
 		for(outDep=0; outDep<OutputDepth; outDep += outDepTileSize){
@@ -487,7 +486,7 @@ for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 The computational kernel shown in Code 3 iterates through the tile and performs the convolution for the tiled region. The code is nearly identical to Code 1, but is performed only on one tile of data. Section \ref{sec:Imp-Optimisations} describes how this kernel can be further optimised.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[frame=single, caption=Computational Kernel, label=code:conv-hw1, captionpos=b, numbers=left, language=C]
+\begin{lstlisting}[caption=Computational Kernel, label=code:conv-hw1, language=C]
 for(outRow=outRowTileStart; outRow<outRowTileEnd; outRow++){
 	for(outCol=outColTileStart; outCol<outColTileEnd; outCol++){
 		for(outDep=outDepTileStart; outDep<outDepTileEnd; outDep++){
@@ -509,6 +508,14 @@ Because tiling allows for the data space to be broken down into parts, this conv
 
 \subsection{Fully Connected Layer}
 \label{sec:Imp-FC}
+
+The Fully Connected layer is the only layer apart from the Convolution layer with a large computational footprint. The Fully Connected layer doesn't peform as many computations, but has a larger memory footprint, partly because no weights are re-used between computations. It was hoped that the impact of SEUs on this layer would be investigated as well, so a hardware implementation was designed. Similary to the Convolution layer, two software algorithms were implemented and compared before deciding on  version to implement in hardware. 
+
+\subsubsection{Matrix Multiplication Method}
+\label{sec:Imp-FC-MM}
+
+\subsubsection{Convolution Method}
+\label{sec:Imp-FC-Conv}
 
 
 
@@ -579,12 +586,14 @@ The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be tra
 
 The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
 
-The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function paramters, and specifies that they are to be read and written in the AXI-Lite with the use of the following commands:
+The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function paramters, and specifies that they are to be read and written in the AXI-Lite with the use of \lstinline|#pragma| commands. In the following exampe, an integer called \lstinline|OUTPUT_NAME| is to be transferred:
 
-\begin{lstlisting}[deletekeywords={register}]
-#pragma HLS INTERFACE ap_none register port=output_addr
-#pragma HLS RESOURCE core=AXI4LiteS variable=output_addr metadata="-bus_bundle CONFIG_BUS"
+\begin{lstlisting}[language=C,deletekeywords={register}]
+#pragma HLS INTERFACE ap_none register port=outputName
+#pragma HLS RESOURCE core=AXI4LiteS variable=outputName metadata="-bus_bundle CONFIG_BUS"
 \end{lstlisting}
+
+The \lstinline|HLS| declares Vivado HLS as the compiler that the commands are intended for. The \lstinline|INTERFACE| and \lstinline|RESOURCE| commands specify the type of HLS directive being declared. In the first \lstinline|#pragma| command, \lstinline|ap_none| gives the type of the variable being transferred, \lstinline|register| specifies that the variable will be stored in a register, and \lstinline|port=outputName| declares the name of the variable to be transferred. On the second line, \lstinline|core=AXI4LiteS| specifies that the variable is to be transferred with the AXI4-Lite interface, and \lstinline|variable=outputName| declares the variable name again. Finally \lstinline|metadata="-bus_bundle CONFIG_BUS"| tells the HLS compiler to bundle this variable together with any variables that share this argument in their \lstinline|#pragma| commands . The bundled variables are stored sequentially and can be easily accessed together.
 
 \hl{TODO}
 
