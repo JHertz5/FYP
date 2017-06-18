@@ -156,7 +156,7 @@ This section will provide some details and information that will provide context
 
 Typically, digital circuits on reconfigurable hardware architectures, such as FPGAs, are designed using a Hardware Description Language (HDL) such as Verilog or VHDL. While these methods allow the designer to have a great level of control over the system, and can produce extremely efficient designs, the designer is forced to specify functionality at a very low level of abstraction, controlling cycle by cycle behaviour. Use of HDL tools requires hardware expertise and, when designing a complex system, makes for a long and cumbersome development process. Additionally, a lack of specialist knowledge can lead to an extremely inefficient design.
 
-High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a piece of software which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado HLS to produce a configuration for the Programmable Logic in the Zynq SoC.
+High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is a software application which can interpret the desired behaviour of code written in a programming language like C or C++, and generate an HDL implementation of that behaviour, allowing the designer to work at a higher level of abstraction. This means that a software engineer can create FPGA designs without having to build up hardware expertise, allowing them to utilise the speed and efficiency of hardware designs. It also benefits hardware engineers, allowing them to design the system more quickly and reliably, facilitating the development of more complex systems \cite{HLS}. Popular HLS tools include academic, open-source software like LegUp, and commercial tools like Catapult-C and Xilinx's Vivado. In this project, the embedded system will be designed using SDSoC from Xilinx, which utilises Vivado HLS to produce a configuration for the Programmable Logic in the Zynq SoC.
 
 \subsection{Machine Learning}
 \label{sec:Background-ML}
@@ -170,7 +170,7 @@ The performance of such a system is based on a process called training.  Trainin
 \subsubsection{Linear Classifier}
 \label{sec:Background-ML-LC}
 
-One of the simplest types of machine learning structure is the linear classifier. These treat each value in the input vector as the position of the input in a separate dimension, with the length of the vector $N$ being the total number of dimensions. The linear classifier works by forming an $N$-dimensional space and dividing it up. The number of subspaces resulting from these class boundaries is the number of classes that the classifier is trained to recognise, and the class boundaries are placed by the training process. New data is treated as a point in the $N$-dimensional space and is assigned the class of the subspace that it falls in to.
+One of the simplest types of machine learning structure is the linear classifier. These treat each value in the input vector as the position of the input in a separate dimension, with the length of the vector $N$ being the total number of dimensions. The linear classifier works by forming an $N$-dimensional space and dividing it up. The number of subspaces resulting from these class boundaries matches the number of classes that the classifier is trained to recognise, and the class boundaries are placed by the training process. New data is treated as a point in the $N$-dimensional space and is assigned the class of the subspace that it falls in to.
 
 \begin{figure}[h]
 \centering
@@ -195,7 +195,7 @@ Artificial Neural Networks are based on the structure of biological brains. A br
 \label{fig:neuron}
 \end{figure}
 
-These neurons are connected together into a network as shown in Figure \ref{fig:ANN}. The neurons are arranged into layers, and connected to each neuron in the next and previous layers. The network has a layer for the input values and for the output values, and intermediate layers which are referred to as hidden layers since their only interaction is with the other layers. The number of hidden layers can vary, but has a big impact on how accurate the classification can be, and how many classes can be accurately classified. Deep networks with 10-20 layers have been shown to perform much better than shallow networks\cite{DeepNetworks}.
+These neurons are connected together into a network as shown in Figure \ref{fig:ANN}. The neurons are arranged into layers, and connected to each neuron in the next and previous layers. The network has a layer for the input values and for the output values, and intermediate layers which are referred to as hidden layers since their only interaction is with the other layers. The number of hidden layers can vary, but has a big impact on how accurate the classification can be, and how many classes can be accurately classified. Deep networks with 10-20 layers have been shown to perform significantly better than shallow networks\cite{DeepNetworks}.
 
 \begin{figure}[H]
 \centering
@@ -204,12 +204,12 @@ These neurons are connected together into a network as shown in Figure \ref{fig:
 \label{fig:ANN}
 \end{figure}
 
-Neural Networks are trained in a sightly different way to other machine learning systems, using a method called backpropagation. Inputs are propogated forwards through the network until the output is reached. The resuting output values are each compared against the desired values and an error value is calculated for each output neuron. The error values are then progagated backwards through the network and the weights of each neuron are adjusted according to the received error. This process is repeated until the network is sufficiently trained.
+Neural Networks are trained in a slightly different way to other machine learning systems, using a method called backpropagation. Inputs are propogated forwards through the network until the output is reached. The resuting output values are each compared against the desired values and an error value is calculated for each output neuron. The error values are then progagated backwards through the network and the weights of each neuron are adjusted accordingly. This process is repeated until the network is sufficiently trained.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:Background-CNN}
 
-CNNs are a specialised Neural Network. The input is assumed to be an image, the network is deep, and a number of specialised layers are used to improve accuracy and increase performance. CNNs are used to classify images in a forward inference process. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
+CNNs are a specialised Neural Network. The input is assumed to be an image, the network is deep, and a number of specialised layers are used to improve accuracy and increase performance. CNNs are used to classify images in a forward inference process. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For example, CNNs built for the ImageNet Large Scale Visual Recognition Challenge (ISLRVC) from 2012 to 2014 used a training dataset of approximately 1,281,167  images, grouped into 1000 classes\cite{ISLRVC}. In the case of the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
 
 A typical CNN consists of a number of layers that run in sequence. Convolution, activation function, pooling, and fully connected layers make up a typical CNN model, with convolution and fully connected being the most important. Convolution and fully connected layers have parameters of called weights, which are set by the training process. These weights will determine which patterns each layer of the CNN will be activated by, and ultimately, what the CNN is able to recognise and classify. 
 
@@ -394,7 +394,6 @@ This section will provide an overview of the system design from the top level, h
 \subsection{Network Design}
 \label{sec:Design-Network}
 
-IF APPLICABLE
 \begin{itemize}
 \item Describe Network organisation and design (If full network is implemented)
 \item Describe Caffe, Justify use as basis for design (pre-trained network models, etc)
@@ -415,7 +414,7 @@ Each layer type was implemented as a class, which provided several benefits. Eve
 
 In addition to multiple version of the same layers types, several very diverse layer types are required for a CNN to be properly implemented. If these were all implemented in vastly different ways, each with a unique interface for external code, setting up and running the network woud be challenging, if not impossible. Such a network would be very difficult to control automatically, and the interaction with each individual layer would likely have to be hard coded. 
 
-To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a famiy of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions don't define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs, as shown in Figure \ref{fig:layer}. With a small extension, it wouldn't be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
+To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a famiy of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions do not define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs, as shown in Figure \ref{fig:layer}. With a small extension, it would not be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
 
 \begin{figure}[h]
 \centering
@@ -438,7 +437,7 @@ The convolution layer is the most important layer in this network model for the 
 \subsubsection{Matrix Multiplication Method}
 \label{sec:Imp-Conv-MM}
 
-The matrix multiplication method is requires the data to be in a specific shape. Thus, the data is flattened and organized into a matrices. In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $M \times K$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory, this reshaping process can be done without copying any data to new locations. In such a situation, it is a simple case of changing how the memory will be accessed, by setting the depth and height of the weights Blob to 1, and the Blob width to $K$.
+The matrix multiplication method requires the data to be in a specific shape. Thus, the data is flattened and organized into a matrices. In this approach, the weights kernels are considered to be three dimensional, where the height and width are given by the kernel size, and the depth is given by the depth of the input feature map. The each three-dimensional weights kernel is flattened into a row and the each row is stored sequentially. Thus the result is an $M \times K$ matrix where $M$ is the number of weights kernels, and $K$ is the volume of an individual kernel. If the weights are stored sequentially in memory, this reshaping process can be done without copying any data to new locations. In such a situation, it is a simple case of changing how the memory will be accessed, by setting the depth and height of the weights Blob to 1, and the Blob width to $K$.
 
 Then the input feature map is considered in terms of input regions, i.e. each area that will be multiplied with weights kernels. The size of these regions matches the weights kernel, and the number is dependent on the input size, kernel size, padding and stride.  These input regions are flattened and stored as columns. However, this is not as simple as changing the data access. If the convolution has padding, the input regions may contain extra zeros. Additionally, the stride and kernel size may result in input regions are overlapping or are not continuous. Therefore, each input region is individually mapped and copied from the input data into columns. This forms a $K \times N$ matrix, where $K$ is the volume of an input region, and $N$ is the number of input regions in the input feature map.
 
@@ -493,6 +492,8 @@ for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 
 The computational kernel shown in Code 3 iterates through the tile and performs the convolution for the tiled region. The code is nearly identical to Code 1, but is performed only on one tile of data. Section \ref{sec:Imp-Optimisations} describes how this kernel can be further optimised.
 
+\hl{TODO - change to find input row and give formula}
+
 \renewcommand{\lstlistingname}{Code}
 \begin{lstlisting}[caption=Computational Kernel, label=code:conv-hw1, language=C]
 for(outRow=outRowTileStart; outRow<outRowTileEnd; outRow++){
@@ -519,7 +520,7 @@ Because tiling allows for the data space to be efficiently broken down into part
 \subsection{Fully Connected Layer}
 \label{sec:Imp-FC}
 
-The fully connected layer is the only layer apart from the convolution layer with a large computational footprint. The fully connected layer doesn't peform as many computations, but has a larger memory footprint, partly because no weights are re-used between computations. It was hoped that the impact of SEUs on this layer would be investigated as well, so a hardware implementation was designed. Similary to the convolution layer, two software algorithms were implemented and compared before deciding on  version to implement in hardware. 
+The fully connected layer is the only layer apart from the convolution layer with a large computational footprint. The fully connected layer does	 peform as many computations, but has a larger memory footprint, partly because no weights are re-used between computations. It was hoped that the impact of SEUs on this layer would be investigated as well, so a hardware implementation was designed. Similary to the convolution layer, two software algorithms were implemented and compared before deciding on  version to implement in hardware. 
 
 \subsubsection{Vector-Matrix Multiplication Method}
 \label{sec:Imp-FC-MM}
@@ -530,7 +531,7 @@ If the netowrk computation is being performed in batches (i.e. multiple sets of 
 
 The vector-matrix multiplication is the intutive solution to computing the fully connected layer, as the computation follows the description of the fully connected layer's operation - each output value is a weighted sum of the inputs. By treating the vectors as matrices with size $1$ in one dimension, the vector-matrix multiplication is evaluated in the same way as a standard matrix-matrix multiplication. Conveniently, this means that the method will work for batches of data without any modifications beyond changing the matrix dimensions. As described in Section \ref{sec:Imp-Conv-MM}, this method of computation can take advantage of the \lstinline|gemm| function to increase performance. Once again, this is ideal for a software implementation, but is not suitable for an embedded system with limited computational resources.
 
-\subsubsection{Convolution Method}
+\subsubsection{Dot Product Convolution Method}
 \label{sec:Imp-FC-Conv}
 
 An alternative method of computing the fully onnected layer is to compute it with a convoutional kernel. For this, we consider the inputs as a vector of length $N_{if}$. The weights are divided into $N_{of}$ vectors of length $N_{if}$, where $N_{of}$ is the length of the output, and one vector is assigned to each output feature. Equation 4 shows that the value of an output feature in the fully connected layer is equivalent to a dot product of $in$, the input vector, and $wt_{f_o}$, the weights vector corresponding to the output feature. 
@@ -545,26 +546,41 @@ out[f_o] = \sum^{K}_{k=0} wt[k]\times in[f_o + k - 1]
 \label{eq:FlatConv}
 \end{equation}
 
-The size of the convoution output is equal to the number of input regions that the kernel scans over. Thus, by setting $K = N_{if}$, convolution will produce only one value and Equation \ref{eq:ConvDotProd} shows how the formula reduces to a dot product\cite{fc2conv}.
+The size of the convoution output is equal to the number of input regions that the kernel scans over. Thus, by setting $K = N_{if}$, convolution will produce only one value and Equation \ref{eq:ConvDotProd} shows how the formula reduces to a dot product\cite{fc2conv}. As shown in Equation \ref{eq:DotProd}, the dot product is equivalent to finding the output value of a fully connected layer. Therefore, by setting the size of the convolution kernel to match the size of the input, we can compute a fully connected layer with the convolution computation.
 \begin{equation}
 out[f_o] = out[1] = \sum^{N_{if}}_{k=0} wt[k]\times in[1 + k - 1] = \sum^{N_{if}}_{k=0} wt[k]\times in[k] = wt \cdot in
 \label{eq:ConvDotProd}
 \end{equation}
 
-As shown in Equation \ref{eq:DotProd}, the dot product is equivalent to finding the output value of a fully connected layer. Therefore, by setting the size of the convolution kernel to match the size of the input, we can compute a fully connected layer with the convolution computation. This is ideal because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer will be implemented anyway, and any optimisations used for that layer will improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware.
+This is ideal because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer will be implemented anyway, and any optimisations used for that layer will improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware. 
+
+It is important to note that although they are both valid ways of calculating the result, the Vector-Matrix Multipication and Dot Product methods use the weights in a different order, and one method cannot use weights trained for the other method without adjusting the order in which the weights are accessed. This problem is overcome by treating the weights as a matrix as described in the Vector-Matrix Multipication method and using the transpose of this matrix in computations. The Caffe framework uses the Vector-Matrix Multipication method to compute the results of the fully connected layer, so the Dot Product method implementation was modified to access the weights as if they were transposed. In doing this, consistency with the Caffe framework could be maintained, allowing the network to continue using pre-trained weights from Caffe's model zoo.
 
 \subsubsection{Layer Setup}
-\label{sec:Imp-Conv-Setup}
+\label{sec:Imp-FC-Setup}
 
 \hl{TODO}
 
 \subsection{Rectified Linear Unit Layer}
 \label{sec:Imp-Relu}
 
+The ReLU layer was the easiest to design. Code \ref{code:relu} shows that the layer computation is performed by iterating through the input and copying each value into the output. If a value is found to be less than zero, a zero is copied into the output location instead.
+
+\renewcommand{\lstlistingname}{Code}
+\begin{lstlisting}[caption=ReLU layer computation, label=code:relu, language=C]
+for(index = 0; index < inputLength; index++){
+	output[index] = max(0, input[index]);
+}
+\end{lstlisting} 
 
 \begin{itemize}
 \item Describe layer code
 \end{itemize}
+
+\subsubsection{Layer Setup}
+\label{sec:Imp-Relu-Setup}
+
+\hl{TODO}
 
 \subsection{Pooling Layer}
 \label{sec:Imp-Pool}
@@ -573,6 +589,11 @@ As shown in Equation \ref{eq:DotProd}, the dot product is equivalent to finding 
 \begin{itemize}
 \item Describe layer code
 \end{itemize}
+
+\subsubsection{Layer Setup}
+\label{sec:Imp-Pool-Setup}
+
+\hl{TODO}
 
 \subsection{Processing System (PS) Design}
 \label{sec:Design-PS}
@@ -610,7 +631,7 @@ The Linux kernel is very powerful, can take advantage of the huge library of Lin
 \subsection{PS and PL Interfacing}
 \label{sec:Design-PSnPL}
 
-In order to for the Processing System to control and utilise the Programmable Logic, an interface is needed to transfer data between the two. The Zedboard offers bus architectures based on Advanced Microcontroller Bus Architecture (AMBA) protocol, designed by ARM. AMBA is commonly used as an interconnect in SoCs and was created for multi-processor designs. The particular specification used in Vivado and SDSoC is called Advanced Extensible Interface 4 (AXI4). 
+In order for the Processing System to control and utilise the Programmable Logic, an interface is needed to transfer data between the two. The Zedboard offers bus architectures based on Advanced Microcontroller Bus Architecture (AMBA) protocol, designed by ARM. AMBA is commonly used as an interconnect in SoCs and was created for multi-processor designs. The particular specification used in Vivado and SDSoC is called Advanced Extensible Interface 4 (AXI4). 
 
 There are three different AXI4 interfaces availablle for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
 
@@ -680,7 +701,7 @@ Git version control was used extensively for the code in this project. When chan
 
 The majority of the work was done in a computing lab on the 9th floor of the Electrical and Electronic Engineering building. Here, a Zedboard was set up so that it could boot from an SD card. The executable files generated by SDSoC were loaded on the SD card and transferred to the Zedboard. When the Zedboard had been power cycled and had finished computing, and serial connection between the Zedboard and a desktop computer facilitated commands to be sent to control the system, and results data to be sent back.
 
-Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the convolution function was moved into hardware. It was planned for the fully connected Layer to also be hardware accelerated, but time constraints prevented this from taking place. 
+Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the convolution function was moved into hardware. It was planned for the fully connected Layer to also be hardware accelerated, but delays in the process of setting up the socDrawer for testing prevented this from taking place. \hl{TODO - refer to later explanation}
 
 The convolution function hardware was then intergrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in \hl{Section} \ref{sec:socDrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
 

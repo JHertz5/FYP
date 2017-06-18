@@ -42,6 +42,7 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Artificial Neural Networks}{11}{subsubsection.2.2.2}}
 \newlabel{sec:Background-ML-NN}{{2.2.2}{11}{Artificial Neural Networks}{subsubsection.2.2.2}{}}
 \citation{DeepNetworks}
+\citation{ISLRVC}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A neuron, and a mathematical model of a neuron\cite  {neuron}}}{12}{figure.2}}
 \newlabel{fig:neuron}{{2}{12}{A neuron, and a mathematical model of a neuron\cite {neuron}}{figure.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Simple Neural Network with one hidden layer}}{12}{figure.3}}
@@ -114,8 +115,8 @@
 \newlabel{sec:Design-Network}{{4.1}{23}{Network Design}{subsection.4.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Data Objects}{23}{subsubsection.4.1.1}}
 \newlabel{sec:Imp-Network-Blobs}{{4.1.1}{23}{Data Objects}{subsubsection.4.1.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Layer Design}{24}{subsubsection.4.1.2}}
-\newlabel{sec:Design-Network-Layers}{{4.1.2}{24}{Layer Design}{subsubsection.4.1.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Layer Design}{23}{subsubsection.4.1.2}}
+\newlabel{sec:Design-Network-Layers}{{4.1.2}{23}{Layer Design}{subsubsection.4.1.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces A layer within the network structure, showing the top and bottom Blobs and their respective DataMemory objects}}{24}{figure.8}}
 \newlabel{fig:layer}{{8}{24}{A layer within the network structure, showing the top and bottom Blobs and their respective DataMemory objects}{figure.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Convolution Layer}{25}{subsection.4.2}}
@@ -130,63 +131,69 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Basic Convolution}{27}{lstlisting.1}}
 \newlabel{code:conv-sw}{{2}{28}{External Data Transfer}{lstlisting.2}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2}External Data Transfer}{28}{lstlisting.2}}
-\newlabel{code:conv-hw1}{{3}{29}{Computational Kernel}{lstlisting.3}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Computational Kernel}{29}{lstlisting.3}}
+\newlabel{code:conv-hw1}{{3}{28}{Computational Kernel}{lstlisting.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Computational Kernel}{28}{lstlisting.3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Layer Setup}{29}{subsubsection.4.2.3}}
 \newlabel{sec:Imp-Conv-Setup}{{4.2.3}{29}{Layer Setup}{subsubsection.4.2.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Fully Connected Layer}{29}{subsection.4.3}}
 \newlabel{sec:Imp-FC}{{4.3}{29}{Fully Connected Layer}{subsection.4.3}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Vector-Matrix Multiplication Method}{30}{subsubsection.4.3.1}}
 \newlabel{sec:Imp-FC-MM}{{4.3.1}{30}{Vector-Matrix Multiplication Method}{subsubsection.4.3.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Convolution Method}{30}{subsubsection.4.3.2}}
-\newlabel{sec:Imp-FC-Conv}{{4.3.2}{30}{Convolution Method}{subsubsection.4.3.2}{}}
-\newlabel{eq:DotProd}{{4}{30}{Convolution Method}{equation.4.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Dot Product Convolution Method}{30}{subsubsection.4.3.2}}
+\newlabel{sec:Imp-FC-Conv}{{4.3.2}{30}{Dot Product Convolution Method}{subsubsection.4.3.2}{}}
+\newlabel{eq:DotProd}{{4}{30}{Dot Product Convolution Method}{equation.4.4}{}}
 \citation{fc2conv}
-\newlabel{eq:FlatConv}{{5}{31}{Convolution Method}{equation.4.5}{}}
-\newlabel{eq:ConvDotProd}{{6}{31}{Convolution Method}{equation.4.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Layer Setup}{31}{subsubsection.4.3.3}}
-\newlabel{sec:Imp-Conv-Setup}{{4.3.3}{31}{Layer Setup}{subsubsection.4.3.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Rectified Linear Unit Layer}{31}{subsection.4.4}}
-\newlabel{sec:Imp-Relu}{{4.4}{31}{Rectified Linear Unit Layer}{subsection.4.4}{}}
+\newlabel{eq:FlatConv}{{5}{31}{Dot Product Convolution Method}{equation.4.5}{}}
+\newlabel{eq:ConvDotProd}{{6}{31}{Dot Product Convolution Method}{equation.4.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Layer Setup}{32}{subsubsection.4.3.3}}
+\newlabel{sec:Imp-FC-Setup}{{4.3.3}{32}{Layer Setup}{subsubsection.4.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Rectified Linear Unit Layer}{32}{subsection.4.4}}
+\newlabel{sec:Imp-Relu}{{4.4}{32}{Rectified Linear Unit Layer}{subsection.4.4}{}}
+\newlabel{code:relu}{{4}{32}{ReLU layer computation}{lstlisting.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}ReLU layer computation}{32}{lstlisting.4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Layer Setup}{32}{subsubsection.4.4.1}}
+\newlabel{sec:Imp-Relu-Setup}{{4.4.1}{32}{Layer Setup}{subsubsection.4.4.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Pooling Layer}{32}{subsection.4.5}}
 \newlabel{sec:Imp-Pool}{{4.5}{32}{Pooling Layer}{subsection.4.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Processing System (PS) Design}{32}{subsection.4.6}}
-\newlabel{sec:Design-PS}{{4.6}{32}{Processing System (PS) Design}{subsection.4.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Zynq-7000 Operating System}{32}{subsubsection.4.6.1}}
-\newlabel{sec:Design-PS-OS}{{4.6.1}{32}{Zynq-7000 Operating System}{subsubsection.4.6.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.2}Software}{32}{subsubsection.4.6.2}}
-\newlabel{sec:Design-PS-SW}{{4.6.2}{32}{Software}{subsubsection.4.6.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Layer Setup}{32}{subsubsection.4.5.1}}
+\newlabel{sec:Imp-Pool-Setup}{{4.5.1}{32}{Layer Setup}{subsubsection.4.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Processing System (PS) Design}{33}{subsection.4.6}}
+\newlabel{sec:Design-PS}{{4.6}{33}{Processing System (PS) Design}{subsection.4.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Zynq-7000 Operating System}{33}{subsubsection.4.6.1}}
+\newlabel{sec:Design-PS-OS}{{4.6.1}{33}{Zynq-7000 Operating System}{subsubsection.4.6.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.2}Software}{33}{subsubsection.4.6.2}}
+\newlabel{sec:Design-PS-SW}{{4.6.2}{33}{Software}{subsubsection.4.6.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Programmable Logic (PL) Design}{33}{subsection.4.7}}
 \newlabel{sec:Design-PL}{{4.7}{33}{Programmable Logic (PL) Design}{subsection.4.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}PS and PL Interfacing}{33}{subsection.4.8}}
-\newlabel{sec:Design-PSnPL}{{4.8}{33}{PS and PL Interfacing}{subsection.4.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Soft Error Mitigation (SEM) Core Integration}{34}{subsection.4.9}}
-\newlabel{sec:Design-SEM}{{4.9}{34}{Soft Error Mitigation (SEM) Core Integration}{subsection.4.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}PS and PL Interfacing}{34}{subsection.4.8}}
+\newlabel{sec:Design-PSnPL}{{4.8}{34}{PS and PL Interfacing}{subsection.4.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Soft Error Mitigation (SEM) Core Integration}{35}{subsection.4.9}}
+\newlabel{sec:Design-SEM}{{4.9}{35}{Soft Error Mitigation (SEM) Core Integration}{subsection.4.9}{}}
 \citation{jia2014caffe}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{35}{section.5}}
-\newlabel{sec:Imp}{{5}{35}{Implementation}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Infrastructure Setup}{35}{subsection.5.1}}
-\newlabel{sec:Imp-InfSetup}{{5.1}{35}{Infrastructure Setup}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programming Language}{35}{subsection.5.2}}
-\newlabel{sec:Imp-Language}{{5.2}{35}{Programming Language}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Development Methodology}{36}{subsection.5.3}}
-\newlabel{sec:Imp-Devlopment}{{5.3}{36}{Development Methodology}{subsection.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Hardware Optimisations}{36}{subsection.5.4}}
-\newlabel{sec:Imp-Optimisations}{{5.4}{36}{Hardware Optimisations}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Testing}{37}{section.6}}
-\newlabel{sec:Test}{{6}{37}{Testing}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Layer Testing}{37}{subsection.6.1}}
-\newlabel{sec:Test-Layers}{{6.1}{37}{Layer Testing}{subsection.6.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Network Testing}{37}{subsection.6.2}}
-\newlabel{sec:Test-Network}{{6.2}{37}{Network Testing}{subsection.6.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Evaluation}{38}{section.7}}
-\newlabel{sec:Eval}{{7}{38}{Evaluation}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}FPGA Implementation of a CNN}{38}{subsection.7.1}}
-\newlabel{sec:Eval-FPGAImplOfCnn}{{7.1}{38}{FPGA Implementation of a CNN}{subsection.7.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Fault Tolerance Investigation}{38}{subsection.7.2}}
-\newlabel{sec:Eval-FaultTolInv}{{7.2}{38}{Fault Tolerance Investigation}{subsection.7.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion and Future Work}{39}{section.8}}
-\newlabel{sec:Conclusion}{{8}{39}{Conclusion and Future Work}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{36}{section.5}}
+\newlabel{sec:Imp}{{5}{36}{Implementation}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Infrastructure Setup}{36}{subsection.5.1}}
+\newlabel{sec:Imp-InfSetup}{{5.1}{36}{Infrastructure Setup}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programming Language}{36}{subsection.5.2}}
+\newlabel{sec:Imp-Language}{{5.2}{36}{Programming Language}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Development Methodology}{37}{subsection.5.3}}
+\newlabel{sec:Imp-Devlopment}{{5.3}{37}{Development Methodology}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Hardware Optimisations}{37}{subsection.5.4}}
+\newlabel{sec:Imp-Optimisations}{{5.4}{37}{Hardware Optimisations}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Testing}{38}{section.6}}
+\newlabel{sec:Test}{{6}{38}{Testing}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Layer Testing}{38}{subsection.6.1}}
+\newlabel{sec:Test-Layers}{{6.1}{38}{Layer Testing}{subsection.6.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Network Testing}{38}{subsection.6.2}}
+\newlabel{sec:Test-Network}{{6.2}{38}{Network Testing}{subsection.6.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Evaluation}{39}{section.7}}
+\newlabel{sec:Eval}{{7}{39}{Evaluation}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}FPGA Implementation of a CNN}{39}{subsection.7.1}}
+\newlabel{sec:Eval-FPGAImplOfCnn}{{7.1}{39}{FPGA Implementation of a CNN}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Fault Tolerance Investigation}{39}{subsection.7.2}}
+\newlabel{sec:Eval-FaultTolInv}{{7.2}{39}{Fault Tolerance Investigation}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion and Future Work}{40}{section.8}}
+\newlabel{sec:Conclusion}{{8}{40}{Conclusion and Future Work}{section.8}{}}
 \bibdata{finalReport}
 \bibcite{neocognitron}{1}
 \bibcite{ImageNetChallenge}{2}
