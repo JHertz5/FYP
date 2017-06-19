@@ -22,13 +22,13 @@
 \usepackage{epstopdf}
 \usepackage{listings} 		%for writing code
 \lstset{
-frame=single, 
-captionpos=b, 
-numbers=left, 
-basicstyle=\ttfamily,
-columns=flexible,
-breaklines=true,
-tabsize=2
+	frame=single, 
+	captionpos=b, 
+	numbers=left, 
+	basicstyle=\ttfamily,
+	columns=flexible,
+	breaklines=true,
+	tabsize=1
 }
 \usepackage[margin=1in]{geometry} %for margins
 \setlength{\parskip}{12pt plus3pt minus3pt} %for paragraph spacing
@@ -161,7 +161,7 @@ High Level Synthesis (HLS) tools are a  solution to this problem. An HLS tool is
 \subsection{Machine Learning}
 \label{sec:Background-ML}
 
-The core functionality of a machine learning system is to perform tasks on new, unseen data based on a large set of previosuly seen training data. The training data will be split up in to different classes and the system uses this training data to build up a model that predicts which class the new data best fits in to. This can be applied to many situations, such as classifying images, recognising speech patterns, or piloting a vehicle. Machine learning allows an electronic system to be put in a brand new situation and use past experience to make a decision.
+The core functionality of a machine learning system is to perform tasks on new, unseen data based on a large set of previously seen training data. The training data will be split up in to different classes and the system uses this training data to build up a model that predicts which class the new data best fits in to. This can be applied to many situations, such as classifying images, recognising speech patterns, or piloting a vehicle. Machine learning allows an electronic system to be put in a brand new situation and use past experience to make a decision.
 
 A machine learning system takes an array of values as an input. If the input is a image, the vector values will represent pixels. This is done for a grayscale image by representing each pixel's intensity with an integer on a scale from 0, for a black pixel, to 255, for a white pixel. If the image is coloured, there will be three vector values for each pixel, with the brightness in red, green and blue in the pixel being represented as separate values. Parameters called weights are used to compare the input with the training data, and system will output a set of scores, which represent the likelihood that the input is a member of each class in the training data. The input is assigned the class with the highest score. 
 
@@ -179,7 +179,7 @@ One of the simplest types of machine learning structure is the linear classifier
 \label{fig:SVM}
 \end{figure}
 
-Figure \ref{fig:SVM} shows this process taking place with two classes and a two dimensional input space. A good class boundary should separate the classes completely, and should find the maximum margin of separation, so that the chances of new data falling on the wrong side of the boundary is minimised. Clearly, Line 1 is a poor class boundary as the classes are not separated. Line 2 is acceptable, but only separates the classes by a small margin and is therefore is far from optimal. Line 3 is the best class boundary as it seperates the classes with the largest margin, allowing a wider range of inputs to be correctly classified.
+Figure \ref{fig:SVM} shows this process taking place with two classes and a two dimensional input space. A good class boundary should separate the classes completely, and should find the maximum margin of separation, so that the chances of new data falling on the wrong side of the boundary is minimised. Clearly, Line 1 is a poor class boundary as the classes are not separated. Line 2 is acceptable, but only separates the classes by a small margin and is therefore is far from optimal. Line 3 is the best class boundary as it separates the classes with the largest margin, allowing a wider range of inputs to be correctly classified.
 
 As previously stated, Linear Classifiers are a simple solution and are useful for fast classification, but have drawbacks associated with them. They are only designed as a binary classifier, discerning between only two problems. Algorithms exist to apply a binary classifier to multi-class problems, but these reduce the performance significantly. Traditional linear systems such as this are unable to accurately account for high levels of variation in inputs, which led to the development of non-linear machine learning systems, such as Neural Networks.
 
@@ -258,7 +258,8 @@ out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max}(in(f_o,x+k_x,y+k_y))
 \label{eq:Pool}
 \end{equation}
 
-The pooling layer is sometimes computed by computing the average of each input region, but in this project ony maximum pooling was used. Figure \ref{fig:pool} shows the operation of a max pooling layer graphically. The pooling layer is important as it reduces the dimensionality of lower-level features without losing important information, thus reducing the computational cost of the network \cite{SudaFpgaAccelerator}.
+The pooling layer is sometimes computed by computing the average of each input region, but in this project ony maximum pooling was used. Figure \ref{fig:pool} shows the operation of a max pooling layer graphically. The pooling layer is important as it reduces the dimensionality of lower-level features without losing important information, thus reducing the computational cost of the network \cite{SudaFpgaAccelerator}. A paper by J. Springenberg, A. Dosovitskiy, T. Brox and M. Riedmiller proposes an "all convolutional network" in which the pooling layers are eliminated by increasing the stride in some convolution layers without any reduction in performance\cite{AllConv}. Based on these results, pooling layers may soon stop appearing in new CNN architectures.
+
 \begin{figure} [H]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/pool.eps}
@@ -455,7 +456,7 @@ By reducing the convolution to a single matrix multiplication, the algorithm can
 Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudocode in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. The formula $inIndex = stride * outIndex + kernelIndex - zeroPadding$ is used to calculate the input index in the height and width dimensions. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudocode is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial, language=C]
+\begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial, language=C, float=ht]
 for(outRow=0; outRow<OutputHeight; outRow++){
 	for(outCol=0; outCol<OutputWidth; outCol++){
 		for(outDep=0; outDep<OutputDepth; outDep++){
@@ -471,12 +472,12 @@ for(outRow=0; outRow<OutputHeight; outRow++){
 }}}}}}}
 \end{lstlisting} 
 
-Put straight on to an FPGA, this algorithm will require the entire input feature map and all of the weights kernels to be loaded onto the FPGA at once, which is not feasible for a typically sized convolution layer. However, Zhang et al. describes a method of tiling the data so that the convolution can be performed in chunks and is therefore suitable for FPGA computation. The code is split into two parts. Code \ref{code:conv-sw}  is responsible for managing the data tiling and loading the tiles of data into the computation kernel. Code \ref{code:conv-hw1} shows the computation kernel that performs the tiled convoution computation.
+Put straight on to an FPGA, this algorithm will require the entire input feature map and all of the weights kernels to be loaded onto the FPGA at once, which is not feasible for a typically sized convolution layer. However, Zhang et al. describes a method of tiling the data so that the convolution can be performed in chunks and is therefore suitable for FPGA computation. The code is split into two parts. Code \ref{code:conv-sw}  is responsible for managing the data tiling and loading the tiles of data into the computation kernel. Code \ref{code:conv-hw1} shows the computation kernel that performs the tiled convolution computation.
 
 Code \ref{code:conv-sw} iterates through the same dimensions as the outer four loops in the Code \ref{code:conv-initial}, but is incremented by the tile size for that particular dimension. If an appropriate set of tile sizes can be found, the tiling approach can allow convolutions of various sizes to be performed using the same kernel, which leads to very efficient use of FPGA resources. Tiling also allows the computation to be performed using multiple hardware kernels in parallel.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[caption=External Data Transfer, label=code:conv-sw, language=C]
+\begin{lstlisting}[caption=External Data Transfer, label=code:conv-sw, language=C, float=ht]
 for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 	for(outCol=0; outCol<OutputWidth; outCol+=outColTileSize){
 		for(outDep=0; outDep<OutputDepth; outDep += outDepTileSize){
@@ -490,7 +491,7 @@ for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 The computational kernel shown in Code 3 iterates through the tile and performs the convolution for the tiled region. The code is nearly identical to Code 1, but is performed only on one tile of data. Section \ref{sec:Imp-Optimisations} describes how this kernel can be further optimised.
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[caption=Computational Kernel, label=code:conv-hw1, language=C]
+\begin{lstlisting}[caption=Computational Kernel, label=code:conv-hw1, language=C, float=ht]
 for(outRow=outRowTileStart; outRow<outRowTileEnd; outRow++){
 	for(outCol=outColTileStart; outCol<outColTileEnd; outCol++){
 		for(outDep=outDepTileStart; outDep<outDepTileEnd; outDep++){
@@ -505,12 +506,12 @@ for(outRow=outRowTileStart; outRow<outRowTileEnd; outRow++){
 }}}}}}
 \end{lstlisting} 
 
-Because tiling allows for the data space to be efficiently broken down into parts, this convolution method avoids being limited by the memory capacity is much more suitable for hardware implementation. Additionally, a computational kernel of the same size can be reused for different convolution sizes. This eliminates the need to have multiple convolution hardware blocks of different sizes implemented independantly on the FPGA, saving valuable hardware resources. Therefore, this algorithm was chosen to be implemented in HLS.
+Because tiling allows for the data space to be efficiently broken down into parts, this convolution method avoids being limited by the memory capacity is much more suitable for hardware implementation. Additionally, a computational kernel of the same size can be reused for different convolution sizes. This eliminates the need to have multiple convolution hardware blocks of different sizes implemented independently on the FPGA, saving valuable hardware resources. Therefore, this algorithm was chosen to be implemented in HLS.
 
 \subsubsection{Layer Setup}
 \label{sec:Design-Conv-Setup}
 
-To set up the layer, zero padding, ouput depth, stride and kernel size parameters are read. In order for the convolution paramters to be valid, these must be set such that $outputDepth \geqslant 0$, $zeroPadding \geqslant 0$, $stride \geqslant 1$ and $ kernelSize \geqslant 2$. Then the output height and width are calculated using Equation \ref{eq:ConvOutSize}.
+To set up the layer, values for zero padding, output depth, stride and kernel size parameters are provided. Using these parameters and reading the dimensions of the input, the output height and width are calculated using Equation \ref{eq:ConvOutSize}.
 \begin{equation}
 outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
 \label{eq:ConvOutSize}
@@ -521,55 +522,57 @@ If $outputSize$ is not an integer, then combination of the input size, zero padd
 \subsection{Fully Connected Layer}
 \label{sec:Design-FC}
 
-The fully connected layer is the only layer apart from the convolution layer with a large computational footprint. The fully connected layer does	 peform as many computations, but has a larger memory footprint, partly because no weights are re-used between computations. It was hoped that the impact of SEUs on this layer would be investigated as well, so a hardware implementation was designed. Similary to the convolution layer, two software algorithms were implemented and compared before deciding on  version to implement in hardware. 
+The fully connected layer is the only layer apart from the convolution layer with a large computational footprint. The fully connected layer does	 perform as many computations, but has a larger memory footprint, partly because no weights are re-used between computations. It was hoped that the impact of SEUs on this layer would be investigated as well, so a hardware implementation was designed. Similarly to the convolution layer, two software algorithms were implemented and compared before deciding on  version to implement in hardware. 
 
 \subsubsection{Vector-Matrix Multiplication Method}
 \label{sec:Design-FC-MM}
 
 Each output neuron of the fully connected Layer, is assigned a weighted sum of the outputs of every neuron in the input layer, as described in Section \ref{sec:Background-CNN-FC}. This can be computed by considering the input values as a vector and the weights as a matrix, and performing a vector-matrix multiplication. The input is given as a vector of $K$ values. Fully connected layers produce vectors as outputs, but the outputs of other layer types is flattened to create this input vector. The weights are given as a $K \times N$ matrix, where $N$ is the number of output neurons. The output is then found with \( \mathbf{C} = \mathbf{A}\times\mathbf{B}\), where $\mathbf{C}$ is the output vector of length $N$, $\mathbf{A}$ is the weights matrix, and $\mathbf{B}$ is the vector  of input values. 
 
-If the netowrk computation is being performed in batches (i.e. multiple sets of input data are being propagated through the network together), every input set in the batch can be computed at once by combining the input and output vectors. This results in matrices of size $B \times K$ and $B \times N$ for the input and output respectively, where $B$ is the number of input sets in the batch.
+If the network computation is being performed in batches (i.e. multiple sets of input data are being propagated through the network together), every input set in the batch can be computed at once by combining the input and output vectors. This results in matrices of size $B \times K$ and $B \times N$ for the input and output respectively, where $B$ is the number of input sets in the batch.
 
-The vector-matrix multiplication is the intutive solution to computing the fully connected layer, as the computation follows the description of the fully connected layer's operation - each output value is a weighted sum of the inputs. By treating the vectors as matrices with size $1$ in one dimension, the vector-matrix multiplication is evaluated in the same way as a standard matrix-matrix multiplication. Conveniently, this means that the method will work for batches of data without any modifications beyond changing the matrix dimensions. As described in Section \ref{sec:Design-Conv-MM}, this method of computation can take advantage of the \lstinline|gemm| function to increase performance. Once again, this is ideal for a software implementation, but is not suitable for an embedded system with limited computational resources.
+The vector-matrix multiplication is the intuitive solution to computing the fully connected layer, as the computation follows the description of the fully connected layer's operation - each output value is a weighted sum of the inputs. By treating the vectors as matrices with size $1$ in one dimension, the vector-matrix multiplication is evaluated in the same way as a standard matrix-matrix multiplication. Conveniently, this means that the method will work for batches of data without any modifications beyond changing the matrix dimensions. As described in Section \ref{sec:Design-Conv-MM}, this method of computation can take advantage of the \lstinline|gemm| function to increase performance. Once again, this is ideal for a software implementation, but is not suitable for an embedded system with limited computational resources.
 
 \subsubsection{Dot Product Convolution Method}
 \label{sec:Design-FC-Conv}
 
-An alternative method of computing the fully onnected layer is to compute it with a convoutional kernel. For this, we consider the inputs as a vector of length $N_{if}$. The weights are divided into $N_{of}$ vectors of length $N_{if}$, where $N_{of}$ is the length of the output, and one vector is assigned to each output feature. Equation 4 shows that the value of an output feature in the fully connected layer is equivalent to a dot product of $in$, the input vector, and $wt_{f_o}$, the weights vector corresponding to the output feature. 
+An alternative method of computing the fully connected layer is to compute it with a convolutional kernel. For this, we consider the inputs as a vector of length $N_{if}$. The weights are divided into $N_{of}$ vectors of length $N_{if}$, where $N_{of}$ is the length of the output, and one vector is assigned to each output feature. Equation 4 shows that the value of an output feature in the fully connected layer is equivalent to a dot product of $in$, the input vector, and $wt_{f_o}$, the weights vector corresponding to the output feature. 
 \begin{equation}
 out[f_o] = \sum^{N_{if}}_{f_i=0} wt_{f_o}[f_i]\times in[f_i] = wt_{f_o} \cdot in
 \label{eq:DotProd}
 \end{equation}
 
-The next thing to consider is how to perform a convolution on these flattened layers. As previously explained, the convolution operation scans a weights kernel over the input and at each position, an output value is assigned the sum of the elementwise product of the weights kernel and the input region. Equation \ref{eq:FlatConv} shows a formula for finding the convolution with a flattened input and a flattened weights kernel stored in a vector of length $K$.
+The next thing to consider is how to perform a convolution on these flattened layers. As previously explained, the convolution operation scans a weights kernel over the input and at each position, an output value is assigned the sum of the element-wise product of the weights kernel and the input region. Equation \ref{eq:FlatConv} shows a formula for finding the convolution with a flattened input and a flattened weights kernel stored in a vector of length $K$.
 \begin{equation}
 (wt*in)[n] = \sum^{K}_{k=0} wt[k]\times in[n + k - 1]
 \label{eq:FlatConv}
 \end{equation}
 
-The size of the convoution output is equal to the number of input regions that the kernel scans over. Thus, by setting $K = N_{if}$, convolution will produce only one value and Equation \ref{eq:ConvDotProd} shows how the formula reduces to a dot product\cite{fc2conv}. As shown in Equation \ref{eq:DotProd}, the dot product is equivalent to finding the output value of a fully connected layer. Therefore, by setting the size of the convolution kernel to match the size of the input, we can compute a fully connected layer with the convolution computation.
+The size of the convolution output is equal to the number of input regions that the kernel scans over. Thus, by setting $K = N_{if}$, convolution will produce only one value and Equation \ref{eq:ConvDotProd} shows how the formula reduces to a dot product\cite{fc2conv}. As shown in Equation \ref{eq:DotProd}, the dot product is equivalent to finding the output value of a fully connected layer. Therefore, by setting the size of the convolution kernel to match the size of the input, we can compute a fully connected layer with the convolution computation.
 \begin{equation}
 (wt*in)[n] = (wt*in)[1] = \sum^{N_{if}}_{k=0} wt[k]\times in[1 + k - 1] 
 = \sum^{N_{if}}_{k=0} wt[k]\times in[k] = wt \cdot in = out[f_o]
 \label{eq:ConvDotProd}
 \end{equation}
 
-This is ideal because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer will be implemented anyway, and any optimisations used for that layer will improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware. 
+As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input blob. At the end of the convolutional part of the network is a pooling layer that produces a 512 $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
 
-It is important to note that although they are both valid ways of calculating the result, the Vector-Matrix Multipication and Dot Product methods use the weights in a different order, and one method cannot use weights trained for the other method without adjusting the order in which the weights are accessed. This problem is overcome by treating the weights as a matrix as described in the Vector-Matrix Multipication method and using the transpose of this matrix in computations. The Caffe framework uses the Vector-Matrix Multipication method to compute the results of the fully connected layer, so the Dot Product method implementation was modified to access the weights as if they were transposed. In doing this, consistency with the Caffe framework could be maintained, allowing the network to continue using pre-trained weights from Caffe's model zoo.
+A convolution is an ideal way to compute the result because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer has already been designed for the convolution layer, and any optimisations implemented in the design of the convolution layer can improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware.
+
+It is important to note that although they are both valid ways of calculating the result, the Vector-Matrix Multiplication and Dot Product methods use the weights in a different order, and one method cannot use weights trained for the other method without adjusting the order in which the weights are accessed. This problem is overcome by treating the weights as a matrix as described in the Vector-Matrix Multiplication method and using the transpose of this matrix in computations. The Caffe framework uses the Vector-Matrix Multiplication method to compute the results of the fully connected layer, so the Dot Product method implementation was modified to access the weights as if they were transposed. In doing this, consistency with the Caffe framework could be maintained, allowing the network to continue using pre-trained weights from Caffe's model zoo.
 
 \subsubsection{Layer Setup}
 \label{sec:Design-FC-Setup}
 
-\hl{TODO}
+The only input parameter required for setting up the fully connected layer, apart from the input blob, is the output length. The weights blob is given the dimensions $(outputLength \times inputLength \times inputSize \times inputSize)$ and the output blob is reshaped to be a vector of length $outputLength$. 
 
 \subsection{Rectified Linear Unit Layer}
 \label{sec:Design-Relu}
 
-The ReLU layer was the easiest to design. Code \ref{code:relu} shows that the layer computation is performed by iterating through the input and copying each value into the output. If a value is found to be less than zero, a zero is copied into the output location instead.
+The ReLU layer was the easiest to design. Code \ref{code:relu} shows that the layer output is formed by iterating through the input and copying each value. If a value is found to be less than zero, a zero is copied into the output location instead. Due to the simplicity and very low computational cost of this layer, there was no need to consider a hardware implementation. In fact the process of transferring the data to and from programmable logic would be more expensive than simply implementing the whole layer in software. 
 
 \renewcommand{\lstlistingname}{Code}
-\begin{lstlisting}[caption=ReLU layer computation, label=code:relu, language=C]
+\begin{lstlisting}[caption=ReLU layer computation, label=code:relu, language=C, float=ht]
 for(index = 0; index < inputLength; index++){
 	output[index] = max(0, input[index]);
 }
@@ -578,20 +581,36 @@ for(index = 0; index < inputLength; index++){
 \subsubsection{Layer Setup}
 \label{sec:Design-Relu-Setup}
 
-\hl{TODO}
+The setup for this layer is also very simple. No input parameters are needed to set the layer up, apart from the dimensions of the input Blob. The output Blob is reshaped to match the dimensions of the input Blob and the setup process is over.
 
 \subsection{Pooling Layer}
 \label{sec:Design-Pool}
 
+The pooling layer was designed with a series of nested \lstinline|for| loops, as shown in code \ref{code:pool}. The program iterates through the layers, rows and columns of the output, and for each output location, the maximum value in the corresponding input region is determined. This lower boundary of an input region is calculated as $inStart = max(0, outIndex * stride - pad)$, and the upper boundary is calculated as $inEnd = min(kernelStart + kernelSize, inputSize)$. The input region is iterated through to assign the maximum value to the output location
 
-\begin{itemize}
-\item Describe layer code
-\end{itemize}
+\renewcommand{\lstlistingname}{Code}
+\begin{lstlisting}[caption=Max Pooling Computation, label=code:pool, language=C, float=ht]
+for (int dep = 0; dep < depth_; dep++){
+	for (int outRow = 0; outRow < outputSize; outRow++){
+		for (int outCol = 0; outCol < outputSize; outCol){
+			// calculate boundaries of 	pooling region
+			for (int inRow = inRowStart; inRow < inRowEnd; inRow++){
+				for (int inCol = inColStart; inCol < inColEnd; inCol++){
+					if (input[dep][inRow][inCol] > output[dep][outRow][outCol]){
+						output[dep][outRow][outCol] = input[dep][inRow][inCol];
+					}
+}}}}}
+\end{lstlisting}
 
 \subsubsection{Layer Setup}
 \label{sec:Design-Pool-Setup}
 
-\hl{TODO}
+The setup for this layer is similar to that of the convolution layer without any weights. The input parameters are zero padding, stride and kernel size parameters are provided, and the output size is calculated with the Equation \ref{eq:PoolOutSize}. If the result is not an integer, the combination of the input parameters is not valid. The output Bloc is reshaped to $(outputDepth \times outputSize \times outputSize)$.
+\begin{equation}
+outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
+\label{eq:PoolOutSize}
+\end{equation}
+
 
 \newpage
 
@@ -605,14 +624,14 @@ This section will provide an overview of the system design from the top level, h
 \subsection{Processing System (PS) Design}
 \label{sec:Design-PS}
 
-The ARM CPU on the Zynq-7000 provides a processing system on the Zedboard enabling the embeddded system to run software. This software consists of an operating system and Application Software, i.e. software that has been designed and built specifically for this project.
+The ARM CPU on the Zynq-7000 provides a processing system on the Zedboard enabling the embedded system to run software. This software consists of an operating system and Application Software, i.e. software that has been designed and built specifically for this project.
 
 \subsubsection{Zynq-7000 Operating System}
 \label{sec:Design-PS-OS}
 
 When using SDSoC, there are three options for controlling the processor. The Zynq 7000 can run a Linux SMD kernel, another operating system called FreeRTOS, or the application can be run on "bare metal", meaning no OS is in place. Linux SMD (Symmetric MultiProcessing) is a basic Linux architecture, specialised for high performance on multi-core processors, and FreeRTOS is also designed to run multiple concurrent threads or tasks.
 
-Running the application on bare metal would be the simplest option, and would use much less memory. However, an operating system would greatly simplify the transfer of data necessary for the planned SEU tests. Rather than having to transfer and parse data packets through a serial connection, an OS would be able to copy and store data in an organised file structure, making the process of feeding input data and extracting resultst data much more convenient.
+Running the application on bare metal would be the simplest option, and would use much less memory. However, an operating system would greatly simplify the transfer of data necessary for the planned SEU tests. Rather than having to transfer and parse data packets through a serial connection, an OS would be able to copy and store data in an organised file structure, making the process of feeding input data and extracting results data much more convenient.
 
 The Linux kernel is very powerful, can take advantage of the huge library of Linux based tools, and makes it easy to write scripts that allow tests and other processes to be automated. FreeRTOS has a very small memory footprint and can provide faster performance. Both operating systems are specialised to run efficiently on the Zynq-7000s dual-core ARM processor. The Linux kernel was ultimately chosen, because it would be easier to use and the ability to easily write scripts was deemed a priority.
 
@@ -642,13 +661,13 @@ The Linux kernel is very powerful, can take advantage of the huge library of Lin
 
 In order for the Processing System to control and utilise the Programmable Logic, an interface is needed to transfer data between the two. The Zedboard offers bus architectures based on Advanced Microcontroller Bus Architecture (AMBA) protocol, designed by ARM. AMBA is commonly used as an interconnect in SoCs and was created for multi-processor designs. The particular specification used in Vivado and SDSoC is called Advanced Extensible Interface 4 (AXI4). 
 
-There are three different AXI4 interfaces availablle for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
+There are three different AXI4 interfaces available for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
 
 The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
 
 The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
 
-The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function paramters, and specifies that they are to be read and written in the AXI-Lite with the use of \lstinline|#pragma| commands. In the following exampe, an integer called \lstinline|OUTPUT_NAME| is to be transferred:
+The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function parameters, and specifies that they are to be read and written in the AXI-Lite with the use of \lstinline|#pragma| commands. In the following example, an integer called \lstinline|OUTPUT_NAME| is to be transferred:
 
 \begin{lstlisting}[language=C,deletekeywords={register}]
 #pragma HLS INTERFACE ap_none register port=outputName
@@ -712,7 +731,7 @@ The majority of the work was done in a computing lab on the 9th floor of the Ele
 
 Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the convolution function was moved into hardware. It was planned for the fully connected Layer to also be hardware accelerated, but delays in the process of setting up the socDrawer for testing prevented this from taking place. \hl{TODO - refer to later explanation}
 
-The convolution function hardware was then intergrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in \hl{Section} \ref{sec:socDrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
+The convolution function hardware was then integrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in \hl{Section} \ref{sec:socDrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
 
 \subsection{Hardware Optimisations}
 \label{sec:Imp-Optimisations}
@@ -784,7 +803,7 @@ The focus of this section is on the verification methods used to confirm that th
 \hl{TODO}
 
 \begin{itemize}
-\item Describe implementation of data collection, i.e. SocDrawer, test scripts, data collection scripts, etc
+\item Describe implementation of data collection, i.e. socDrawer, test scripts, data collection scripts, etc
 \item Analysis of data
 \end{itemize}
 

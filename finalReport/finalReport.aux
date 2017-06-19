@@ -64,6 +64,7 @@
 \newlabel{sec:Background-CNN-Activation}{{2.3.2}{15}{Activation Functions}{subsubsection.2.3.2}{}}
 \citation{PoolAnalysis}
 \citation{SudaFpgaAccelerator}
+\citation{AllConv}
 \citation{SudaFpgaAccelerator}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.3}Pooling Layer}{16}{subsubsection.2.3.3}}
 \newlabel{sec:Background-CNN-Pool}{{2.3.3}{16}{Pooling Layer}{subsubsection.2.3.3}{}}
@@ -78,26 +79,26 @@
 \newlabel{fig:fc}{{7}{17}{Connections in a fully connected layer}{figure.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}FPGAs and CNN Implementations}{17}{subsection.2.4}}
 \newlabel{sec:Background-FpgaCnnImpl}{{2.4}{17}{FPGAs and CNN Implementations}{subsection.2.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Implementation Challenges}{17}{subsubsection.2.4.1}}
-\newlabel{sec:Background-FpgaCnnImpl-Challenges}{{2.4.1}{17}{Implementation Challenges}{subsubsection.2.4.1}{}}
 \citation{SudaFpgaAccelerator}
 \citation{ZhangFpgaAccelerator}
 \citation{ChenFpgaAccelerator}
 \citation{FarabetFpgaAccelerator}
 \citation{SeuTutorial}
 \citation{SuitabilityGaisler}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Implementation Challenges}{18}{subsubsection.2.4.1}}
+\newlabel{sec:Background-FpgaCnnImpl-Challenges}{{2.4.1}{18}{Implementation Challenges}{subsubsection.2.4.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.2}FPGA CNN Accelerators}{18}{subsubsection.2.4.2}}
 \newlabel{sec:Background-FpgaCnnImpl-Accel}{{2.4.2}{18}{FPGA CNN Accelerators}{subsubsection.2.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}FPGAs and Space Applications}{18}{subsection.2.5}}
-\newlabel{sec:Background-FPGAsAndSpaceApplications}{{2.5}{18}{FPGAs and Space Applications}{subsection.2.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.5.1}Single Event Upsets}{18}{subsubsection.2.5.1}}
-\newlabel{sec:Background-FPGAsAndSpaceApplications-SEUs}{{2.5.1}{18}{Single Event Upsets}{subsubsection.2.5.1}{}}
 \citation{FTripleMR}
 \citation{SuitabilityGaisler}
 \citation{SuitabilityGaisler}
-\citation{FTripleMR}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}FPGAs and Space Applications}{19}{subsection.2.5}}
+\newlabel{sec:Background-FPGAsAndSpaceApplications}{{2.5}{19}{FPGAs and Space Applications}{subsection.2.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.5.1}Single Event Upsets}{19}{subsubsection.2.5.1}}
+\newlabel{sec:Background-FPGAsAndSpaceApplications-SEUs}{{2.5.1}{19}{Single Event Upsets}{subsubsection.2.5.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.5.2}SEU Mitigation Techniques}{19}{subsubsection.2.5.2}}
 \newlabel{sec:Background-FPGAsAndSpaceApplications-Mitigation}{{2.5.2}{19}{SEU Mitigation Techniques}{subsubsection.2.5.2}{}}
+\citation{FTripleMR}
 \citation{RadHardFpga}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Project Specification}{21}{section.3}}
 \newlabel{sec:ProjSpec}{{3}{21}{Project Specification}{section.3}{}}
@@ -125,8 +126,8 @@
 \newlabel{fig:im2col}{{9}{26}{A visualisation of the reshaping process}{figure.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Tiled Convolution Method}{27}{subsubsection.4.3.2}}
 \newlabel{sec:Design-Conv-TC}{{4.3.2}{27}{Tiled Convolution Method}{subsubsection.4.3.2}{}}
-\newlabel{code:conv-initial}{{1}{27}{Basic Convolution}{lstlisting.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Basic Convolution}{27}{lstlisting.1}}
+\newlabel{code:conv-initial}{{1}{28}{Basic Convolution}{lstlisting.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Basic Convolution}{28}{lstlisting.1}}
 \newlabel{code:conv-sw}{{2}{28}{External Data Transfer}{lstlisting.2}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2}External Data Transfer}{28}{lstlisting.2}}
 \newlabel{code:conv-hw1}{{3}{29}{Computational Kernel}{lstlisting.3}{}}
@@ -148,53 +149,56 @@
 \newlabel{sec:Design-FC-Setup}{{4.4.3}{32}{Layer Setup}{subsubsection.4.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Rectified Linear Unit Layer}{32}{subsection.4.5}}
 \newlabel{sec:Design-Relu}{{4.5}{32}{Rectified Linear Unit Layer}{subsection.4.5}{}}
-\newlabel{code:relu}{{4}{32}{ReLU layer computation}{lstlisting.4}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}ReLU layer computation}{32}{lstlisting.4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Layer Setup}{32}{subsubsection.4.5.1}}
-\newlabel{sec:Design-Relu-Setup}{{4.5.1}{32}{Layer Setup}{subsubsection.4.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Pooling Layer}{32}{subsection.4.6}}
-\newlabel{sec:Design-Pool}{{4.6}{32}{Pooling Layer}{subsection.4.6}{}}
+\newlabel{code:relu}{{4}{33}{ReLU layer computation}{lstlisting.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}ReLU layer computation}{33}{lstlisting.4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Layer Setup}{33}{subsubsection.4.5.1}}
+\newlabel{sec:Design-Relu-Setup}{{4.5.1}{33}{Layer Setup}{subsubsection.4.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Pooling Layer}{33}{subsection.4.6}}
+\newlabel{sec:Design-Pool}{{4.6}{33}{Pooling Layer}{subsection.4.6}{}}
+\newlabel{code:pool}{{5}{33}{Max Pooling Computation}{lstlisting.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5}Max Pooling Computation}{33}{lstlisting.5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Layer Setup}{33}{subsubsection.4.6.1}}
 \newlabel{sec:Design-Pool-Setup}{{4.6.1}{33}{Layer Setup}{subsubsection.4.6.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}System Design}{34}{section.5}}
-\newlabel{sec:Design}{{5}{34}{System Design}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Processing System (PS) Design}{34}{subsection.5.1}}
-\newlabel{sec:Design-PS}{{5.1}{34}{Processing System (PS) Design}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Zynq-7000 Operating System}{34}{subsubsection.5.1.1}}
-\newlabel{sec:Design-PS-OS}{{5.1.1}{34}{Zynq-7000 Operating System}{subsubsection.5.1.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Application Software}{35}{subsubsection.5.1.2}}
-\newlabel{sec:Design-PS-SW}{{5.1.2}{35}{Application Software}{subsubsection.5.1.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programmable Logic (PL) Design}{35}{subsection.5.2}}
-\newlabel{sec:Design-PL}{{5.2}{35}{Programmable Logic (PL) Design}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}PS and PL Interfacing}{35}{subsection.5.3}}
-\newlabel{sec:Design-PSnPL}{{5.3}{35}{PS and PL Interfacing}{subsection.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Soft Error Mitigation (SEM) Core Integration}{36}{subsection.5.4}}
-\newlabel{sec:Design-SEM}{{5.4}{36}{Soft Error Mitigation (SEM) Core Integration}{subsection.5.4}{}}
+\newlabel{eq:PoolOutSize}{{8}{34}{Layer Setup}{equation.4.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}System Design}{35}{section.5}}
+\newlabel{sec:Design}{{5}{35}{System Design}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Processing System (PS) Design}{35}{subsection.5.1}}
+\newlabel{sec:Design-PS}{{5.1}{35}{Processing System (PS) Design}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Zynq-7000 Operating System}{35}{subsubsection.5.1.1}}
+\newlabel{sec:Design-PS-OS}{{5.1.1}{35}{Zynq-7000 Operating System}{subsubsection.5.1.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Application Software}{36}{subsubsection.5.1.2}}
+\newlabel{sec:Design-PS-SW}{{5.1.2}{36}{Application Software}{subsubsection.5.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Programmable Logic (PL) Design}{36}{subsection.5.2}}
+\newlabel{sec:Design-PL}{{5.2}{36}{Programmable Logic (PL) Design}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}PS and PL Interfacing}{36}{subsection.5.3}}
+\newlabel{sec:Design-PSnPL}{{5.3}{36}{PS and PL Interfacing}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Soft Error Mitigation (SEM) Core Integration}{37}{subsection.5.4}}
+\newlabel{sec:Design-SEM}{{5.4}{37}{Soft Error Mitigation (SEM) Core Integration}{subsection.5.4}{}}
 \citation{jia2014caffe}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Implementation}{38}{section.6}}
-\newlabel{sec:Imp}{{6}{38}{Implementation}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Infrastructure Setup}{38}{subsection.6.1}}
-\newlabel{sec:Imp-InfSetup}{{6.1}{38}{Infrastructure Setup}{subsection.6.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Programming Language}{38}{subsection.6.2}}
-\newlabel{sec:Imp-Language}{{6.2}{38}{Programming Language}{subsection.6.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Development Methodology}{39}{subsection.6.3}}
-\newlabel{sec:Imp-Devlopment}{{6.3}{39}{Development Methodology}{subsection.6.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Hardware Optimisations}{39}{subsection.6.4}}
-\newlabel{sec:Imp-Optimisations}{{6.4}{39}{Hardware Optimisations}{subsection.6.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Testing}{40}{section.7}}
-\newlabel{sec:Test}{{7}{40}{Testing}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Layer Testing}{40}{subsection.7.1}}
-\newlabel{sec:Test-Layers}{{7.1}{40}{Layer Testing}{subsection.7.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Network Testing}{40}{subsection.7.2}}
-\newlabel{sec:Test-Network}{{7.2}{40}{Network Testing}{subsection.7.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Evaluation}{41}{section.8}}
-\newlabel{sec:Eval}{{8}{41}{Evaluation}{section.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}FPGA Implementation of a CNN}{41}{subsection.8.1}}
-\newlabel{sec:Eval-FPGAImplOfCnn}{{8.1}{41}{FPGA Implementation of a CNN}{subsection.8.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Fault Tolerance Investigation}{41}{subsection.8.2}}
-\newlabel{sec:Eval-FaultTolInv}{{8.2}{41}{Fault Tolerance Investigation}{subsection.8.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion and Future Work}{42}{section.9}}
-\newlabel{sec:Conclusion}{{9}{42}{Conclusion and Future Work}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Implementation}{39}{section.6}}
+\newlabel{sec:Imp}{{6}{39}{Implementation}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Infrastructure Setup}{39}{subsection.6.1}}
+\newlabel{sec:Imp-InfSetup}{{6.1}{39}{Infrastructure Setup}{subsection.6.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Programming Language}{39}{subsection.6.2}}
+\newlabel{sec:Imp-Language}{{6.2}{39}{Programming Language}{subsection.6.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Development Methodology}{40}{subsection.6.3}}
+\newlabel{sec:Imp-Devlopment}{{6.3}{40}{Development Methodology}{subsection.6.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Hardware Optimisations}{40}{subsection.6.4}}
+\newlabel{sec:Imp-Optimisations}{{6.4}{40}{Hardware Optimisations}{subsection.6.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Testing}{41}{section.7}}
+\newlabel{sec:Test}{{7}{41}{Testing}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Layer Testing}{41}{subsection.7.1}}
+\newlabel{sec:Test-Layers}{{7.1}{41}{Layer Testing}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Network Testing}{41}{subsection.7.2}}
+\newlabel{sec:Test-Network}{{7.2}{41}{Network Testing}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Evaluation}{42}{section.8}}
+\newlabel{sec:Eval}{{8}{42}{Evaluation}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}FPGA Implementation of a CNN}{42}{subsection.8.1}}
+\newlabel{sec:Eval-FPGAImplOfCnn}{{8.1}{42}{FPGA Implementation of a CNN}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Fault Tolerance Investigation}{42}{subsection.8.2}}
+\newlabel{sec:Eval-FaultTolInv}{{8.2}{42}{Fault Tolerance Investigation}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion and Future Work}{43}{section.9}}
+\newlabel{sec:Conclusion}{{9}{43}{Conclusion and Future Work}{section.9}{}}
 \bibdata{finalReport}
 \bibcite{neocognitron}{1}
 \bibcite{ImageNetChallenge}{2}
@@ -206,13 +210,14 @@
 \bibcite{embeddedFpgaCnn}{8}
 \bibcite{AlexNet}{9}
 \bibcite{PoolAnalysis}{10}
-\bibcite{ZhangFpgaAccelerator}{11}
-\bibcite{ChenFpgaAccelerator}{12}
-\bibcite{FarabetFpgaAccelerator}{13}
-\bibcite{SeuTutorial}{14}
-\bibcite{SuitabilityGaisler}{15}
-\bibcite{FTripleMR}{16}
-\bibcite{RadHardFpga}{17}
-\bibcite{fc2conv}{18}
-\bibcite{jia2014caffe}{19}
+\bibcite{AllConv}{11}
+\bibcite{ZhangFpgaAccelerator}{12}
+\bibcite{ChenFpgaAccelerator}{13}
+\bibcite{FarabetFpgaAccelerator}{14}
+\bibcite{SeuTutorial}{15}
+\bibcite{SuitabilityGaisler}{16}
+\bibcite{FTripleMR}{17}
+\bibcite{RadHardFpga}{18}
+\bibcite{fc2conv}{19}
+\bibcite{jia2014caffe}{20}
 \bibstyle{ieeetr}
