@@ -358,10 +358,15 @@ The system should be able to run on the target platform, described in Section \r
 
 An important part of the design is to intelligently spit the processing responsibilities between the hardware and software of the Zynq-7000. The various parts of the system should be analysed and compared to determine which parts are more suitable for hardware acceleration, and which parts are more suitable for software implementation.
 
+\subsubsection{Convolution Layer Implemented in Hardware}
+\label{sec:ProjSpec-Necessary-Conv}
+
+As previously explained in Section \ref{sec:Background-FpgaCnnImpl-Accel}, the convolution layer represents the biggest portion of the computational workload, and is thus the primary focus of the examination. It is therefore important that the convolution layer is at least partially implemented in hardware to allow testing with the SEM core. By analysing how the convolution layer is affected by SEUs, information about the effects on the rest of the network can be inferred.
+
 \subsubsection{SEM Core Integrated into Design}
 \label{sec:ProjSpec-Necessary-SEM}
 
-As previously explained in Section \ref{sec:Background-FpgaCnnImpl-Accel}, the convolution layer represents the biggest portion of the computational workload, and is thus the primary focus of the examination. It is therefore important that the convolution layer is at least partially implemented in hardware to allow testing with the SEM core.
+In order to perform the SEU emulation with the SEM core as described in Section \ref{sec:Background-FPGAsAndSpaceApplications-SEM}, it is necessary to integrate the SEM core into the the digital hardware design. 
 
 \subsection{Desirable Functionality}
 \label{sec:ProjSpec-Desirable}
@@ -369,7 +374,7 @@ As previously explained in Section \ref{sec:Background-FpgaCnnImpl-Accel}, the c
 \subsubsection{Full CNN Implementation}
 \label{sec:ProjSpec-Desirable-SEM}
 
-It would be desirable for a full CNN model to be implemented. This would 
+It would be desirable for a full CNN model to be implemented. With this in place, it would bee possible to run 
 
 \begin{itemize}
 \item Full CNN implemented, able to process and classify images with reasonable accuracy
@@ -759,27 +764,24 @@ The convolution function hardware was then integrated into a hardware design wit
 \label{sec:Test}
 
 
-The focus of this section is on the verification methods used to confirm that the system implementation was correct. The testing methods for individual layers will be analysed first, followed by tests for the whole network.
+The focus of this section is on the verification methods used to confirm that the system implementation was correct. The testing methods for individual layers will be analysed first, followed by tests for the whole network. \hl{TODO - check that this description applies}
 
-\subsection{Layer Testing}
+\subsection{Software Layer Testing}
 \label{sec:Test-Layers}
+
+For each layer that was implemented in soft, a short test function was written to verify its functionality. Due to the time pressures of this project, these tests were kept simple and were designed to verify that the basic computations were correct, rather than testing corner cases and checking completeness.
+
+For the ReLU layer, this test consists of simply filling the input with uniformly distributed values in the range $[-255, 255]$ and comparing the input with output. If the input value is negative, the output value is expected to be $0$. If the input value is positive, the corresponding output value should be equal to that value.
+
+For the pooling layer, this test was slightly more challenging. Simply running through the same algorithm to check the result is not a reliable test, and redesigning the code was deemed an inefficient use of the project time, particularly given the fact that the pooling layer is not computationally expensive enough to warrant a performance comparison between different implementations, so the second version would only be used for verification. Therefore the input blob is filled with values in ascending order from the lowest index, creating a matrix with where for any given sub-matrix, the highest value is in the location with the highest index. Therefore, the test could be performed by comparing the input and output, and checking that the value selected by the max pooling layer was indeed the value with the highest index. This test is obviously far from exhaustive, but as previously explained, it was deemed sufficient to verify basic functionality given the tight schedule of the project.
+
+
 
 
 \hl{TODO}
 
 \begin{itemize}
 \item Describe test functions for layers
-\item Describe comparison to pure C++ implementation
-\end{itemize}
-
-\subsection{Network Testing}
-\label{sec:Test-Network}
-
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe test functions for Network
 \item Describe comparison to pure C++ implementation
 \end{itemize}
 
