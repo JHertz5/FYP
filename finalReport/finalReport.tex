@@ -79,7 +79,7 @@ Second Marker: & \textbf{\secondmarker} \\
 \begin{abstract}
 Over the last decade, advancements in the design of Convolutional Neural Networks (CNNs) have led to significant improvements in the accuracy of image classification systems. A potential application of a CNN image classifier would be  processing data on board a satellite. In such a situation, with limited power and computational resources, it would be beneficial to make use of an FPGA in order to alleviate the resource demands of the computationally expensive CNN. However, FPGAs are sensitive to ionizing radiation, and at orbital altitudes, the high radiation environment can induce a variety of errors in the FPGA fabric, casting doubt on the suitability of a commercial FPGA for CNN applications in space.
 
-This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are analyzed to determine the impact on the system’s performance. \hl{[The tests are yet to be performed, and as such, this part of the abstract is not yet completed.]} The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
+This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are analysed to determine the impact on the system’s performance. \hl{[The tests are yet to be performed, and as such, this part of the abstract is not yet completed.]} The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
 \end{abstract}
 
 \newpage
@@ -110,19 +110,19 @@ Now suppose that the FPGA based CNN will be implemented on a satellite. In orbit
 \subsection{Project Motivation}
 \label{sec:Intro-ProjectMotivation}
 
-CNNs are an extremely valuable and powerful tool in modern machine learning, with countless applications. One of these potential applications is on board a sattelite orbiting the Earth, using a camera to gather image data. Currently, these images would have to be transferred to a terrestrial base station in order to be processed and analysed for information. On small sattelites, power is limited, and the communications equiment does not have a great data capacity. Therefore it is expensive for the sattelite to transfer full images to the base station. In addition to this, the link between the station and the sattelite may only be available at certain points in the sattelite's orbit, and the channel capacity may be dependant on factors such as weather interrupting signals. 
+CNNs are an extremely valuable and powerful tool in modern machine learning, with countless applications. One of these potential applications is on board a satellite orbiting the Earth, using a camera to gather image data. Currently, these images would have to be transferred to a terrestrial base station in order to be processed and analysed for information. On small satellites, power is limited, and the communications equipment does not have a great data capacity. Therefore it is expensive for the satellite to transfer full images to the base station. In addition to this, the link between the station and the satellite may only be available at certain points in the satellite’s orbit, and the channel capacity may be dependant on factors such as weather interrupting signals. 
 
-In this scenario, the rate at which data can be gathered is heavily limited by the rate at which the data can be transferred to Earth. A way to alleviate this problem would be to implement a CNN on board the sattelite. The CNN could discern the usefulness of an image and discard uninteresting data, saving the cost of transferring it to Earth. The CNN could even analyse the images and send only the results to Earth, eliminating the need to transfer the images altogether. 
+In this scenario, the rate at which data can be gathered is heavily limited by the rate at which the data can be transferred to Earth. A way to alleviate this problem would be to implement a CNN on board the satellite. The CNN could discern the usefulness of an image and discard uninteresting data, saving the cost of transferring it to Earth. The CNN could even analyse the images and send only the results to Earth, eliminating the need to transfer the images altogether. 
 
-However, implementing such a system is not without challenges. The aforementioned radiation induced errors can completely disrupt electronic devices, and FPGAs are particularly vulnerable. The impact of these errors, referred to as Single Event Upsets (SEUs), is discussed in more detail in Section \ref{sec:Background-FPGAsAndSpaceApplications-SEUs}. These errors pose a risk that must be investigated and assessed before the CNN sattelite can be attempted. If it is found that the system is never going to be feasible, then the design and construction of such a system would be an avoidable waste of time and resources. This is the motivation behind this project.
+However, implementing such a system is not without challenges. The aforementioned radiation induced errors can completely disrupt electronic devices, and FPGAs are particularly vulnerable. The impact of these errors, referred to as Single Event Upsets (SEUs), is discussed in more detail in Section \ref{sec:Background-FPGAsAndSpaceApplications-SEUs}. These errors pose a risk that must be investigated and assessed before the CNN satellite can be attempted. If it is found that the system is never going to be feasible, then the design and construction of such a system would be an avoidable waste of time and resources. This is the motivation behind this project.
 
 \subsection{Target Platform}
-\label{sec:Background-TargetPlatform}
+\label{sec:Intro-TargetPlatform}
 
 
 The hardware used in this project is a product from Xilinx called a Zedboard, a development board for the Zynq-7000 System On a Chip (SoC). This board was chosen because of its useful hardware features and its integrated support for valuable Xilinx proprietary tools. These tools include High Level Synthesis systems, SoC design tools and the Soft Error Mitigation IP core. The Zynq-7000 consists of Xilinx FPGA as its Programmable Logic(PL), and a dual-core Cortex-A9 ARM processor as its Processing System(PS) integrated together. Data transfer between these performed by the AXI4-Lite interface, which is discussed in more detail in Section \ref{sec:Design-PSnPL}.
 
-The ARM processor facilitates easy control of the system with a Linux kernel. This is then able to run software and initiate hardware processes in order to perform computations. Software for the processor was designed using the Xilinx SDSoC devlopment environment.
+The ARM processor facilitates easy control of the system with a Linux kernel. This is then able to run software and initiate hardware processes in order to perform computations. Software for the processor was designed using the Xilinx SDSoC development environment.
 
 Vivado HLS was used to design and build a hardware block from C++ code. Then Vivado was used to integrate this hardware block into an complete hardware architecture, allowing it to be connected to and controlled by the software. This was then synthesised and the generated bitstream was used to configure the FPGA.
 
@@ -204,12 +204,12 @@ These neurons are connected together into a network as shown in Figure \ref{fig:
 \label{fig:ANN}
 \end{figure}
 
-Neural Networks are trained in a slightly different way to other machine learning systems, using a method called backpropagation. Inputs are propogated forwards through the network until the output is reached. The resuting output values are each compared against the desired values and an error value is calculated for each output neuron. The error values are then progagated backwards through the network and the weights of each neuron are adjusted accordingly. This process is repeated until the network is sufficiently trained.
+Neural Networks are trained in a slightly different way to other machine learning systems, using a method called back-propagation. Inputs are propagated forwards through the network until the output is reached. The resulting output values are each compared against the desired values and an error value is calculated for each output neuron. The error values are then propagated backwards through the network and the weights of each neuron are adjusted accordingly. This process is repeated until the network is sufficiently trained.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:Background-CNN}
 
-CNNs are a specialised Neural Network. The input is assumed to be an image, the network is deep, and a number of specialised layers are used to improve accuracy and increase performance. CNNs are used to classify images in a forward inference process. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For example, CNNs built for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC) from 2012 to 2014 used a training dataset of approximately 1,281,167  images, grouped into 1000 classes\cite{ILSVRC}. In the case of the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
+CNNs are a specialised type of Neural Network, designed to be deep networks that model the visual perception of animals. They are usually designed to take images as inputs. The training of a CNN is often implemented on large servers with a significant computational capacity, with an enormous set of training data, or on a GPU when such a server is not available. For example, CNNs built for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC) from 2012 to 2014 used a training dataset of approximately 1,281,167  images, grouped into 1000 classes\cite{ILSVRC}. In the case of the embedded FPGA platform, this project will only focus on implementing and utilising the inference process of a CNN, and not on the training process.
 
 A typical CNN consists of a number of layers that run in sequence. Convolution, activation function, pooling, and fully connected layers make up a typical CNN model, with convolution and fully connected being the most important. Convolution and fully connected layers have parameters of called weights, which are set by the training process. These weights will determine which patterns each layer of the CNN will be activated by, and ultimately, what the CNN is able to recognise and classify. 
 
@@ -258,7 +258,7 @@ out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max}(in(f_o,x+k_x,y+k_y))
 \label{eq:Pool}
 \end{equation}
 
-The pooling layer is sometimes computed by computing the average of each input region, but in this project ony maximum pooling was used. Figure \ref{fig:pool} shows the operation of a max pooling layer graphically. The pooling layer is important as it reduces the dimensionality of lower-level features without losing important information, thus reducing the computational cost of the network \cite{SudaFpgaAccelerator}. A paper by J. Springenberg, A. Dosovitskiy, T. Brox and M. Riedmiller proposes an "all convolutional network" in which the pooling layers are eliminated by increasing the stride in some convolution layers without any reduction in performance\cite{AllConv}. Based on these results, pooling layers may soon stop appearing in new CNN architectures.
+The pooling layer is sometimes computed by computing the average of each input region, but in this project only maximum pooling was used. Figure \ref{fig:pool} shows the operation of a max pooling layer graphically. The pooling layer is important as it reduces the dimensionality of lower-level features without losing important information, thus reducing the computational cost of the network \cite{SudaFpgaAccelerator}. A paper by J. Springenberg, A. Dosovitskiy, T. Brox and M. Riedmiller proposes an "all convolutional network" in which the pooling layers are eliminated by increasing the stride in some convolution layers without any reduction in performance\cite{AllConv}. Based on these results, pooling layers may soon stop appearing in new CNN architectures.
 
 \begin{figure} [H]
 \centering
@@ -309,16 +309,14 @@ FPGAs also provide flexibility to implement the CNNs with limited data precision
 \subsection{FPGAs and Space Applications}
 \label{sec:Background-FPGAsAndSpaceApplications}
 
-
 \subsubsection{Single Event Upsets}
 \label{sec:Background-FPGAsAndSpaceApplications-SEUs}
-
 
 Electronic circuits are sensitive to high-energy ionizing radiation, which can induce errors called Single Event Upsets (SEUs) \cite{SeuTutorial}. In space, this is a particular problem. The radiation shielding provided by the Earth's magnetosphere, and enjoyed by systems at lower altitudes, is no longer present, leaving systems open to radiation from a  variety of sources. A voltage pulse from an SEU can cause errors including altering digital values. SEU induced voltage pulses are problematic for all circuits in space, but the nature of reconfigurable circuits means that they are particularly vulnerable. These SEUs are typically manifested as a bit flip in a memory cell or a transient logic pulse in combinational logic. Habinc et al. describes three main categories of SEU \cite{SuitabilityGaisler}.
 
 The first category is the configuration upset. FPGAs are configured by loading the configuration bitstream into an internal configuration memory. This memory controls the configurable logic elements and how they connect together. A configuration upset occurs when an SEU alters a value in the configuration memory, and thus changes the function of the configuration. 
 
-The second category is the functional upsets in user logic are SEUs within the FPGA's logic. The FPGA's user logic cannot be tested through a readback of the configuration memory, because the logic contents will change as part of normal operation. These errors can cause transient glitches in combinatorial logic, and can upset sequential logic where the state of the system is vital to its function \cite{FTripleMR}.
+The second category is the functional upsets in user logic are SEUs within the FPGA's logic. The FPGA's user logic cannot be tested through a read back of the configuration memory, because the logic contents will change as part of normal operation. These errors can cause transient glitches in combinatorial logic, and can upset sequential logic where the state of the system is vital to its function \cite{FTripleMR}.
 
 The final category is the architectural upset. This is when an SEU occurs in the control elements of the FPGA, e.g. the configuration circuits or reset control \cite{SuitabilityGaisler}. This can have an enormous range of consequences. For example, an SEU in the reset control could cause the FPGA to be unintentionally reset and all state information would be lost due to the FPGA being reconfigured.
 
@@ -327,38 +325,51 @@ Architectural upsets are outside the scope of this project, but configuration an
 \subsubsection{SEU Mitigation Techniques}
 \label{sec:Background-FPGAsAndSpaceApplications-Mitigation}
 
-
 As a result of the problems that can be caused by SEUs, many techniques have been developed to mitigate the impact of SEUs in space. A few popular design techniques for overcoming SEU errors are described below. Although this is outside the scope of the project, some of these techniques could potentially be used to increase the SEU resilience of the FPGA CNN implementation.
 
-A very effective way of detecting configuration upsets is to readback and verify the configuration memory of the FPGA. As long as the external memory holding the bitstream is uncompromised, any discrepancies caused by SEUs can be detected and corrected \cite{SuitabilityGaisler}. The disadvantage of this method is that any sequential logic within the FPGA will lose all state information.
+A very effective way of detecting configuration upsets is to read back and verify the configuration memory of the FPGA. As long as the external memory holding the bitstream is uncompromised, any discrepancies caused by SEUs can be detected and corrected \cite{SuitabilityGaisler}. The disadvantage of this method is that any sequential logic within the FPGA will lose all state information.
 
 Functional Triple Modular Redundancy is another popular method of mitigating SEU errors \cite{FTripleMR}. This involves making three copies of a given design within the FPGA fabric, and having them 'vote' on the result through a combinatorial circuit. This is very effecting at reducing the error rate from combinatorial and user upsets, as two of the three circuits need to be compromised in the same way in order for a false result to be given as the output of the system.
 
 Radiation hardening is the act of physically making a chip less susceptible to radiation, typically by encasing it in a substance that will shield the internal electronics \cite{RadHardFpga}. Many FPGA vendors sell radiation hardened versions of their products, and it should greatly reduce the impact of SEUs, but it is often a very expensive solution due to the cost of the 'rad hard' hardware.
+
+\subsubsection{Soft Error Mitigation (SEM) Core}
+\label{sec:Background-FPGAsAndSpaceApplications-SEM}
+
+The Soft Error Mitigation core is a Xilinx Intellectual Property (IP) core that can be used to detect, correct and classify SEUs. More importantly, it also provides error injection functionality\cite{SEM}. Once added to a hardware system, it is able to emulate SEUs, allowing the evaluation of the SEU mitigation capabilities of a hardware design. This is a valuable feature as it allows a much cheaper, safer and more controlled method of testing the system than using a radiation source to induce the errors. 
 
 \newpage
 
 \section{Project Specification}
 \label{sec:ProjSpec}
 
-
-In this section, the requirements and design specifications captured during the planning of the project will be discussed. The requirements will be divided into two set of functionalities - those that are necessary for the project to be considered successful, and those that are not essential but would greatly enhance the system and the results gathered - and briefly described. Following this, the testing and evaluation specifications are laid out and discussed.
+In this section, the requirements and design specifications captured during the planning of the project will be discussed. The requirements will be divided into two set of functionalities - those that are necessary for the project to be considered a success, and those that are not essential but would greatly enhance the system and the results gathered - and briefly described. Following this, the testing and evaluation specifications are laid out and discussed.
 
 \subsection{Necessary Functionality}
 \label{sec:ProjSpec-Necessary}
 
+\subsubsection{Running On Zedboard}
+\label{sec:ProjSpec-Necessary-Zedboard}
 
-\begin{itemize}
-\item Runs on Zedboard
-\item Split Hardware and Software intelligently
-\item Conv Layer Implemented
-\item Implementation must be efficient enough to run tests within reasonable time
-\item SEU module is incorporated into design
-\end{itemize}
+The system should be able to run on the target platform, described in Section \ref{sec:Intro-TargetPlatform} as the Xilinx Zedboard. The compilation of the program will produce an executable file in either .bin or .elf format, and this should run on the hardware platform, either printing a stream of output that can be read through a serial connection or storing the results in a file .log or .txt to be read later.
+
+\subsubsection{Software and Hardware Split}
+\label{sec:ProjSpec-Necessary-split}
+
+An important part of the design is to intelligently spit the processing responsibilities between the hardware and software of the Zynq-7000. The various parts of the system should be analysed and compared to determine which parts are more suitable for hardware acceleration, and which parts are more suitable for software implementation.
+
+\subsubsection{SEM Core Integrated into Design}
+\label{sec:ProjSpec-Necessary-SEM}
+
+As previously explained in Section \ref{sec:Background-FpgaCnnImpl-Accel}, the convolution layer represents the biggest portion of the computational workload, and is thus the primary focus of the examination. It is therefore important that the convolution layer is at least partially implemented in hardware to allow testing with the SEM core.
 
 \subsection{Desirable Functionality}
 \label{sec:ProjSpec-Desirable}
 
+\subsubsection{Full CNN Implementation}
+\label{sec:ProjSpec-Desirable-SEM}
+
+It would be desirable for a full CNN model to be implemented. This would 
 
 \begin{itemize}
 \item Full CNN implemented, able to process and classify images with reasonable accuracy
@@ -368,7 +379,6 @@ In this section, the requirements and design specifications captured during the 
 \subsection{Testing Specification}
 \label{sec:ProjSpec-TestSpec}
 
-
 \begin{itemize}
 \item Compare control results against pure software implementation to verify correctness
 \item Where numerical approximations are required, trade-off must be justifiable
@@ -376,7 +386,6 @@ In this section, the requirements and design specifications captured during the 
 
 \subsection{Evaluation Specification}
 \label{sec:ProjSpec-EvalSpec}
-
 
 \begin{itemize}
 \item Analyse SDSoC's estimate of hardware resources used, as well as actual resources used.
@@ -387,7 +396,8 @@ In this section, the requirements and design specifications captured during the 
 
 \newpage
 
-\section{Network Design}
+\section{Convolutional Neural Network
+ Design}
 \label{sec:Design-Network}
 
 \hl{TODO}
@@ -401,18 +411,18 @@ In this section, the requirements and design specifications captured during the 
 \subsection{Data Objects}
 \label{sec:Design-Network-Blobs}
 
-In order for data to be easily processed by network layers, a class called \lstinline|DataMemory| was created. This is a simple wrapper around dynamically allocated memory that provides homogenous storage of all data in the network. The data is accessed through functions called \lstinline|getConstData| and \lstinline|getMutableData|, which both return a pointer that can be used to access the data as an array. A \lstinline|const| pointer is returned by \lstinline|getConstData| for situations where the memory is only going to be read, and \lstinline|getMutableData| returns a normal pointer which can be used to read and write values to and from the memory space.
+In order for data to be easily processed by network layers, a class called \lstinline|DataMemory| was created. This is a simple wrapper around dynamically allocated memory that provides homogeneous storage of all data in the network. The data is accessed through functions called \lstinline|getConstData| and \lstinline|getMutableData|, which both return a pointer that can be used to access the data as an array. A \lstinline|const| pointer is returned by \lstinline|getConstData| for situations where the memory is only going to be read, and \lstinline|getMutableData| returns a normal pointer which can be used to read and write values to and from the memory space.
 
-In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for convolution and fully connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. Most blobs would only use three of these dimensions, but weights blobs in convolution and fully connected layers use four layers. Additionally the fourth dimension allows multiple sets of input data to be propogated through the network together. This is referred to as batch processing. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one blob to another. To keep the layer designs as simple as possible, the layers were designed to accept only square blobs as inputs and outputs. Therefore when describing a blob, "size" refers to both the height and width of the blob.
+In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for convolution and fully connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. Most blobs would only use three of these dimensions, but weights blobs in convolution and fully connected layers use four layers. Additionally the fourth dimension allows multiple sets of input data to be propagated through the network together. This is referred to as batch processing. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one blob to another. To keep the layer designs as simple as possible, the layers were designed to accept only square blobs as inputs and outputs. Therefore when describing a blob, "size" refers to both the height and width of the blob.
 
 \subsection{Layer Design}
 \label{sec:Design-Network-Layers}
 
-Each layer type was implemented as a class, which provided several benefits. Every layer would be self contained, with all functions and data related to the class being easiy accessible. The class data could also be protected from being changed in an unintended way by storing information in private variables, and allowing external access to the data only through dedicated functions that will not misuse it. Finally, using classes allows multiple, identical instances of the same layer types to be easily created.
+Each layer type was implemented as a class, which provided several benefits. Every layer would be self contained, with all functions and data related to the class being easily accessible. The class data could also be protected from being changed in an unintended way by storing information in private variables, and allowing external access to the data only through dedicated functions that will not misuse it. Finally, using classes allows multiple, identical instances of the same layer types to be easily created.
 
-In addition to multiple version of the same layers types, several very diverse layer types are required for a CNN to be properly implemented. If these were all implemented in vastly different ways, each with a unique interface for external code, setting up and running the network woud be challenging, if not impossible. Such a network would be very difficult to control automatically, and the interaction with each individual layer would likely have to be hard coded. 
+In addition to multiple version of the same layers types, several very diverse layer types are required for a CNN to be properly implemented. If these were all implemented in vastly different ways, each with a unique interface for external code, setting up and running the network would be challenging, if not impossible. Such a network would be very difficult to control automatically, and the interaction with each individual layer would likely have to be hard coded. 
 
-To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a famiy of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions do not define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs, as shown in Figure \ref{fig:layer}. With a small extension, it would not be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
+To overcome this problem, a class template was implemented for the network layers. A class template is a structure that defines a family of classes, providing a standardised set of functions and variables that will be inherited by all classes that use the class template as a base. The \lstinline|Layer| base class is therefore used to define three main functions that create an interface for the layer. These functions have different purposes and perform varying tasks depending on the layer, so these functions do not define any of the layer functionality, but define an interface and usage is standardised for every layer in the network. Each of these functions takes pointers to the top and bottom Blobs of the layer as inputs, as shown in Figure \ref{fig:layer}. With a small extension, it would not be difficult to implement layers that could handle multiple top and bottom Blobs, but this addition is unnecessary to compute the VGGnet CNN model, and was rejected in favour of keeping the implementation as simple as possible.
 
 \begin{figure} [H]
 \centering
@@ -421,16 +431,16 @@ To overcome this problem, a class template was implemented for the network layer
 \label{fig:layer}
 \end{figure}
 
-The \lstinline|LayerSetUp| function is run after the layer is originally constructed. Each layer class has a constructor that will initialise most of its paramters when a layer instance is created, but sometimes of these parameters are dependant on the shape of the bottom Blob. These parameters are then set by the \lstinline|LayerSetUp| function. This function also performs a sanity checks on the layer parameters to ensure that nothing is amiss.
+The \lstinline|LayerSetUp| function is run after the layer is originally constructed. Each layer class has a constructor that will initialise most of its parameters when a layer instance is created, but sometimes of these parameters are dependant on the shape of the bottom Blob. These parameters are then set by the \lstinline|LayerSetUp| function. This function also performs a sanity checks on the layer parameters to ensure that nothing is amiss.
 
-The \lstinline|Reshape| function is run after \lstinline|LayerSetUp|. As the name suggests, it reshapes the top Blob to match the bottom Blob. A ReLU layer must produce an ouput of the same dimensions as the input, while a convolution layer's output is determined by a combination of the input size and kernel size, and the padding and stride parameters, but in every layer type, the output shape is a critical part of the layer's operation. This function therefore adjusts the top Blob so that the layer operates correctly.
+The \lstinline|Reshape| function is run after \lstinline|LayerSetUp|. As the name suggests, it reshapes the top Blob to match the bottom Blob. A ReLU layer must produce an output of the same dimensions as the input, while a convolution layer's output is determined by a combination of the input size and kernel size, and the padding and stride parameters, but in every layer type, the output shape is a critical part of the layer's operation. This function therefore adjusts the top Blob so that the layer operates correctly.
 
 The most important function in this interface is \lstinline|Forward|, which is run last and computes the output of each layer as described in Section \ref{sec:Background-CNN}. This simple interface allows a set of input data to be run through the entire network with a simple \lstinline|for| loop that iterates through the layers and uses the top Blob of a layer as the bottom Blob of the next layer until the final layer output is calculated.
 
 \subsection{Convolution Layer}
 \label{sec:Design-Conv}
 
-The convolution layer is the most important layer in this network model for the purposes of this project, as it is where the bulk of the computation takes place, and is therefore most likely to be disrupted by SEUs. Therefore, this part of this layer had to be impemented in hardware to invesitgate the effects. First, two approaches to performing the convolution were implemented in software and compared. The more intuitive approach uses nested \lstinline|for| loops to iterate through the dimensions of the weights, inputs, and outputs and compute the results incrementally. The other approach reshapes the input and weight data, and performs the convolution in one large matrix multiplication. Once implemented and compared, it was clear that the intuitive approach was much more suitable for an FPGA implementation.
+The convolution layer is the most important layer in this network model for the purposes of this project, as it is where the bulk of the computation takes place, and is therefore most likely to be disrupted by SEUs. Therefore, this part of this layer had to be implemented in hardware to investigate the effects. First, two approaches to performing the convolution were implemented in software and compared. The more intuitive approach uses nested \lstinline|for| loops to iterate through the dimensions of the weights, inputs, and outputs and compute the results incrementally. The other approach reshapes the input and weight data, and performs the convolution in one large matrix multiplication. Once implemented and compared, it was clear that the intuitive approach was much more suitable for an FPGA implementation.
 
 \subsubsection{Matrix Multiplication Method}
 \label{sec:Design-Conv-MM}
@@ -453,7 +463,7 @@ By reducing the convolution to a single matrix multiplication, the algorithm can
 \subsubsection{Tiled Convolution Method}
 \label{sec:Design-Conv-TC}
 
-Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudocode in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. The formula $inIndex = stride * outIndex + kernelIndex - zeroPadding$ is used to calculate the input index in the height and width dimensions. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudocode is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
+Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudo-code in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. The formula $inIndex = stride * outIndex + kernelIndex - zeroPadding$ is used to calculate the input index in the height and width dimensions. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudo-code is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
 
 \renewcommand{\lstlistingname}{Code}
 \begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial, language=C, float=ht]
@@ -536,13 +546,13 @@ The vector-matrix multiplication is the intuitive solution to computing the full
 \subsubsection{Dot Product Convolution Method}
 \label{sec:Design-FC-Conv}
 
-An alternative method of computing the fully connected layer is to compute it with a convolutional kernel. For this, we consider the inputs as a vector of length $N_{if}$. The weights are divided into $N_{of}$ vectors of length $N_{if}$, where $N_{of}$ is the length of the output, and one vector is assigned to each output feature. Equation 4 shows that the value of an output feature in the fully connected layer is equivalent to a dot product of $in$, the input vector, and $wt_{f_o}$, the weights vector corresponding to the output feature. 
+An alternative method of computing the fully connected layer is to compute it with a convolutional kernel. For this, we consider the inputs as a vector of length $N_{if}$. The weights are divided into $N_{of}$ vectors of length $N_{if}$, where $N_{of}$ is the length of the output, and one vector is assigned to each output feature. Equation 4 shows the formula for computing one output value in the fully connected layer. This is equivalent to a dot product of $in$, the input vector, and $wt_{f_o}$, the weights vector corresponding to the output feature. 
 \begin{equation}
 out[f_o] = \sum^{N_{if}}_{f_i=0} wt_{f_o}[f_i]\times in[f_i] = wt_{f_o} \cdot in
 \label{eq:DotProd}
 \end{equation}
 
-The next thing to consider is how to perform a convolution on these flattened layers. As previously explained, the convolution operation scans a weights kernel over the input and at each position, an output value is assigned the sum of the element-wise product of the weights kernel and the input region. Equation \ref{eq:FlatConv} shows a formula for finding the convolution with a flattened input and a flattened weights kernel stored in a vector of length $K$.
+The next thing to consider is how to perform a convolution on these flattened layers. As previously explained, the convolution operation scans a weights kernel over the input and at each position, an output value is assigned the sum of the element-wise product of the weights kernel and the input region. Equation \ref{eq:FlatConv} shows a formula for finding the convolution with a flattened input and a flattened weights kernel stored in a vector of length $K$, using $zeroPadding = 0, stride =1$
 \begin{equation}
 (wt*in)[n] = \sum^{K}_{k=0} wt[k]\times in[n + k - 1]
 \label{eq:FlatConv}
@@ -555,7 +565,7 @@ The size of the convolution output is equal to the number of input regions that 
 \label{eq:ConvDotProd}
 \end{equation}
 
-As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input blob. At the end of the convolutional part of the network is a pooling layer that produces a 512 $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
+As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input blob. At the end of the convolutional part of the network is a pooling layer that produces 512 different $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
 
 A convolution is an ideal way to compute the result because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer has already been designed for the convolution layer, and any optimisations implemented in the design of the convolution layer can improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware.
 
@@ -633,7 +643,7 @@ When using SDSoC, there are three options for controlling the processor. The Zyn
 
 Running the application on bare metal would be the simplest option, and would use much less memory. However, an operating system would greatly simplify the transfer of data necessary for the planned SEU tests. Rather than having to transfer and parse data packets through a serial connection, an OS would be able to copy and store data in an organised file structure, making the process of feeding input data and extracting results data much more convenient.
 
-The Linux kernel is very powerful, can take advantage of the huge library of Linux based tools, and makes it easy to write scripts that allow tests and other processes to be automated. FreeRTOS has a very small memory footprint and can provide faster performance. Both operating systems are specialised to run efficiently on the Zynq-7000s dual-core ARM processor. The Linux kernel was ultimately chosen, because it would be easier to use and the ability to easily write scripts was deemed a priority.
+The Linux kernel is very powerful, can take advantage of the huge library of Linux based tools, and makes it easy to write scripts that allow tests and other processes to be automated. FreeRTOS has a very small memory footprint and can provide faster performance. Both operating systems are specialised to run efficiently on the Zynq-7000's dual-core ARM processor. The Linux kernel was ultimately chosen, because it would be easier to use and the ability to easily write scripts was deemed a priority.
 
 \subsubsection{Application Software}
 \label{sec:Design-PS-SW}
@@ -699,7 +709,7 @@ The \lstinline|HLS| declares Vivado HLS as the compiler that the commands are in
 \label{sec:Imp}
 
 
-This section will explore any relevant details that were not mentioned in Section \ref{sec:Design}: Design. This will include pseudocode or fragments of code where they are useful, and by the end of the section, the reader should have an approximate understanding of the code structure and the development process that took place.
+This section will explore any relevant details that were not mentioned in Section \ref{sec:Design}: Design. This will include pseudo-code or fragments of code where they are useful, and by the end of the section, the reader should have an approximate understanding of the code structure and the development process that took place.
 
 \subsection{Infrastructure Setup}
 \label{sec:Imp-InfSetup}
@@ -825,6 +835,6 @@ The focus of this section is on the verification methods used to confirm that th
 
 \bibliography{finalReport}
 \bibliographystyle{ieeetr}
-
+\nocite{*}
 
 \end{document}
