@@ -698,7 +698,14 @@ In order for the Processing System to control and utilise the Programmable Logic
 
 There are three different AXI4 interfaces available for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
 
-The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension. \hl{TODO - diagram}
+The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The information carried in each interface is shown in Figure \ref{fig:PSnPL}.
+
+\begin{figure} [ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/PSnPL.eps}
+\caption{A diagram showing the transfer of data between the PS and PL using the AXI interfaces} 
+\label{fig:PSnPL}
+\end{figure}
 
 \subsubsection{AXI-MM Master Bus}
 \label{sec:Design-PSnPL-AXIMM}
