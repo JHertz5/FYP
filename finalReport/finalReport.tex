@@ -79,7 +79,7 @@ Second Marker: & \textbf{\secondmarker} \\
 \begin{abstract}
 Over the last decade, advancements in the design of Convolutional Neural Networks (CNNs) have led to significant improvements in the accuracy of image classification systems. A potential application of a CNN image classifier would be  processing data on board a satellite. In such a situation, with limited power and computational resources, it would be beneficial to make use of an FPGA in order to alleviate the resource demands of the computationally expensive CNN. However, FPGAs are sensitive to ionizing radiation, and at orbital altitudes, the high radiation environment can induce a variety of errors in the FPGA fabric, casting doubt on the suitability of a commercial FPGA for CNN applications in space.
 
-This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are analysed to determine the impact on the system’s performance. \hl{[The tests are yet to be performed, and as such, this part of the abstract is not yet completed.]} The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
+This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are analysed to determine the impact on the system’s performance. \hl{TODO - [The tests are yet to be performed, and as such, this part of the abstract is not yet completed.]} The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
 \end{abstract}
 
 \newpage
@@ -376,13 +376,19 @@ In order to perform the SEU emulation with the SEM core as described in Section 
 
 It would be desirable for a full CNN model to be implemented. With this in place, it would bee possible to run 
 
+\hl{TODO}
+
 \begin{itemize}
 \item Full CNN implemented, able to process and classify images with reasonable accuracy
 \item System is optimised to run as efficiently as possible
 \end{itemize}
 
+\hl{TODO}
+
 \subsection{Testing Specification}
 \label{sec:ProjSpec-TestSpec}
+
+\hl{TODO}
 
 \begin{itemize}
 \item Compare control results against pure software implementation to verify correctness
@@ -391,6 +397,8 @@ It would be desirable for a full CNN model to be implemented. With this in place
 
 \subsection{Evaluation Specification}
 \label{sec:ProjSpec-EvalSpec}
+
+\hl{TODO}
 
 \begin{itemize}
 \item Analyse SDSoC's estimate of hardware resources used, as well as actual resources used.
@@ -401,8 +409,7 @@ It would be desirable for a full CNN model to be implemented. With this in place
 
 \newpage
 
-\section{Convolutional Neural Network
- Design}
+\section{Convolutional Neural Network Design}
 \label{sec:Design-Network}
 
 \hl{TODO}
@@ -410,6 +417,7 @@ It would be desirable for a full CNN model to be implemented. With this in place
 \begin{itemize}
 \item Describe Network organisation and design (If full network is implemented)
 \item Describe Caffe, Justify use as basis for design (pre-trained network models, etc)
+\item Describe VGGnet, add a table to show all the layers.
 \item mention blobs
 \end{itemize}
 
@@ -596,7 +604,7 @@ for(index = 0; index < inputLength; index++){
 \subsubsection{Layer Setup}
 \label{sec:Design-Relu-Setup}
 
-The setup for this layer is also very simple. No input parameters are needed to set the layer up, apart from the dimensions of the input Blob. The output Blob is reshaped to match the dimensions of the input Blob and the setup process is over.
+The setup for this layer is simple. No input parameters are needed to set the layer up, apart from the dimensions of the input Blob. The output Blob is reshaped to match the dimensions of the input Blob and the setup process is over.
 
 \subsection{Pooling Layer}
 \label{sec:Design-Pool}
@@ -680,16 +688,18 @@ There are three different AXI4 interfaces available for selection. AXI-Memory Ma
 
 The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
 
-The AXI-MM stores data sequentially, and is accessed with a pointer. In order to transfer multiple sets of data on the master bus, they can be stored sequentially at different offsets, and then the data can be accessed by setting the pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface.
+\subsubsection{AXI-MM Master Bus}
+\label{sec:Design-PSnPL-AXIMM}
 
-The software used to run the hardware design sets the variables in the AXI-Lite bus by writing to specific registers. The top level function of the HLS code takes these values as function parameters, and specifies that they are to be read and written in the AXI-Lite with the use of \lstinline|#pragma| commands. In the following example, an integer called \lstinline|OUTPUT_NAME| is to be transferred:
+The AXI-MM stores data sequentially, so that it can be easily accessed in HLS code with a pointer. In order to transfer multiple arrays of data on the master bus, the arrays are concatenated and stored on the master array. This allows each array to be accessed by setting a pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface. 
 
-\begin{lstlisting}[language=C,deletekeywords={register}]
-#pragma HLS INTERFACE ap_none register port=outputName
-#pragma HLS RESOURCE core=AXI4LiteS variable=outputName metadata="-bus_bundle CONFIG_BUS"
-\end{lstlisting}
+\subsubsection{AXI4-Lite Interface}
+\label{sec:Design-PSnPL-AXI4L}
 
-The \lstinline|HLS| declares Vivado HLS as the compiler that the commands are intended for. The \lstinline|INTERFACE| and \lstinline|RESOURCE| commands specify the type of HLS directive being declared. In the first \lstinline|#pragma| command, \lstinline|ap_none| gives the type of the variable being transferred, \lstinline|register| specifies that the variable will be stored in a register, and \lstinline|port=outputName| declares the name of the variable to be transferred. On the second line, \lstinline|core=AXI4LiteS| specifies that the variable is to be transferred with the AXI4-Lite interface, and \lstinline|variable=outputName| declares the variable name again. Finally \lstinline|metadata="-bus_bundle CONFIG_BUS"| tells the HLS compiler to bundle this variable together with any variables that share this argument in their \lstinline|#pragma| commands . The bundled variables are stored sequentially and can be easily accessed together.
+The top level function of the HLS code takes these values as function parameters, and configures the AXI4-Lite interface with the use of \lstinline|#pragma| commands. The commands are used to specify which variables are being transferred and also to group them together in a "bus bundle". The bus bundle bundles the variables into a common AXI4 slave interface, allowing the same interface to be used for several variables. On the other side of the interface, the software accesses the variables by writing to and reading from specific kernel registers that are mapped to the AXI4-Lite bus. 
+
+
+\hl{TODO - diagram of interfaces}
 
 \hl{TODO}
 
@@ -698,21 +708,10 @@ The \lstinline|HLS| declares Vivado HLS as the compiler that the commands are in
 \item Describe interface and related design choices
 \end{itemize}
 
-\subsection{Soft Error Mitigation (SEM) Core Integration}
-\label{sec:Design-SEM}
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe SEM IP core (a core to simulate SEUs)
-\item Justify using SEM IP core rather than creating own test (simplicity, time, etc)
-\end{itemize}
-
 \newpage
 
 \section{Implementation}
 \label{sec:Imp}
-
 
 This section will explore any relevant details that were not mentioned in Section \ref{sec:Design}: Design. This will include pseudo-code or fragments of code where they are useful, and by the end of the section, the reader should have an approximate understanding of the code structure and the development process that took place.
 
@@ -761,6 +760,16 @@ The convolution function hardware was then integrated into a hardware design wit
 \begin{itemize}
 \item Describe optimisations performed with HLS, i.e. pipelining, partitioning arrays, etc
 
+\end{itemize}
+
+\subsection{Soft Error Mitigation (SEM) Core Integration}
+\label{sec:Imp-SEM}
+
+\hl{TODO}
+
+\begin{itemize}
+\item Describe SEM IP core (a core to simulate SEUs)
+\item Justify using SEM IP core rather than creating own test (simplicity, time, etc)
 \end{itemize}
 
 \newpage
