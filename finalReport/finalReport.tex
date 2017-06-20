@@ -775,21 +775,17 @@ For the ReLU layer, this test consists of simply filling the input with uniforml
 
 For the pooling layer, this test was slightly more challenging. Simply running through the same algorithm to check the result is not a reliable test, and redesigning the code was deemed an inefficient use of the project time, particularly given the fact that the pooling layer is not computationally expensive enough to warrant a performance comparison between different implementations, so the second version would only be used for verification. Therefore the input blob is filled with values in ascending order from the lowest index, creating a matrix with where for any given sub-matrix, the highest value is in the location with the highest index. Therefore, the test could be performed by comparing the input and output, and checking that the value selected by the max pooling layer was indeed the value with the highest index. This test is obviously far from exhaustive, but as previously explained, it was deemed sufficient to verify basic functionality given the tight schedule of the project.
 
+\subsection{PS/PL Interface Testing}
+\label{sec:Test-AXI}
 
+A crucial part of the system that needed to be tested is the AXI4 bus that transferred data between the Programmable Logic and the Processing System, as described in Section \ref{sec:Design-PSnPL}. Errors in the setup of this interface could result in incorrect values being passed to and from the kernel, or could mean that the hardware kernel has no way to input or output data, rendering it competely useless.
 
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe test functions for layers
-\item Describe comparison to pure C++ implementation
-\end{itemize}
+To test the interface, a simple testing kernel was designed and built, to simply read some values from the \hl{TODO}
 
 \newpage
 
 \section{Evaluation}
 \label{sec:Eval}
-
 
 \begin{itemize}
 \item Summarise project specification requirements, and evaluate success on each
@@ -797,7 +793,6 @@ For the pooling layer, this test was slightly more challenging. Simply running t
 
 \subsection{FPGA Implementation of a CNN}
 \label{sec:Eval-FPGAImplOfCnn}
-
 
 \hl{TODO}
 
@@ -811,7 +806,6 @@ For the pooling layer, this test was slightly more challenging. Simply running t
 \subsection{Fault Tolerance Investigation}
 \label{sec:Eval-FaultTolInv}
 
-
 \hl{TODO}
 
 \begin{itemize}
@@ -824,7 +818,6 @@ For the pooling layer, this test was slightly more challenging. Simply running t
 \section{Conclusion and Future Work}
 \label{sec:Conclusion}
 
-
 \hl{TODO}
 
 \begin{itemize}
@@ -833,10 +826,29 @@ For the pooling layer, this test was slightly more challenging. Simply running t
 \item Suggestions for future investigations
 \end{itemize}
 
+\subsection{Future Work}
+\label{sec:Conclusion - FW}
+
+\subsection{Conclusion}
+\label{sec:Conclusion - C}
+
 \newpage
 
 \bibliography{finalReport}
 \bibliographystyle{ieeetr}
 \nocite{*}
+
+\newpage
+
+\appendix
+\section{Source Code}
+\label{Source}
+
+All of the source code for the project is stored in a public git repository and can be found at the following URL:
+
+\url{https://github.com/JHertz5/space_brain}
+
+
+\hl{TODO}
 
 \end{document}
