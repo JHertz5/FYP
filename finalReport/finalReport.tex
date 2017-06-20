@@ -28,7 +28,8 @@
 	basicstyle=\ttfamily,
 	columns=flexible,
 	breaklines=true,
-	tabsize=1
+	tabsize=1,
+	showstringspaces=false
 }
 \usepackage[margin=1in]{geometry} %for margins
 \setlength{\parskip}{12pt plus3pt minus3pt} %for paragraph spacing
@@ -128,6 +129,8 @@ Vivado HLS was used to design and build a hardware block from C++ code. Then Viv
 
 \subsection{Report Structure}
 \label{sec:Intro-Structure}
+
+\hl{TODO - verify/adjust if needed}
 
 \textbf{Section \ref{sec:Background} - Background:} In order to guarantee that the reader has the contextual knowledge required to understand the project, this section will High Level Synthesis, and CNNs. FPGA implementations of CNNs and the difficulties of using FPGAs in radiation-heavy environments will also be explored.\\
 \\
@@ -613,12 +616,12 @@ The pooling layer was designed with a series of nested \lstinline|for| loops, as
 
 \renewcommand{\lstlistingname}{Code}
 \begin{lstlisting}[caption=Max Pooling Computation, label=code:pool, language=C, float=ht]
-for (int dep = 0; dep < depth_; dep++){
-	for (int outRow = 0; outRow < outputSize; outRow++){
-		for (int outCol = 0; outCol < outputSize; outCol){
+for(dep = 0; dep < depth_; dep++){
+	for(outRow = 0; outRow < outputSize; outRow++){
+		for(outCol = 0; outCol < outputSize; outCol){
 			// calculate boundaries of 	pooling region
-			for (int inRow = inRowStart; inRow < inRowEnd; inRow++){
-				for (int inCol = inColStart; inCol < inColEnd; inCol++){
+			for(inRow = inRowStart; inRow < inRowEnd; inRow++){
+				for(inCol = inColStart; inCol < inColEnd; inCol++){
 					if (input[dep][inRow][inCol] > output[dep][outRow][outCol]){
 						output[dep][outRow][outCol] = input[dep][inRow][inCol];
 					}
@@ -661,23 +664,32 @@ The Linux kernel is very powerful, can take advantage of the huge library of Lin
 \subsubsection{Application Software}
 \label{sec:Design-PS-SW}
 
-\hl{TODO}
+Within the Linux kernel, a software host code is used to run the HLS kernel. This program acted partially as a software wrapper for the kernel computation, configuring  and setting the inputs, running the kernel, and receiving the output. This program also served the purpose of the test kernel, being run to perform the test for each of the SEUs introduced to the system by the SEM core. The function of the host code is summarised in Code \ref{code:host}.
 
-\begin{itemize}
-\item Describe software used to control system
-\item Perhaps describe various socDrawer scripts and programs
-\end{itemize}
+\begin{lstlisting}[caption=Host code for the hardware kernel, label=code:host, language=C,deletekeywords={register}]
+Read linear address from input;
+Set constants and address constants;
+Set and initialise weights and inputs arrays;
+Set up outputs pointer;
+Set AXI4-Lite registers;
 
-\subsection{Programmable Logic (PL) Design}
-\label{sec:Design-PL}
+Initiate hardware kernel
+while(kernel is running){
+	block;
+}
 
+errorCount = 0;
+Open golden example file;
+for(index = 0; index < outputLength; index++){
+	Get golden[index];
+	if(output[index] != golden[index]){
+		errorCount++
+}}
+print("<linear address>, <errorCount>");
+\end{lstlisting}
 
-\hl{TODO}
+Lines 1 to 5 are setting up the inputs and interfaces of the kernel. Lines 8-10, deal with the running of the kernel itself, using a while loop to delay the program until the kernel has finished running. The final lines from 12 to 19 read a "golden" example, i.e. a ground truth example that the output can be verified against, one value at a time and compare it to the corresponding kernel output value. A counter keeps track of the number of discrepancies, and finally the code prints a message. This message shows the linear address at which the SEU was emulated in this test run, and the number of incorrect caused by this SEU, an indication of the severity of the SEU fault. Section \ref{sec:Eval-FaultTolInv} will describe how these output messages are collected and analysed.
 
-\begin{itemize}
-\item Describe HLS, and alternative (VHDL/Verilog)
-\item Justify using HLS rather than VHDL/Verilog (faster development, etc)
-\end{itemize}
 
 \subsection{PS and PL Interfacing}
 \label{sec:Design-PSnPL}
@@ -686,27 +698,42 @@ In order for the Processing System to control and utilise the Programmable Logic
 
 There are three different AXI4 interfaces available for selection. AXI-Memory Mapped (AXI-MM) master bus uses the full AXI4 interface and is able to transfer large amounts of data. AXI4-Lite is a version of AXI4 with a smaller memory footprint and is used for moving single values. AXI4-Stream is used for transferring data in bursts. In this project, the AXI4-Stream was not used as there was not found to be a need for burst data streaming, but the AXI4 and AXI4-Lite were both used. 
 
-The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension.
+The AXI-MM and AXI4-Lite are both bi-directional. The data that needed to be transferred to and from the tiled convolution kernel, as described in Section \ref{sec:Design-Conv-TC} was categorized as either array data, which would be transferred using the AXI-MM, or single values, which would be transferred using the AXI4-Lite. The array data consists of the weights tile, the input tile, and the output tile. The single values are parameters of the convolution, including the start and end values of the tiles in each dimension. \hl{TODO - diagram}
 
 \subsubsection{AXI-MM Master Bus}
 \label{sec:Design-PSnPL-AXIMM}
 
-The AXI-MM stores data sequentially, so that it can be easily accessed in HLS code with a pointer. In order to transfer multiple arrays of data on the master bus, the arrays are concatenated and stored on the master array. This allows each array to be accessed by setting a pointer at the correct offset with respect to the master bus base address. In order for the hardware functions to take advantage of this, the relevant offsets are sent to the FPGA as single values over the AXI4-Lite interface. 
+The AXI-MM stores data sequentially, so that it can be easily accessed with a pointer. In order to transfer multiple arrays of data through the master bus, the arrays are concatenated and stored on the master array. This allows each array to be accessed by setting a pointer at the correct offset with respect to the master bus base address. In order for the hardware kernel to take advantage of this, the offset of each array on the master bus is sent to the FPGA a single value over the AXI4-Lite interface. The AXI-MM master bus is configured in the HLS code using \lstinline|#pragma| commands, shown in Code \ref{code:AXIMM} which specify the length of the bus, and the variable name of a pointer to the base address.
+
+\begin{lstlisting}[caption=Commands to configure AXI-MM master bus, label=code:AXIMM, language=C,deletekeywords={register}]
+#pragma HLS INTERFACE ap_bus port=master_portA depth=2147483648
+#pragma HLS resource variable=master_portA core=AXI4M
+\end{lstlisting}
+
 
 \subsubsection{AXI4-Lite Interface}
 \label{sec:Design-PSnPL-AXI4L}
 
-The top level function of the HLS code takes these values as function parameters, and configures the AXI4-Lite interface with the use of \lstinline|#pragma| commands. The commands are used to specify which variables are being transferred and also to group them together in a "bus bundle". The bus bundle bundles the variables into a common AXI4 slave interface, allowing the same interface to be used for several variables. On the other side of the interface, the software accesses the variables by writing to and reading from specific kernel registers that are mapped to the AXI4-Lite bus. 
+The top level function of the HLS code takes these values as function parameters, and configures the AXI4-Lite interface with the use of \lstinline|#pragma| commands, shown in Code \ref{code:AXI4L}. The commands are used to specify which variables are being transferred and also to group them together in a "bus bundle". The bus bundle bundles the variables into a common AXI4 slave interface, allowing the same interface to be used for several variables. 
 
+\begin{lstlisting}[caption=Commands to configure AXI4-Lite bus, label=code:AXI4L, language=C,deletekeywords={register}]
+#pragma HLS INTERFACE ap_none register port=outputName
+#pragma HLS RESOURCE core=AXI4LiteS variable=outputName metadata="-bus_bundle CONFIG_BUS"
+\end{lstlisting}
 
-\hl{TODO - diagram of interfaces}
+On the other side of the interface, the software accesses the variables by writing to and reading from specific kernel registers that are mapped to the AXI4-Lite bus. The bundled variables are accessed through sequential registers.
 
-\hl{TODO}
+\subsection{Programmable Logic (PL) Design}
+\label{sec:Design-PL}
 
-\begin{itemize}
-\item Justify division of tasks
-\item Describe interface and related design choices
-\end{itemize}
+The programmable logic in the system is designed using Xilinx's Vivado design suite, as described in \ref{sec:Background-HLS}. It would have been possible to implement the design with and hardware description language such as VHDL or Verilog instead, but use of the HLS was chosen to speed up development. The hardware design is an implementation of the computational kernel described in Section \ref{sec:Design-Conv-TC}. A single hardware block was generated, as shown in Figure \ref{fig:hlsConv}, and integrated with a larger hardware design. The hardware block show the AXI4-Lite bus on the left side with the label \lstinline|S_AXI_CONFIG_BUS|, and the AXI-MM master bus is shown on the right side with the label \lstinline|M_AXI_MASTER_BUS|.
+
+\begin{figure} [H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/hls_conv.eps}
+\caption{A diagram of the hardware kernel and the resulting Vivado block} 
+\label{fig:hlsConv}
+\end{figure}
 
 \newpage
 
@@ -789,12 +816,21 @@ For the ReLU layer, this test consists of simply filling the input with uniforml
 
 For the pooling layer, this test was slightly more challenging. Simply running through the same algorithm to check the result is not a reliable test, and redesigning the code was deemed an inefficient use of the project time, particularly given the fact that the pooling layer is not computationally expensive enough to warrant a performance comparison between different implementations, so the second version would only be used for verification. Therefore the input blob is filled with values in ascending order from the lowest index, creating a matrix with where for any given sub-matrix, the highest value is in the location with the highest index. Therefore, the test could be performed by comparing the input and output, and checking that the value selected by the max pooling layer was indeed the value with the highest index. This test is obviously far from exhaustive, but as previously explained, it was deemed sufficient to verify basic functionality given the tight schedule of the project.
 
+The fully connected and convolution layers are both much more complex than the ReLU and pooling layers, so devising a test function in C would have been quite a challenge. However, each of these functions was implemented twice, each using two different algorithms, as described in Sections \ref{sec:Design-Conv} and \ref{sec:Design-FC}. In each of these cases, the matrix multiplication based implementation was verified using MATLAB. The testing was performed by running a set of inputs through the layer implementation, and using MATLAB's matrix multiplication functionalities to perform the same computation. The results were compared, and if they were correct, the implementation was correct. This was done for a few different input sets and computation sizes to make the testing slightly more thorough. Then, when the second implementations of the fully connected and convolution layers were complete, they were simply compared against the first implementation to check their correctness.
+
 \subsection{PS/PL Interface Testing}
 \label{sec:Test-AXI}
 
 A crucial part of the system that needed to be tested is the AXI4 bus that transferred data between the Programmable Logic and the Processing System, as described in Section \ref{sec:Design-PSnPL}. Errors in the setup of this interface could result in incorrect values being passed to and from the kernel, or could mean that the hardware kernel has no way to input or output data, rendering it completely unusable.
 
-To test the interface, a simple testing kernel was designed and built, to simply read some values from the \hl{TODO}
+To test the interface, a simple testing kernel was designed and built. This kernel was designed with to have the same interface design as the convolution kernel described in \ref{sec:Design-PL}\hl{TODO}. The kernel simply read some values from the input and weights arrays, and from each of the AXI4-Lite variable inputs. Each of these values was then assigned to a location in the output array. The host code controlling the kernel was set up to assign values to each of the input arrays and variables, initiate the kernel, and print the output buffer. This allowed the operation of the AXI interface to be verified by inspection.
+
+\subsection{Hardware Kernel Testing}
+\label{sec:Test-HW}
+
+Once the full hardware kernel had been designed, it was tested to verify that it achieved the ground truth result described in \ref{sec:}. This was a very simple case of running the test kernel a few times and checking by inspection that the result was correct, and was repeated correctly.  
+
+\hl{TODO}
 
 \newpage
 
