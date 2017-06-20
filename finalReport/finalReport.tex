@@ -716,6 +716,10 @@ The \lstinline|HLS| declares Vivado HLS as the compiler that the commands are in
 
 This section will explore any relevant details that were not mentioned in Section \ref{sec:Design}: Design. This will include pseudo-code or fragments of code where they are useful, and by the end of the section, the reader should have an approximate understanding of the code structure and the development process that took place.
 
+\begin{itemize}
+\item consider merging this with System design
+\end{itemize}
+
 \subsection{Infrastructure Setup}
 \label{sec:Imp-InfSetup}
 
@@ -756,6 +760,7 @@ The convolution function hardware was then integrated into a hardware design wit
 
 \begin{itemize}
 \item Describe optimisations performed with HLS, i.e. pipelining, partitioning arrays, etc
+
 \end{itemize}
 
 \newpage
@@ -778,7 +783,7 @@ For the pooling layer, this test was slightly more challenging. Simply running t
 \subsection{PS/PL Interface Testing}
 \label{sec:Test-AXI}
 
-A crucial part of the system that needed to be tested is the AXI4 bus that transferred data between the Programmable Logic and the Processing System, as described in Section \ref{sec:Design-PSnPL}. Errors in the setup of this interface could result in incorrect values being passed to and from the kernel, or could mean that the hardware kernel has no way to input or output data, rendering it competely useless.
+A crucial part of the system that needed to be tested is the AXI4 bus that transferred data between the Programmable Logic and the Processing System, as described in Section \ref{sec:Design-PSnPL}. Errors in the setup of this interface could result in incorrect values being passed to and from the kernel, or could mean that the hardware kernel has no way to input or output data, rendering it completely unusable.
 
 To test the interface, a simple testing kernel was designed and built, to simply read some values from the \hl{TODO}
 
