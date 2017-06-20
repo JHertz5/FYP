@@ -102,7 +102,7 @@ I would like to thank Dr Felix Winterstein for the enormous amount of help and g
 
 Inspired by the structure of the optical nervous system in animals, a neural network is made up of layers of artificial neurons that recognise certain features from the input data. The concept of an artificial neural network was first introduced in 1980 \cite{neocognitron}, and driven by increases in computing power and a growth in machine learning applications, neural networks have become very powerful tools. In the last decade, the development of Convolutional Neural Networks (CNNs) has lead to great advancements in image classification accuracy.
 
-CNNs are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in image classification applications \cite{ImageNetChallenge}. Other popular applications within machine vision include video classification, face detection, and optical text recognition. Neural Networks are being used in a wide range of other fields as well including speech recognition, natural language processing and text classification.
+CNNs are a powerful Deep Learning tool that can be used to solve extremely complex computational problems. In particular, they have gained popularity in image classification applications \cite{ImageNetChallenge}. Other popular applications within machine vision include video classification, face detection, and optical text recognition. Neural Networks are being used in a wide range of other fields as well including speech recognition, natural language processing and text classification\cite{SudaFpgaAccelerator}.
 
 However, whilst achieving exceptional performance, CNNs are extremely computation and resource heavy. Typically, they will be implemented on large servers or on GPU based systems to accommodate the need for computational power. As a result, implementing them on embedded systems, which typically have very limited resources, presents many challenges. A promising solution to this problem is the use of an FPGA, which provide a very high computational efficiency with low power usage, in addition to other benefits.
 
@@ -249,13 +249,13 @@ Figure \ref{fig:conv} shows a visualisation of the convolution operation. The in
 \subsubsection{Activation Functions}
 \label{sec:Background-CNN-Activation}
 
-Convolution layers are followed by an activation function layer. This layer can be thought of as a decision, based on the output of the convolution layer, on to what extent each neuron in the next layer has been activated. The convolution layer output is a linear combination of the inputs and the weights at a position in the network, and role of the activation function is to produce a non-linear decision boundary. The commonly used activation functions in traditional neural networks are non-linear functions such as tanh and sigmoid, which require a longer training time in CNNs \cite{AlexNet}. Hence, Rectified Linear Unit (ReLU), defined as $y = max(x,0)$, has become the popular activation function among CNN models as it converges faster in training, and has less computational complexity than exponent functions in tanh and sigmoid, also aiding hardware design.
+Convolution layers are followed by an activation function layer. This layer can be thought of as a decision, based on the output of the convolution layer, on to what extent each neuron in the next layer has been activated. The convolution layer output is a linear combination of the inputs and the weights at a position in the network, and role of the activation function is to produce a non-linear decision boundary. The commonly used activation functions in traditional neural networks are non-linear functions such as tanh and sigmoid, which require a longer training time in CNNs \cite{AlexNet}. Hence, Rectified Linear Unit (ReLU), defined as $y = max(x,0)$, has become the popular activation function. It's simplicity means that it converges faster in training, and has less computational complexity than exponent functions in tanh and sigmoid. It also simplifies hardware implementations of the layer.
 
 \subsubsection{Pooling Layer}
 \label{sec:Background-CNN-Pool}
 
 
-Spatial pooling or sub-sampling is utilized to reduce the feature dimensions as we traverse deeper into the network. As shown in Equation \ref{eq:Pool}, pooling computes the maximum of neighbouring $K\times K$ neurons in the same feature map, which also provides a form of translational invariance \cite{PoolAnalysis}. 
+Spatial pooling, also known as sub-sampling is used to reduce the volume of data being passed deeper into the network. As shown in Equation \ref{eq:Pool}, pooling computes the maximum value within a localised $K\times K$ pooling region of the feature map, which also provides a form of translational invariance, i.e. the ability of the network to identify a feature regardless of its position in the image, in addition to reducing computational load for future layers \cite{PoolAnalysis}. 
 \begin{equation}
 out(f_o,x,y)=\underset{0\geqslant (k_x,k_y)<K}{max}(in(f_o,x+k_x,y+k_y))
 \label{eq:Pool}
@@ -415,21 +415,21 @@ It would be desirable for a full CNN model to be implemented. With this in place
 \section{Convolutional Neural Network Design}
 \label{sec:Design-Network}
 
-\hl{TODO}
+In this section, the design of he Convolutional Neural Network implementation will be discussed. This includes an overview of the Caffe CNN framework, network infrastructure and finally the design of each layer type.
 
-\begin{itemize}
-\item Describe Network organisation and design (If full network is implemented)
-\item Describe Caffe, Justify use as basis for design (pre-trained network models, etc)
-\item Describe VGGnet, add a table to show all the layers.
-\item mention blobs
-\end{itemize}
+\subsection{The Caffe CNN Framework}
+\label{sec:Design-Network-Caffe}
+
+Caffe is an open-source framework for deep learning models, particularly Convolutional Neural Networks. This framework facilitates the easy design, training and testing of network models, and provides access to a "Model Zoo" where several popular CNN models can be downloaded and tested\cite{caffe}. These models include pre-trained weights, allowing the user to bypass the time consuming process of organising a training dataset and running the training process locally. This model zoo contains a pre-trained version of the VGGNet model discussed in Section \ref{sec:VGGNet}.
+
+In order to avoid repeating the work of other academic groups, to significantly shorten the  development time-frame of the CNN system, and to ensure compatibility with pre-trained network models, the Caffe framework was used as reference code for the CNN implementation. In order to ensure that pre-trained weights from the model zoo would be compatible with the CNN implementation, the Caffe's source code was analysed. The concept of "Blobs", as described in Section \ref{sec:Design-Network-Blobs}, as a homogeneous data carrier for the network was adapted from Caffe in order to guarantee compatibility, as was the generic layer structure described in \ref{sec:Design-Network-Layers}.
 
 \subsection{Data Objects}
 \label{sec:Design-Network-Blobs}
 
 In order for data to be easily processed by network layers, a class called \lstinline|DataMemory| was created. This is a simple wrapper around dynamically allocated memory that provides homogeneous storage of all data in the network. The data is accessed through functions called \lstinline|getConstData| and \lstinline|getMutableData|, which both return a pointer that can be used to access the data as an array. A \lstinline|const| pointer is returned by \lstinline|getConstData| for situations where the memory is only going to be read, and \lstinline|getMutableData| returns a normal pointer which can be used to read and write values to and from the memory space.
 
-In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for convolution and fully connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. Most blobs would only use three of these dimensions, but weights blobs in convolution and fully connected layers use four layers. Additionally the fourth dimension allows multiple sets of input data to be propagated through the network together. This is referred to as batch processing. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one blob to another. To keep the layer designs as simple as possible, the layers were designed to accept only square blobs as inputs and outputs. Therefore when describing a blob, "size" refers to both the height and width of the blob.
+In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for convolution and fully connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. Most Blobs would only use three of these dimensions, but weights Blobs in convolution and fully connected layers use four layers. Additionally the fourth dimension allows multiple sets of input data to be propagated through the network together. This is referred to as batch processing. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one Blob to another. To keep the layer designs as simple as possible, the layers were designed to accept only square Blobs as inputs and outputs. Therefore when describing a Blob, "size" refers to both the height and width of the Blob.
 
 \subsection{Layer Design}
 \label{sec:Design-Network-Layers}
@@ -543,7 +543,7 @@ outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
 \label{eq:ConvOutSize}
 \end{equation}
 
-If $outputSize$ is not an integer, then combination of the input size, zero padding, kernel size, and stride is not valid to perform a convolution. This result is checked, and then the output Blob is reshaped to have the dimensions $(outputDepth \times outputSize \times outputSize)$. Finally the weights blob is reshaped to have dimensions $(outputDepth \times inputDepth \times kernelSize \times kernelSize)$ and is filled with zeros to be initialised.
+If $outputSize$ is not an integer, then combination of the input size, zero padding, kernel size, and stride is not valid to perform a convolution. This result is checked, and then the output Blob is reshaped to have the dimensions $(outputDepth \times outputSize \times outputSize)$. Finally the weights Blob is reshaped to have dimensions $(outputDepth \times inputDepth \times kernelSize \times kernelSize)$ and is filled with zeros to be initialised.
 
 \subsection{Fully Connected Layer}
 \label{sec:Design-FC}
@@ -581,7 +581,7 @@ The size of the convolution output is equal to the number of input regions that 
 \label{eq:ConvDotProd}
 \end{equation}
 
-As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input blob. At the end of the convolutional part of the network is a pooling layer that produces 512 different $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
+As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input Blob. At the end of the convolutional part of the network is a pooling layer that produces 512 different $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
 
 A convolution is an ideal way to compute the result because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer has already been designed for the convolution layer, and any optimisations implemented in the design of the convolution layer can improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware.
 
@@ -590,7 +590,7 @@ It is important to note that although they are both valid ways of calculating th
 \subsubsection{Layer Setup}
 \label{sec:Design-FC-Setup}
 
-The only input parameter required for setting up the fully connected layer, apart from the input blob, is the output length. The weights blob is given the dimensions $(outputLength \times inputLength \times inputSize \times inputSize)$ and the output blob is reshaped to be a vector of length $outputLength$. 
+The only input parameter required for setting up the fully connected layer, apart from the input Blob, is the output length. The weights Blob is given the dimensions $(outputLength \times inputLength \times inputSize \times inputSize)$ and the output Blob is reshaped to be a vector of length $outputLength$. 
 
 \subsection{Rectified Linear Unit Layer}
 \label{sec:Design-Relu}
@@ -643,9 +643,7 @@ outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
 \section{System Design}
 \label{sec:Design}
 
-This section will provide an overview of the system design from the top level, highlighting the distribution of computational load between software and hardware.
-
-\hl{TODO}
+This section will provide an overview of the system design. This will include the Processor System software, the Programmable Logic and the interface between these two components of the system.
 
 \subsection{Processing System (PS) Design}
 \label{sec:Design-PS}
@@ -717,6 +715,8 @@ The AXI-MM stores data sequentially, so that it can be easily accessed with a po
 #pragma HLS resource variable=master_portA core=AXI4M
 \end{lstlisting}
 
+Unnecessary master bus accesses harm the efficiency of a hardware block. To limit this, the hardware kernel loads the input and weights data from the interface into buffers at the start of its operation, and stores the output data in a buffer until the end of its operation, when it loads the output buffer into the AXI-MM interface.
+
 
 \subsubsection{AXI4-Lite Interface}
 \label{sec:Design-PSnPL-AXI4L}
@@ -748,26 +748,6 @@ The programmable logic in the system is designed using Xilinx's Vivado design su
 \label{sec:Imp}
 
 This section will explore any relevant details that were not mentioned in Section \ref{sec:Design}: Design. This will include pseudo-code or fragments of code where they are useful, and by the end of the section, the reader should have an approximate understanding of the code structure and the development process that took place.
-
-\begin{itemize}
-\item consider merging this with System design
-\end{itemize}
-
-\subsection{Infrastructure Setup}
-\label{sec:Imp-InfSetup}
-
-
-The work was performed on a Ubuntu computer, set up with two main tools. The first tool to setup up was the Xilinx SDSoC development environment, which was used to design the system. SDSoC is able to optimise and compile C, C++ or OpenCL source code for a Zynq SoC. The compiler generates software for the ARM core and, using an HLS tool, a bitstream for the FPGA. This allows the user to design the entire system, easily accelerating functions with the FPGA. This facilitated rapid development and design of firmware for the Zynq SoC.
-
-The other important tool to set up is called Caffe (or Convolutional Architecture for Fast Feature Embedding). This is a deep learning framework that can be used to design, train, optimise and test CNNs, with a focus on computer vision \cite{jia2014caffe}. \hl{TODO} Explain in design instead?
-
-
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe use of Caffe with reference to Section \ref{sec:Design-Network}
-\end{itemize}
 
 \subsection{Programming Language}
 \label{sec:Imp-Language}
@@ -811,8 +791,7 @@ The convolution function hardware was then integrated into a hardware design wit
 \section{Testing}
 \label{sec:Test}
 
-
-The focus of this section is on the verification methods used to confirm that the system implementation was correct. The testing methods for individual layers will be analysed first, followed by tests for the whole network. \hl{TODO - check that this description applies}
+The focus of this section is on the verification methods used to confirm that the system implementation was correct. The testing methods for individual layers will be analysed first, followed by tests for hardware/software interface and for the hardware kernel.
 
 \subsection{Software Layer Testing}
 \label{sec:Test-Layers}
@@ -821,7 +800,7 @@ For each layer that was implemented in soft, a short test function was written t
 
 For the ReLU layer, this test consists of simply filling the input with uniformly distributed values in the range $[-255, 255]$ and comparing the input with output. If the input value is negative, the output value is expected to be $0$. If the input value is positive, the corresponding output value should be equal to that value.
 
-For the pooling layer, this test was slightly more challenging. Simply running through the same algorithm to check the result is not a reliable test, and redesigning the code was deemed an inefficient use of the project time, particularly given the fact that the pooling layer is not computationally expensive enough to warrant a performance comparison between different implementations, so the second version would only be used for verification. Therefore the input blob is filled with values in ascending order from the lowest index, creating a matrix with where for any given sub-matrix, the highest value is in the location with the highest index. Therefore, the test could be performed by comparing the input and output, and checking that the value selected by the max pooling layer was indeed the value with the highest index. This test is obviously far from exhaustive, but as previously explained, it was deemed sufficient to verify basic functionality given the tight schedule of the project.
+For the pooling layer, this test was slightly more challenging. Simply running through the same algorithm to check the result is not a reliable test, and redesigning the code was deemed an inefficient use of the project time, particularly given the fact that the pooling layer is not computationally expensive enough to warrant a performance comparison between different implementations, so the second version would only be used for verification. Therefore the input Blob is filled with values in ascending order from the lowest index, creating a matrix with where for any given sub-matrix, the highest value is in the location with the highest index. Therefore, the test could be performed by comparing the input and output, and checking that the value selected by the max pooling layer was indeed the value with the highest index. This test is obviously far from exhaustive, but as previously explained, it was deemed sufficient to verify basic functionality given the tight schedule of the project.
 
 The fully connected and convolution layers are both much more complex than the ReLU and pooling layers, so devising a test function in C would have been quite a challenge. However, each of these functions was implemented twice, each using two different algorithms, as described in Sections \ref{sec:Design-Conv} and \ref{sec:Design-FC}. In each of these cases, the matrix multiplication based implementation was verified using MATLAB. The testing was performed by running a set of inputs through the layer implementation, and using MATLAB's matrix multiplication functionalities to perform the same computation. The results were compared, and if they were correct, the implementation was correct. This was done for a few different input sets and computation sizes to make the testing slightly more thorough. Then, when the second implementations of the fully connected and convolution layers were complete, they were simply compared against the first implementation to check their correctness.
 
@@ -830,14 +809,12 @@ The fully connected and convolution layers are both much more complex than the R
 
 A crucial part of the system that needed to be tested is the AXI4 bus that transferred data between the Programmable Logic and the Processing System, as described in Section \ref{sec:Design-PSnPL}. Errors in the setup of this interface could result in incorrect values being passed to and from the kernel, or could mean that the hardware kernel has no way to input or output data, rendering it completely unusable.
 
-To test the interface, a simple testing kernel was designed and built. This kernel was designed with to have the same interface design as the convolution kernel described in \ref{sec:Design-PL}\hl{TODO}. The kernel simply read some values from the input and weights arrays, and from each of the AXI4-Lite variable inputs. Each of these values was then assigned to a location in the output array. The host code controlling the kernel was set up to assign values to each of the input arrays and variables, initiate the kernel, and print the output buffer. This allowed the operation of the AXI interface to be verified by inspection.
+To test the interface, a simple testing kernel was designed and built. This kernel was designed to have the same interface design as the convolution kernel described in \ref{sec:Design-PL}. By testing a kernel that had the same external interfaces as the desired hardware kernel, it could be confirmed that required interfaces were working properly before proceeding with the system implementation. The kernel simply read some values from the input and weights arrays, and from each of the AXI4-Lite variable inputs. Each of these values was then assigned to a location in the output array. The host code controlling the kernel was set up to assign values to each of the input arrays and variables, initiate the kernel, and print the output buffer. This allowed the operation of the AXI interface to be verified by inspection.
 
 \subsection{Hardware Kernel Testing}
 \label{sec:Test-HW}
 
-Once the full hardware kernel had been designed, it was tested to verify that it achieved the ground truth result described in \ref{sec:}. This was a very simple case of running the test kernel a few times and checking by inspection that the result was correct, and was repeated correctly.  
-
-\hl{TODO}
+Once the full hardware kernel had been designed, it was tested to verify that it achieved the ground truth result described in \ref{sec:}. This was a very simple case of running the test kernel, as shown in Section \ref{sec:Design-PL}, and checking by inspection that the result was correct. The test was repeated for several iterations and it was discovered that the output values were accumulating the results of each run. Each time the kernel was tested, the output, rather being set to the result of the convolution, would be the sum of all runs up to that point. With a minor adjustment in the HLS code, this potentially disruptive error was corrected.
 
 \newpage
 
