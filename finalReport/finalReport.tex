@@ -289,6 +289,23 @@ This equation is visualised in figure \ref{fig:fc}. As the name suggests, every 
 \label{fig:fc}
 \end{figure}
 
+\subsection{VGGNet}
+\label{sec:Background-VGGNet}
+
+One of the most famous CNN architectures is called VGGNet, and was developed by  Karen Simonyan and Andrwe Zisserman of the Visual Geometry Group at the University of Oxford in 2014\cite{VGGNet}. This network was the runner up in the ILSVRC 2014 competition, and was showed that network depth is a key component for good performance.
+
+The architecture, consists many convolution layers with 3x3 weights kernels, 1 zero padding and 1 stride, each followed by a ReLU Layer. These convolution and ReLU units are repeated in groups, with max-pooling layers, with 2x2 kernels, no zero padding and stride, in between groups. Then the network is ended by three fully connected layers and finally a softmax classifier, which converts the scores at the output of the last fully connected layer and converts them into probabilities. VGG-16, the architecture show in Figure \ref{fig:vgg}, has 16 layers with weights - 13 convolution layers and 3 fully connected layers.
+
+
+\begin{figure} [H]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/vgg16.png}
+\caption{The VGGNet-16 Architecture\cite{vgg16}}
+\label{fig:vgg}
+\end{figure}
+
+The VGGNet architecture is appealing to be implemented in hardware, because of its very uniform structure, performing only 3x3 convolutions and 2x2 pooling. VGGNet's weak point are that it is very slow to train, and that it is expensive to evaluate, with fully connected layers that occupy a lot of memory. Training the network is outside the scope of this project, so this is not a major concern and the simplicity and uniformity of the network structure bring benefits that outweigh the potential drawbacks.
+
 \subsection{FPGAs and CNN Implementations}
 \label{sec:Background-FpgaCnnImpl}
 
@@ -413,7 +430,7 @@ It would be desirable for a full CNN model to be implemented. With this in place
 \newpage
 
 \section{Convolutional Neural Network Design}
-\label{sec:Design-Network}
+\label{sec:Design-CNNS}
 
 In this section, the design of he Convolutional Neural Network implementation will be discussed. This includes an overview of the Caffe CNN framework, network infrastructure and finally the design of each layer type.
 
@@ -424,14 +441,19 @@ Caffe is an open-source framework for deep learning models, particularly Convolu
 
 In order to avoid repeating the work of other academic groups, to significantly shorten the  development time-frame of the CNN system, and to ensure compatibility with pre-trained network models, the Caffe framework was used as reference code for the CNN implementation. In order to ensure that pre-trained weights from the model zoo would be compatible with the CNN implementation, the Caffe's source code was analysed. The concept of "Blobs", as described in Section \ref{sec:Design-Network-Blobs}, as a homogeneous data carrier for the network was adapted from Caffe in order to guarantee compatibility, as was the generic layer structure described in \ref{sec:Design-Network-Layers}.
 
-\subsection{Data Objects}
+\subsection{Top Level Network Design}
+\label{sec:Design-Network}
+
+\hl{TODO}
+
+\subsubsection{Data Objects}
 \label{sec:Design-Network-Blobs}
 
 In order for data to be easily processed by network layers, a class called \lstinline|DataMemory| was created. This is a simple wrapper around dynamically allocated memory that provides homogeneous storage of all data in the network. The data is accessed through functions called \lstinline|getConstData| and \lstinline|getMutableData|, which both return a pointer that can be used to access the data as an array. A \lstinline|const| pointer is returned by \lstinline|getConstData| for situations where the memory is only going to be read, and \lstinline|getMutableData| returns a normal pointer which can be used to read and write values to and from the memory space.
 
 In order to make a universal, easily used data handler, the aforementioned \lstinline|Blob| class was created. This class acts as a wrapper around \lstinline|DataMemory| instances, and is used to store all data passing through the software portions of the network, including the weights data for convolution and fully connected layers. Blobs are given four dimensions (batch number, depth, height and width) and allow the stored data to be accessed as a four dimensional matrix of data, as opposed to a flat array. Most Blobs would only use three of these dimensions, but weights Blobs in convolution and fully connected layers use four layers. Additionally the fourth dimension allows multiple sets of input data to be propagated through the network together. This is referred to as batch processing. The Blob class also includes useful functions that simplify data handling, such as a \lstinline|count| function that returns the length of the data stored, and the \lstinline|CopyFrom| function that copies data from one Blob to another. To keep the layer designs as simple as possible, the layers were designed to accept only square Blobs as inputs and outputs. Therefore when describing a Blob, "size" refers to both the height and width of the Blob.
 
-\subsection{Layer Design}
+\subsubsection{Layer Design}
 \label{sec:Design-Network-Layers}
 
 Each layer type was implemented as a class, which provided several benefits. Every layer would be self contained, with all functions and data related to the class being easily accessible. The class data could also be protected from being changed in an unintended way by storing information in private variables, and allowing external access to the data only through dedicated functions that will not misuse it. Finally, using classes allows multiple, identical instances of the same layer types to be easily created.
