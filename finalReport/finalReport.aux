@@ -81,33 +81,33 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}VGGNet}{18}{subsection.2.4}}
 \newlabel{sec:Background-VGGNet}{{2.4}{18}{VGGNet}{subsection.2.4}{}}
 \citation{vgg16}
-\citation{SudaFpgaAccelerator}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The VGGNet-16 Architecture\cite  {vgg16}}}{19}{figure.8}}
 \newlabel{fig:vgg}{{8}{19}{The VGGNet-16 Architecture\cite {vgg16}}{figure.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}FPGAs and CNN Implementations}{19}{subsection.2.5}}
-\newlabel{sec:Background-FpgaCnnImpl}{{2.5}{19}{FPGAs and CNN Implementations}{subsection.2.5}{}}
+\citation{SudaFpgaAccelerator}
 \citation{SudaFpgaAccelerator}
 \citation{ZhangFpgaAccelerator}
 \citation{ChenFpgaAccelerator}
 \citation{FarabetFpgaAccelerator}
-\citation{SeuTutorial}
-\citation{SuitabilityGaisler}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}FPGAs and CNN Implementations}{20}{subsection.2.5}}
+\newlabel{sec:Background-FpgaCnnImpl}{{2.5}{20}{FPGAs and CNN Implementations}{subsection.2.5}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.5.1}Implementation Challenges}{20}{subsubsection.2.5.1}}
 \newlabel{sec:Background-FpgaCnnImpl-Challenges}{{2.5.1}{20}{Implementation Challenges}{subsubsection.2.5.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.5.2}FPGA CNN Accelerators}{20}{subsubsection.2.5.2}}
 \newlabel{sec:Background-FpgaCnnImpl-Accel}{{2.5.2}{20}{FPGA CNN Accelerators}{subsubsection.2.5.2}{}}
-\citation{FTripleMR}
+\citation{SeuTutorial}
 \citation{SuitabilityGaisler}
+\citation{FTripleMR}
 \citation{SuitabilityGaisler}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.6}FPGAs and Space Applications}{21}{subsection.2.6}}
 \newlabel{sec:Background-FPGAsAndSpaceApplications}{{2.6}{21}{FPGAs and Space Applications}{subsection.2.6}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.1}Single Event Upsets}{21}{subsubsection.2.6.1}}
 \newlabel{sec:Background-FPGAsAndSpaceApplications-SEUs}{{2.6.1}{21}{Single Event Upsets}{subsubsection.2.6.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}SEU Mitigation Techniques}{21}{subsubsection.2.6.2}}
-\newlabel{sec:Background-FPGAsAndSpaceApplications-Mitigation}{{2.6.2}{21}{SEU Mitigation Techniques}{subsubsection.2.6.2}{}}
+\citation{SuitabilityGaisler}
 \citation{FTripleMR}
 \citation{RadHardFpga}
 \citation{SEM}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.2}SEU Mitigation Techniques}{22}{subsubsection.2.6.2}}
+\newlabel{sec:Background-FPGAsAndSpaceApplications-Mitigation}{{2.6.2}{22}{SEU Mitigation Techniques}{subsubsection.2.6.2}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.6.3}Soft Error Mitigation (SEM) Core}{22}{subsubsection.2.6.3}}
 \newlabel{sec:Background-FPGAsAndSpaceApplications-SEM}{{2.6.3}{22}{Soft Error Mitigation (SEM) Core}{subsubsection.2.6.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Project Specification}{23}{section.3}}
@@ -184,7 +184,6 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {5}Max Pooling Computation}{37}{lstlisting.5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Layer Setup}{37}{subsubsection.4.6.1}}
 \newlabel{sec:Design-Pool-Setup}{{4.6.1}{37}{Layer Setup}{subsubsection.4.6.1}{}}
-\newlabel{eq:PoolOutSize}{{8}{37}{Layer Setup}{equation.4.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}System Design}{38}{section.5}}
 \newlabel{sec:Design}{{5}{38}{System Design}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Processing System (PS) Design}{38}{subsection.5.1}}
@@ -221,26 +220,30 @@
 \newlabel{sec:Imp-Optimisations}{{6.3}{44}{Hardware Optimisations}{subsection.6.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Soft Error Mitigation (SEM) Core Integration}{44}{subsection.6.4}}
 \newlabel{sec:Imp-SEM}{{6.4}{44}{Soft Error Mitigation (SEM) Core Integration}{subsection.6.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Testing}{45}{section.7}}
-\newlabel{sec:Test}{{7}{45}{Testing}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Software Layer Testing}{45}{subsection.7.1}}
-\newlabel{sec:Test-Layers}{{7.1}{45}{Software Layer Testing}{subsection.7.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}PS/PL Interface Testing}{46}{subsection.7.2}}
-\newlabel{sec:Test-AXI}{{7.2}{46}{PS/PL Interface Testing}{subsection.7.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Hardware Kernel Testing}{46}{subsection.7.3}}
-\newlabel{sec:Test-HW}{{7.3}{46}{Hardware Kernel Testing}{subsection.7.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Evaluation}{47}{section.8}}
-\newlabel{sec:Eval}{{8}{47}{Evaluation}{section.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}FPGA Implementation of a CNN}{47}{subsection.8.1}}
-\newlabel{sec:Eval-FPGAImplOfCnn}{{8.1}{47}{FPGA Implementation of a CNN}{subsection.8.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Fault Tolerance Investigation}{47}{subsection.8.2}}
-\newlabel{sec:Eval-FaultTolInv}{{8.2}{47}{Fault Tolerance Investigation}{subsection.8.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion and Future Work}{48}{section.9}}
-\newlabel{sec:Conclusion}{{9}{48}{Conclusion and Future Work}{section.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Future Work}{48}{subsection.9.1}}
-\newlabel{sec:Conclusion - FW}{{9.1}{48}{Future Work}{subsection.9.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Conclusion}{48}{subsection.9.2}}
-\newlabel{sec:Conclusion - C}{{9.2}{48}{Conclusion}{subsection.9.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}The SocDrawer}{44}{subsection.6.5}}
+\newlabel{sec:Imp-socdrawer}{{6.5}{44}{The SocDrawer}{subsection.6.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces \texthl  {TODO} }}{45}{figure.13}}
+\newlabel{fig:testflow}{{13}{45}{\hl {TODO}}{figure.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Testing}{46}{section.7}}
+\newlabel{sec:Test}{{7}{46}{Testing}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Software Layer Testing}{46}{subsection.7.1}}
+\newlabel{sec:Test-Layers}{{7.1}{46}{Software Layer Testing}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}PS/PL Interface Testing}{47}{subsection.7.2}}
+\newlabel{sec:Test-AXI}{{7.2}{47}{PS/PL Interface Testing}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Hardware Kernel Testing}{47}{subsection.7.3}}
+\newlabel{sec:Test-HW}{{7.3}{47}{Hardware Kernel Testing}{subsection.7.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Evaluation}{48}{section.8}}
+\newlabel{sec:Eval}{{8}{48}{Evaluation}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}FPGA Implementation of a CNN}{48}{subsection.8.1}}
+\newlabel{sec:Eval-FPGAImplOfCnn}{{8.1}{48}{FPGA Implementation of a CNN}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Fault Tolerance Investigation}{48}{subsection.8.2}}
+\newlabel{sec:Eval-FaultTolInv}{{8.2}{48}{Fault Tolerance Investigation}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion and Future Work}{49}{section.9}}
+\newlabel{sec:Conclusion}{{9}{49}{Conclusion and Future Work}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Future Work}{49}{subsection.9.1}}
+\newlabel{sec:Conclusion - FW}{{9.1}{49}{Future Work}{subsection.9.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Conclusion}{49}{subsection.9.2}}
+\newlabel{sec:Conclusion - C}{{9.2}{49}{Conclusion}{subsection.9.2}{}}
 \bibdata{finalReport}
 \bibcite{neocognitron}{1}
 \bibcite{ImageNetChallenge}{2}
@@ -275,5 +278,5 @@
 \bibcite{ManualZynq}{31}
 \bibstyle{ieeetr}
 \citation{*}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Source Code}{52}{appendix.A}}
-\newlabel{Source}{{A}{52}{Source Code}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Source Code}{53}{appendix.A}}
+\newlabel{Source}{{A}{53}{Source Code}{appendix.A}{}}

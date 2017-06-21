@@ -25,7 +25,7 @@
 	frame=single, 
 	captionpos=b, 
 	numbers=left, 
-	basicstyle=\ttfamily,
+	basicstyle=\small\ttfamily,
 	columns=flexible,
 	breaklines=true,
 	tabsize=1,
@@ -294,7 +294,9 @@ This equation is visualised in figure \ref{fig:fc}. As the name suggests, every 
 
 One of the most famous CNN architectures is called VGGNet, and was developed by  Karen Simonyan and Andrwe Zisserman of the Visual Geometry Group at the University of Oxford in 2014\cite{VGGNet}. This network was the runner up in the ILSVRC 2014 competition, and was showed that network depth is a key component for good performance.
 
-The architecture, consists many convolution layers with 3x3 weights kernels, 1 zero padding and 1 stride, each followed by a ReLU Layer. These convolution and ReLU units are repeated in groups, with max-pooling layers, with 2x2 kernels, no zero padding and stride, in between groups. Then the network is ended by three fully connected layers and finally a softmax classifier, which converts the scores at the output of the last fully connected layer and converts them into probabilities. VGG-16, the architecture show in Figure \ref{fig:vgg}, has 16 layers with weights - 13 convolution layers and 3 fully connected layers.
+The architecture, consists many convolution layers with 3x3 weights kernels, 1 zero padding and 1 stride, each followed by a ReLU Layer. These parameters were selected, in part, because they produce an output that is exactly the same size as the input. The output width or height of a convolution is calculated with the formula $outputSize = (inputSize + 2 * zeroPadding - kernelSize)/stride + 1$. By substituting in the values described above, the formula becomes $outputSize = (inputSize + 2 * 1 - 3)/1 + 1$, which reduces to $outputSize = inputSize$. This property allows convolutions to be repeated without having to manage changing layer sizes between every layer, greatly simplifying the design of a deep network.
+
+These convolution and ReLU units are repeated in five groups of equally sized layers, each group having a smaller height and width but greater depth than the previous layer. These groups are separated by max-pooling layers, with 2x2 kernels, no zero padding and stride, in between groups. Then the network is ended by three fully connected layers and finally a softmax classifier, which converts the scores at the output of the last fully connected layer and converts them into probabilities. VGG-16, the architecture show in Figure \ref{fig:vgg}, has 16 layers with weights - 13 convolution layers and 3 fully connected layers.
 
 
 \begin{figure} [H]
@@ -437,7 +439,7 @@ In this section, the design of he Convolutional Neural Network implementation wi
 \subsection{The Caffe CNN Framework}
 \label{sec:Design-Network-Caffe}
 
-Caffe is an open-source framework for deep learning models, particularly Convolutional Neural Networks. This framework facilitates the easy design, training and testing of network models, and provides access to a "Model Zoo" where several popular CNN models can be downloaded and tested\cite{caffe}. These models include pre-trained weights, allowing the user to bypass the time consuming process of organising a training dataset and running the training process locally. This model zoo contains a pre-trained version of the VGGNet model discussed in Section \ref{sec:VGGNet}.
+Caffe is an open-source framework for deep learning models, particularly Convolutional Neural Networks. This framework facilitates the easy design, training and testing of network models, and provides access to a "Model Zoo" where several popular CNN models can be downloaded and tested\cite{caffe}. These models include pre-trained weights, allowing the user to bypass the time consuming process of organising a training dataset and running the training process locally. This model zoo contains a pre-trained version of the VGGNet model discussed in Section \ref{sec:Background-VGGNet}.
 
 In order to avoid repeating the work of other academic groups, to significantly shorten the  development time-frame of the CNN system, and to ensure compatibility with pre-trained network models, the Caffe framework was used as reference code for the CNN implementation. In order to ensure that pre-trained weights from the model zoo would be compatible with the CNN implementation, the Caffe's source code was analysed. The concept of "Blobs", as described in Section \ref{sec:Design-Network-Blobs}, as a homogeneous data carrier for the network was adapted from Caffe in order to guarantee compatibility, as was the generic layer structure described in \ref{sec:Design-Network-Layers}.
 
@@ -501,7 +503,7 @@ By reducing the convolution to a single matrix multiplication, the algorithm can
 \subsubsection{Tiled Convolution Method}
 \label{sec:Design-Conv-TC}
 
-Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudo-code in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. The formula $inIndex = stride * outIndex + kernelIndex - zeroPadding$ is used to calculate the input index in the height and width dimensions. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudo-code is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
+Directly interpreting the convolution algorithm as described in \ref{sec:Background-CNN-Conv}, the pseudo-code in Code \ref{code:conv-initial} can be formed. This code iterates through the rows, columns and depth layers of the output, as well as the rows and columns of the weights kernels and the depth layers of the input. The input row and column for the given kernel and output locations are found in lines 6 and 8. The formula $inRow = stride * outRow + kernelRow - zeroPadding$ is used to calculate the input row, and the same formula is used for finding column. In the centre of the loops, the value in the output feature map is incremented by the product of the corresponding weight and input values, but if the input location is in a padded region, the input value is 0. Therefore, the output only changes when the input is not in padding. It can be noted that this pseudo-code is functionally identical to the Matrix Multiplication method, except that the computation is performed value at a time, and the input data is not moved to a new location in memory.
 
 \renewcommand{\lstlistingname}{Code}
 \begin{lstlisting}[caption=Basic Convolution, label=code:conv-initial, language=C, float=ht]
@@ -561,7 +563,7 @@ Because tiling allows for the data space to be efficiently broken down into part
 
 To set up the layer, values for zero padding, output depth, stride and kernel size parameters are provided. Using these parameters and reading the dimensions of the input, the output height and width are calculated using Equation \ref{eq:ConvOutSize}.
 \begin{equation}
-outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
+outputSize = \frac{inputSize + 2 \times zeroPadding - kernelSize}{stride} + 1
 \label{eq:ConvOutSize}
 \end{equation}
 
@@ -603,7 +605,7 @@ The size of the convolution output is equal to the number of input regions that 
 \label{eq:ConvDotProd}
 \end{equation}
 
-As discussed in section \ref{network structure}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input Blob. At the end of the convolutional part of the network is a pooling layer that produces 512 different $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
+As discussed in section \ref{sec:Background-VGGNet}, VGG net consists of five sets of convolution layers followed by three fully connected layers. Therefore, the convolution-based fully connected layers will have two kinds of inputs. The bottom of the layer will be either the output of the convolutional part of the network or the output of another fully connected layer. In order to form the dot product, the size of the weights kernel must match the size of the input Blob. At the end of the convolutional part of the network is a pooling layer that produces 512 different $7 \times 7$ feature maps at its output. Therefore, the first fully connected layer must use a $7 \times 7$ weights kernel. The fully connected layer produces a vector of values at its output. Therefore, any fully connected layers after the first on will treat their input as a set of $1 \times 1$ feature maps and will have a matching kernel size. In the VGGNet model, this applies to the final two layers.
 
 A convolution is an ideal way to compute the result because the fully connected layer can be easily computed in uniform chunks, perfect for FPGA computation. In addition, the convolution layer has already been designed for the convolution layer, and any optimisations implemented in the design of the convolution layer can improve the performance of the fully connected layer with no extra work. Therefore, this method was selected to be implemented in hardware.
 
@@ -653,12 +655,7 @@ for(dep = 0; dep < depth_; dep++){
 \subsubsection{Layer Setup}
 \label{sec:Design-Pool-Setup}
 
-The setup for this layer is similar to that of the convolution layer without any weights. The input parameters are zero padding, stride and kernel size parameters are provided, and the output size is calculated with the Equation \ref{eq:PoolOutSize}. If the result is not an integer, the combination of the input parameters is not valid. The output Bloc is reshaped to $(outputDepth \times outputSize \times outputSize)$.
-\begin{equation}
-outputSize = inputSize + 2 \times zeroPadding - kernelSize) / stride) + 1
-\label{eq:PoolOutSize}
-\end{equation}
-
+The setup for this layer is similar to that of the convolution layer without any weights. The input parameters are zero padding, stride and kernel size parameters are provided, and the output size is calculated with the Equation \ref{eq:ConvOutSize} from Section \ref{sec:Design-Conv}. If the result is not an integer, the combination of the input parameters is not valid. The output Bloc is reshaped to $(outputDepth \times outputSize \times outputSize)$.
 
 \newpage
 
@@ -783,9 +780,9 @@ Git version control was used extensively for the code in this project. When chan
 
 The majority of the work was done in a computing lab on the 9th floor of the Electrical and Electronic Engineering building. Here, a Zedboard was set up so that it could boot from an SD card. The executable files generated by SDSoC were loaded on the SD card and transferred to the Zedboard. When the Zedboard had been power cycled and had finished computing, and serial connection between the Zedboard and a desktop computer facilitated commands to be sent to control the system, and results data to be sent back.
 
-Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the convolution function was moved into hardware. It was planned for the fully connected Layer to also be hardware accelerated, but delays in the process of setting up the socDrawer for testing prevented this from taking place. \hl{TODO - refer to later explanation}
+Since the CNN implementation was going to be implemented in software with one or two hardware functions, it was decided that a pure software implementation would be useful, both as an easy way to test the algorithms used in the full version, and to serve as a reference for results coming from the hardware accelerated implementation. Once this was complete, the convolution function was moved into hardware. It was planned for the fully connected Layer to also be hardware accelerated, but delays in the process of setting up the socDrawer for testing prevented this from taking place.
 
-The convolution function hardware was then integrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in \hl{Section} \ref{sec:socDrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
+The convolution function hardware was then integrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in Section \ref{sec:Imp-socdrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
 
 \subsection{Hardware Optimisations}
 \label{sec:Imp-Optimisations}
@@ -807,6 +804,28 @@ The convolution function hardware was then integrated into a hardware design wit
 \item Describe SEM IP core (a core to simulate SEUs)
 \item Justify using SEM IP core rather than creating own test (simplicity, time, etc)
 \end{itemize}
+
+\subsection{The SocDrawer}
+\label{sec:Imp-socdrawer}
+
+The SocDrawer is a test rig set up to facilitate parallel testing on an array of Zedboards, in order to speed up exhaustive hardware tests such as error injection testing. It is designed modularly so that any number of Zedboards can be added and tested simultaneously, and if one SoC is causing problems, it can simply be removed from the testing set up. This testing rig was already set up with scripts to perform error injection testing, which meant that the test set up only required the hardware kernel to be integrated with the existing system. The most time-consuming part of this process was configuring the AXI interfaces, as described in Section \ref{sec:Design-PSnPL}, to work with the host code, detailed in Section \ref{sec:Design-PS-SW}, on the SocDrawer. It was eventually discovered that aggressive optimisation by the HLS compiler was removing key parts of the interface and the problem was resolved by redesigning and rearranging the HLS code.
+
+A diagram of the testing SocDrawer's testing scripts are shown in Figure \ref{fig:testflow}. These scripts were already on the socDrawer, but were re-purposed for the tests of this project. The testing process is takes two files as inputs. The first of these is a \lstinline|.bin| file, which stores the hardware configuration in a bitstream. This file is used to load the hardware design into the FPGA. The second important file is a \lstinline|.bin| file. This file contains a list of binary values, corresponding with the bits in the bitstream. The values are set to 1 if they are deemed to be essential for the kernel to function properly, and are set to 0 otherwise. It is these essential bits that will be flipped in the error injection process. \lstinline|generateLinearAddresses.py| converts the contents of the .ebd file in to linear addresses, i.e. for each essential bit, a hexadecimal number is generated to represent the address of that bit. These linear addresses are stored in a .la file.
+
+The testing process was 
+
+The tests were run with a python script called \lstinline|kmeans_evaluateChunks.py|
+
+\hl{TODO}
+
+\begin{figure} [H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/testflow.eps}
+\caption{\hl{TODO} }
+\label{fig:testflow}
+\end{figure}
+
+
 
 \newpage
 
