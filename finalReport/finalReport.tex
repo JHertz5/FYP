@@ -59,7 +59,7 @@ Final Year Project Report 2017\\[17pt]
 \rule{\columnwidth}{3pt}
 \vfill
 \centering
-\includegraphics[width=\columnwidth,keepaspectratio]{figures/frontCover.png}
+\includegraphics[width=0.7\columnwidth,height=60mm,keepaspectratio]{figures/crest.png}
 \vfill
 \setlength{\tabcolsep}{0pt}
 
@@ -80,14 +80,16 @@ Second Marker: & \textbf{\secondmarker} \\
 \begin{abstract}
 Over the last decade, advancements in the design of Convolutional Neural Networks (CNNs) have led to significant improvements in the accuracy of image classification systems. A potential application of a CNN image classifier would be  processing data on board a satellite. In such a situation, with limited power and computational resources, it would be beneficial to make use of an FPGA in order to alleviate the resource demands of the computationally expensive CNN. However, FPGAs are sensitive to ionizing radiation, and at orbital altitudes, the high radiation environment can induce a variety of errors in the FPGA fabric, casting doubt on the suitability of a commercial FPGA for CNN applications in space.
 
-This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are analysed to determine the impact on the system’s performance. \hl{TODO - [The tests are yet to be performed, and as such, this part of the abstract is not yet completed.]} The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
+This project implements an FPGA based CNN, and simulates radiation-induced errors. These results are described and analysed. The implementation target platform is the ZedBoard Zynq-7000 ARM/FPGA SoC. The  hardware and software portions of the embedded system are both implemented  using the Xilinx SDSoC development environment.
 \end{abstract}
 
 \newpage
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-I would like to thank Dr Felix Winterstein for the enormous amount of help and guidance that he provided, particularly in the final stages of the project. I'm extremely grateful for the time he invested in helping me overcome obstacles and without his aid, the project would not have been completed. I would also like to thank Shane Fleming for allowing me to take advantage of the great work he put in to building the socDrawer, and for the assistance he provided in setting it up to run my experiments.
+I would like to thank Dr Felix Winterstein for the enormous amount of help and guidance that he provided, particularly in the final stages of the project. I'm extremely grateful for the time he invested in helping me overcome the various obstacles that I encountered. 
+
+I would also like to thank Shane Fleming for allowing me to take advantage of the great work he put in to building the socDrawer, and for the crucial assistance he provided in setting it up to run my experiments.
 \end{abstract}
 
 \newpage
@@ -130,13 +132,13 @@ Vivado HLS was used to design and build a hardware block from C++ code. Then Viv
 \subsection{Report Structure}
 \label{sec:Intro-Structure}
 
-\hl{TODO - verify/adjust if needed}
-
 \textbf{Section \ref{sec:Background} - Background:} In order to guarantee that the reader has the contextual knowledge required to understand the project, this section will High Level Synthesis, and CNNs. FPGA implementations of CNNs and the difficulties of using FPGAs in radiation-heavy environments will also be explored.\\
 \\
 \textbf{Section \ref{sec:ProjSpec} - Project Specification:} This section details the project requirements that should be met by the final system.\\
 \\
-\textbf{Section \ref{sec:Design} - Design:} The decisions taken in the design process are described and explained in this section. The high level design is described, as well important aspects of the low level design.\\
+\textbf{Section \ref{sec:Design-CNN} - CNN Design:} The design of the network is described in this section from the top level,  as well important aspects of the low level design.\\
+\\
+\textbf{Section \ref{sec:Design} - System Design:} The decisions taken in the system design process are described and explained in this section. This section focuses on the embedded system, and how the software and hardware components were conceived.\\
 \\
 \textbf{Section \ref{sec:Imp} - Implementation:} This section illustrate how the system was implemented, aiming to provide the reader with an understanding of the development process.\\
 \\
@@ -365,74 +367,49 @@ The Soft Error Mitigation core is a Xilinx Intellectual Property (IP) core that 
 \section{Project Specification}
 \label{sec:ProjSpec}
 
-In this section, the requirements and design specifications captured during the planning of the project will be discussed. The requirements will be divided into two set of functionalities - those that are necessary for the project to be considered a success, and those that are not essential but would greatly enhance the system and the results gathered - and briefly described. Following this, the testing and evaluation specifications are laid out and discussed.
+In this section, the requirements and design specifications captured during the planning of the project will be discussed. The requirements will be divided into three set of functionalities - those that are necessary for the embedded CNN implementation to be considered successful, those that are necessary for the SEM testing to be considered a success, and those that are not essential but would greatly enhance the system and the results gathered - and briefly described. Following this, the testing and evaluation specifications are laid out and discussed.
 
-\subsection{Necessary Functionality}
-\label{sec:ProjSpec-Necessary}
+\subsection{Necessary Functionality - CNN}
+\label{sec:ProjSpec-Necessary-CNN}
 
-\subsubsection{Running On Zedboard}
+These items are necessary implementations features related to the implementation of the CNN features on the hardware system
+
+\subsubsection{Embedded System running CNN layers}
 \label{sec:ProjSpec-Necessary-Zedboard}
 
-The system should be able to run on the target platform, described in Section \ref{sec:Intro-TargetPlatform} as the Xilinx Zedboard. The compilation of the program will produce an executable file in either .bin or .elf format, and this should run on the hardware platform, either printing a stream of output that can be read through a serial connection or storing the results in a file .log or .txt to be read later.
+The system should be able to run layers of a CNN on the target platform, described in Section \ref{sec:Intro-TargetPlatform} as the Xilinx Zedboard. The compilation of the program will produce an executable file in either .bin or .elf format, and this should run on the hardware platform, either printing a stream of output that can be read through a serial connection or storing the results in a file .log or .txt to be read later.
 
-\subsubsection{Software and Hardware Split}
-\label{sec:ProjSpec-Necessary-split}
+\subsection{Necessary Functionality - SEM Tests}
+\label{sec:ProjSpec-Necessary-SEM}
 
-An important part of the design is to intelligently spit the processing responsibilities between the hardware and software of the Zynq-7000. The various parts of the system should be analysed and compared to determine which parts are more suitable for hardware acceleration, and which parts are more suitable for software implementation.
+These items are necessary implementations features related to the testing of the system with SEM core
 
 \subsubsection{Convolution Layer Implemented in Hardware}
 \label{sec:ProjSpec-Necessary-Conv}
 
 As previously explained in Section \ref{sec:Background-FpgaCnnImpl-Accel}, the convolution layer represents the biggest portion of the computational workload, and is thus the primary focus of the examination. It is therefore important that the convolution layer is at least partially implemented in hardware to allow testing with the SEM core. By analysing how the convolution layer is affected by SEUs, information about the effects on the rest of the network can be inferred.
 
-\subsubsection{SEM Core Integrated into Design}
-\label{sec:ProjSpec-Necessary-SEM}
+\subsubsection{SEM Testing}
+\label{sec:ProjSpec-Necessary-SocDrawer}
 
-In order to perform the SEU emulation with the SEM core as described in Section \ref{sec:Background-FPGAsAndSpaceApplications-SEM}, it is necessary to integrate the SEM core into the the digital hardware design. 
+In order to perform the SEU emulation with the SEM core as described in Section \ref{sec:Background-FPGAsAndSpaceApplications-SEM}, it is necessary to integrate the SEM core into the the digital hardware design. This requires the designed hardware kernels to be integrated into a larger system that includes the SEM core and the necessary interfaces to software required to set up and use the SEM core's SEU emulation functionality. The final component of the SEM tests is getting the design working with the socDrawer test rig. This would involve getting familiar with the test scripts and making changes to the existing scripts where necessary. It also requires obtaining the correct input files. This is detailed further in Section \ref{sec:Imp-socdrawer}.
 
 \subsection{Desirable Functionality}
 \label{sec:ProjSpec-Desirable}
 
 \subsubsection{Full CNN Implementation}
-\label{sec:ProjSpec-Desirable-SEM}
+\label{sec:ProjSpec-Desirable-CNN}
 
-It would be desirable for a full CNN model to be implemented. With this in place, it would bee possible to run 
+It would be desirable for a full CNN model to be implemented. With this in place, it would be possible to run the neural network with emulated SEU errors and compare the performance and accuracy of the system to that with no errors, providing and opportunity to deeply investigate the effects of SEUs on the system.
 
-\hl{TODO}
+\subsubsection{Hardware Optimisation}
+\label{sec:ProjSpec-Desirable-opt}
 
-\begin{itemize}
-\item Full CNN implemented, able to process and classify images with reasonable accuracy
-\item System is optimised to run as efficiently as possible
-\end{itemize}
-
-\hl{TODO}
-
-\subsection{Testing Specification}
-\label{sec:ProjSpec-TestSpec}
-
-\hl{TODO}
-
-\begin{itemize}
-\item Compare control results against pure software implementation to verify correctness
-\item Where numerical approximations are required, trade-off must be justifiable
-\end{itemize}
-
-\subsection{Evaluation Specification}
-\label{sec:ProjSpec-EvalSpec}
-
-\hl{TODO}
-
-\begin{itemize}
-\item Analyse SDSoC's estimate of hardware resources used, as well as actual resources used.
-\item Compare computation time/performance against those in literature
-\item If applicable, compare CNN accuracy to those in literature
-\item Assess impact of SEUs with Failure In Time measurement
-\end{itemize}
-
+Optimising the hardware blocks to run as quickly as possible is desirable. This would allow the test to be completed in a shorter period of time, potentially allowing more test cases to be investigated. It is also desirable to create hardware blocks that use the FPGA resources efficiently. The FPGA has limited resources with which to implement hardware designs, and designing compact, efficient hardware blocks allows for more functionality to be potentially implemented.
 \newpage
 
 \section{Convolutional Neural Network Design}
-\label{sec:Design-CNNS}
+\label{sec:Design-CNN}
 
 In this section, the design of he Convolutional Neural Network implementation will be discussed. This includes an overview of the Caffe CNN framework, network infrastructure and finally the design of each layer type.
 
@@ -446,7 +423,11 @@ In order to avoid repeating the work of other academic groups, to significantly 
 \subsection{Top Level Network Design}
 \label{sec:Design-Network}
 
-\hl{TODO}
+The neural network was controlled by a single class called \lstinline|Net|, which contained a vector of layers, a vector of inter-layer Blobs, and two Blobs for input and output. The net was hard coded to initialise itself to the 16 layer VGGNet described in Section \ref{sec:Background-VGGNet}. Each layer was initialised with the relevant parameters, including a layer name, and the name of the bottom and top Blobs and added to a list of layers. Once this is complete, the Blobs are generated. Since the VGGNet model is made up of sequential layers without any branching, this is simply done by iterating through the layers, checking that the bottom and top Blob names match, and then constructing a new Blob instance. The Blobs are stored in a vector to be easily accessed. 
+
+Once the construction is complete, the network is initialised. Based on the construction parameters of a blob and the parameters of the input blob, the first layer is set up, and its top blob is reshaped to be the correct size. This means that the next layer's set up and top Blob reshaping can take place. The set up process is propagated through the rest of the network in this fashion.
+
+The final stage of the network operation is to perform the forward computation. Data is read from the input blob and propagated through the network until the output Blob. This process runs the full classifier computation.
 
 \subsubsection{Data Objects}
 \label{sec:Design-Network-Blobs}
@@ -538,7 +519,7 @@ for(outRow=0; outRow<OutputHeight; outRow+=outRowTileSize){
 }}}}
 \end{lstlisting} 
 
-The computational kernel shown in Code 3 iterates through the tile and performs the convolution for the tiled region. The code is nearly identical to Code 1, but is performed only on one tile of data. Section \ref{sec:Imp-Optimisations} describes how this kernel can be further optimised.
+The computational kernel shown in Code 3 iterates through the tile and performs the convolution for the tiled region. The code is nearly identical to Code 1, but is performed only on one tile of data. Section \ref{sec:optimisation} describes how this kernel can be further optimised.
 
 \renewcommand{\lstlistingname}{Code}
 \begin{lstlisting}[caption=Computational Kernel, label=code:conv-hw1, language=C, float=ht]
@@ -749,10 +730,10 @@ The top level function of the HLS code takes these values as function parameters
 
 On the other side of the interface, the software accesses the variables by writing to and reading from specific kernel registers that are mapped to the AXI4-Lite bus. The bundled variables are accessed through sequential registers.
 
-\subsection{Programmable Logic (PL) Design}
+\subsection{Hardware Kernel Design}
 \label{sec:Design-PL}
 
-The programmable logic in the system is designed using Xilinx's Vivado design suite, as described in \ref{sec:Background-HLS}. It would have been possible to implement the design with and hardware description language such as VHDL or Verilog instead, but use of the HLS was chosen to speed up development. The hardware design is an implementation of the computational kernel described in Section \ref{sec:Design-Conv-TC}. A single hardware block was generated, as shown in Figure \ref{fig:hlsConv}, and integrated with a larger hardware design. The hardware block show the AXI4-Lite bus on the left side with the label \lstinline|S_AXI_CONFIG_BUS|, and the AXI-MM master bus is shown on the right side with the label \lstinline|M_AXI_MASTER_BUS|.
+The programmable logic in the system is designed using Xilinx's Vivado design suite, as described in \ref{sec:Background-HLS}. It would have been possible to implement the design with and hardware description language such as VHDL or Verilog instead, but use of the HLS was chosen to speed up development. The hardware kernel used for the evaluation is an implementation of the computational kernel described in Section \ref{sec:Design-Conv-TC}. A single hardware block was generated, as shown in Figure \ref{fig:hlsConv}, and integrated with a larger hardware design. The hardware block show the AXI4-Lite bus on the left side with the label \lstinline|S_AXI_CONFIG_BUS|, and the AXI-MM master bus is shown on the right side with the label \lstinline|M_AXI_MASTER_BUS|.
 
 \begin{figure} [H]
 \centering
@@ -760,6 +741,8 @@ The programmable logic in the system is designed using Xilinx's Vivado design su
 \caption{A diagram of the hardware kernel and the resulting Vivado block} 
 \label{fig:hlsConv}
 \end{figure}
+
+An important decision to make was deciding which parts of the CNN system were appropriate for a hardware implementation. Transferring data and setting up a hardware kernel has significant computational overhead, so the best candidates would need to have a significant computational workload in order to make the costs worthwhile. This eliminated the ReLU layer and the pooling layer from consideration, as they essentially move data with no significant computational workload. The convolution layer is the best candidate for hardware implementation, as it reuses input data, i.e. each input and weights value will be used multiple times in the computation. This is ideal as the computational cost of the convolution layer is by far the bulk of the network's workload. The fully connected layer is also a good candidate for hardware acceleration, as it has a large computational workload as well. However it does not reuse data and takes up a large amount of memory with its weights, because each input and output neuron have an individual weight between them. The data transfer cost of this means that the fully connected layer would not be as efficient as the convolutional layer in hardware, but would still bring significant benefits.
 
 \newpage
 
@@ -784,48 +767,51 @@ Since the CNN implementation was going to be implemented in software with one or
 
 The convolution function hardware was then integrated into a hardware design with other IP blocks, including the SEM core, which facilitated interfacing with external software. This hardware design was then loaded into the socDrawer, described in Section \ref{sec:Imp-socdrawer} and the SEU tests were performed. More details on the results gathering and analysis are given in Section \ref{sec:Eval}.
 
-\subsection{Hardware Optimisations}
-\label{sec:Imp-Optimisations}
-
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe optimisations performed with HLS, i.e. pipelining, partitioning arrays, etc
-
-\end{itemize}
-
-\subsection{Soft Error Mitigation (SEM) Core Integration}
-\label{sec:Imp-SEM}
-
-\hl{TODO}
-
-\begin{itemize}
-\item Describe SEM IP core (a core to simulate SEUs)
-\item Justify using SEM IP core rather than creating own test (simplicity, time, etc)
-\end{itemize}
-
 \subsection{The SocDrawer}
 \label{sec:Imp-socdrawer}
 
-The SocDrawer is a test rig set up to facilitate parallel testing on an array of Zedboards, in order to speed up exhaustive hardware tests such as error injection testing. It is designed modularly so that any number of Zedboards can be added and tested simultaneously, and if one SoC is causing problems, it can simply be removed from the testing set up. This testing rig was already set up with scripts to perform error injection testing, which meant that the test set up only required the hardware kernel to be integrated with the existing system. The most time-consuming part of this process was configuring the AXI interfaces, as described in Section \ref{sec:Design-PSnPL}, to work with the host code, detailed in Section \ref{sec:Design-PS-SW}, on the SocDrawer. It was eventually discovered that aggressive optimisation by the HLS compiler was removing key parts of the interface and the problem was resolved by redesigning and rearranging the HLS code.
+The SocDrawer is a test rig set up to facilitate parallel testing on an array of Zedboards, which hold the Zynq SoCs, in order to speed up exhaustive hardware tests such as error injection testing. It is designed modularly so that any number of Zedboards can be added and tested simultaneously, and if one SoC is causing problems, it can simply be removed from the testing set up. This testing rig was already set up with scripts to perform error injection testing, which meant that the test set up only required the hardware kernel to be integrated with the existing system. The most time-consuming part of this process was configuring the AXI interfaces, as described in Section \ref{sec:Design-PSnPL}, to work with the host code, detailed in Section \ref{sec:Design-PS-SW}, on the SocDrawer. It was eventually discovered that aggressive optimisation by the HLS compiler was removing key parts of the interface and the problem was resolved by redesigning and rearranging the HLS code.
 
 A diagram of the testing SocDrawer's testing scripts are shown in Figure \ref{fig:testflow}. These scripts were already on the socDrawer, but were re-purposed for the tests of this project. The testing process is takes two files as inputs. The first of these is a \lstinline|.bin| file, which stores the hardware configuration in a bitstream. This file is used to load the hardware design into the FPGA. The second important file is a \lstinline|.bin| file. This file contains a list of binary values, corresponding with the bits in the bitstream. The values are set to 1 if they are deemed to be essential for the kernel to function properly, and are set to 0 otherwise. It is these essential bits that will be flipped in the error injection process. \lstinline|generateLinearAddresses.py| converts the contents of the .ebd file in to linear addresses, i.e. for each essential bit, a hexadecimal number is generated to represent the address of that bit. These linear addresses are stored in a .la file.
 
-The testing process was 
+The next script is called \lstinline|createChunks.py|. The tests are performed in increments, so that if the test is interrupted, it can be restarted from the most recently completed increment. In order to achieve this, the .la file is split into chunks that are tested on an individual basis. 
 
-The tests were run with a python script called \lstinline|kmeans_evaluateChunks.py|
-
-\hl{TODO}
+The final script of the test is the most important. \lstinline|kmeans_evaluateChunks.py| generates a script to run tests for a particular chunk, send the scripts and the chunk to a SoC, runs the test and retrieves the results. The script will do this repeatedly for each SoC in parallel until the tests are over or one of the SoCs crashes due to a "problem chunk". Problem chunks are chunks that test a bit which causes the SoC to fail completely, requiring it to be rebooted before testing can continue. As described in \ref{sec:Design-PS-SW}, each time the host code runs, it will echo the input value it was given as a command line argument, which will be the linear address being tested, and then it will print the number of discrepancies between the kernel output and the golden example. \lstinline|kmeans_evaluateChunks.py| concatenates all of these outputs into a comma separated file, created one column of linear addresses, and one column showing the number of errors caused by the error in that address.
 
 \begin{figure} [H]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/testflow.eps}
-\caption{\hl{TODO} }
+\caption{A block diagram showing the top level process of performing a test series on the SocDrawer}
 \label{fig:testflow}
 \end{figure}
 
+\subsection{Software Implementation}
+\label{sec:Imp-SW}
 
+The software implementation of a full CNN was nearly completed, but was abandoned in favour of the hardware implementation as time was running out. Everything described in Section \ref{sec:Design-CNN} was implemented successfully, except for the full network. Most of the network functionality was implemented, but unfortunately there were still key components missing from the network. The input and output sections ended up being too time consuming to attempt. One solution considered for the input was to pre-process an input image, using an application such as MATLAB to convert it into a file of raw numbers to be put straight into the input of the network but there was not time to implement this. The output of the network was supposed to be a classifier called SoftMax. This was deemed too time consuming to attempt, as the project was running behind schedule at this point.
+
+\subsection{Hardware Implementation}
+\label{sec:Imp-HW}
+
+To implement the hardware system, an existing Vivado hardware design used for SEM error injection was used in order to save time. The board design is shown in Figure \ref{fig:boardDesign}. The design includes the SEM IP core which is the small block at the bottom. It also includes two HLS kernels, shown on the middle left with the Vivado logo, that can be configured using Vivado HLS. There are two blocks controlling the AXI interface on the middle right. Finally on the far right is the board's interface with Zynq processing system, which runs the system's software. The convolution kernel replaced the bottom HLS block, which is named \lstinline|lloyds_kernel_top_0|. By changing the source code of the kernel, it was possible to very quickly adapt the hardware block to run the convolution kernel. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/full_bd.png}
+\caption{Board Design for the digital system}
+\label{fig:boardDesign}
+\end{figure}
+
+The next step in the process was to set the compiler to generate a .ebd file for the relevant hardware, as discussed in Section \ref{sec:Imp-socdrawer}. This was done by opening the implementation design in Vivado, shown in Figure \ref{fig:pblock}. This provides a visualisation of the FPGA fabric and all of the hardware designs implemented upon it. The orange section in the top left shows the part of the board responsible for the control and configuration of the FPGA. Setting SEUs up in this region would result in configuration upsets, as described in \ref{sec:Background-FPGAsAndSpaceApplications-SEUs}. The part of the board that is occupied by the convolution kernel is highlighted in white. This section was selected for testing, configuring the compiler to generate a .ebd file that contain bit addresses relevant to this block.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/pblock.png}
+\caption{A view of the implementation design}
+\label{fig:pblock}
+\end{figure}
+
+Due to time pressures, only the convolution layer was ultimately integrated into the hardware design. A design for a hardware kernel was built and tested in software, but delays arising from debugging the AXI interfaces, mentioned in Section \ref{sec:Imp-socdrawer}, pushed the project plan back significantly, leaving no time for the design to be implemented in hardware and integrated into the rest of the hardware design.
 
 \newpage
 
@@ -855,57 +841,67 @@ To test the interface, a simple testing kernel was designed and built. This kern
 \subsection{Hardware Kernel Testing}
 \label{sec:Test-HW}
 
-Once the full hardware kernel had been designed, it was tested to verify that it achieved the ground truth result described in \ref{sec:}. This was a very simple case of running the test kernel, as shown in Section \ref{sec:Design-PL}, and checking by inspection that the result was correct. The test was repeated for several iterations and it was discovered that the output values were accumulating the results of each run. Each time the kernel was tested, the output, rather being set to the result of the convolution, would be the sum of all runs up to that point. With a minor adjustment in the HLS code, this potentially disruptive error was corrected.
+Once the full hardware kernel had been designed, it was tested to verify that it achieved the ground truth result computed with the pure software implementation. This was a very simple case of running the test kernel, as shown in Section \ref{sec:Design-PL}, and checking by inspection that the result was correct. The test was repeated for several iterations and it was discovered that the output values were accumulating the results of each run. Each time the kernel was tested, the output, rather being set to the result of the convolution, would be the sum of all runs up to that point. With a minor adjustment in the HLS code, this potentially disruptive error was corrected.
 
 \newpage
 
 \section{Evaluation}
 \label{sec:Eval}
 
-\begin{itemize}
-\item Summarise project specification requirements, and evaluate success on each
-\end{itemize}
+This section will analyse whether each of the following deliverables were achieved: An Embedded System running CNN layers, a Convolution Layer Implemented in Hardware, SocDrawer Testing 
 
-\subsection{FPGA Implementation of a CNN}
+\subsection{Embedded System running CNN layers}
 \label{sec:Eval-FPGAImplOfCnn}
 
-\hl{TODO}
+The individual layers of the CNN were implemented and run on the embedded system. The system was implemented with a testing interface, reading commands that could run test cases for individual layers. The convolution, fully connected, ReLU and pooling layers were all implemented and tested successfully on the Zedboard. These results were verified by the test functions described in Section \ref{sec:Test-Layers}, and were compared against the results of the pure software implementation to ensure that they match. Therefore this requirement was fulfilled. The full source code for this can be found in the \lstinline|src_hw/| folder in github repository given in Appendix \ref{Source}
 
-\begin{itemize}
-\item How much of CNN was implemented
-\item Hardware resources used
-\item CNN performance
-\item Layer computation time
-\end{itemize}
+\subsection{Convolution Layer Implemented in Hardware}
+\label{sec:Eval-Conv}
 
-\subsection{Fault Tolerance Investigation}
-\label{sec:Eval-FaultTolInv}
+The convolution kernel was implemented in hardware using Vivado HLS and combined into a hardware block. This using the host code described in Section \ref{sec:Design-PS-SW}, the kernel was run successfully. It was successfully generated and synthesised in Vivado and thoroughly tested. The convolution test used a 14x14 input feature map, and a one 3x3 weights kernel, and producing a 14x14 output feature map. This small size was chosen in order to make the SocDrawer testing as quick as possible.
 
-\hl{TODO}
+\begin{table}[ht]
+\centering
+\begin{tabular}{| l | l | l | l |}
+    \hline    
+    Resource Name & Number Used & Total Available & \% Used \\ \hline
+	LUT: & 1092 & 53200 & 2.0 \\ \hline
+	FF: & 1403 & 106400 & 1.3 \\ \hline
+	DSP: & 5 & 220 & 2.3 \\ \hline
+	BRAM: & 10 & 280 & 3.6 \\ \hline
+\end{tabular}
+\caption{A table comparing the used resources against the total resources available in the Zynq-7000}
+\label{tab:resources}
+\end{table}
 
-\begin{itemize}
-\item Describe implementation of data collection, i.e. socDrawer, test scripts, data collection scripts, etc
-\item Analysis of data
-\end{itemize}
+The FPGA resources used by the kernel are given in Table \ref{tab:resources}. The LUTs are Look Up Tables, used to efficiently encode boolean function. These are the foundation of all FPGA designs, so it is very beneficial to use them efficiently. FF stand for Flip Flops, which are just registers that store values on a per-clock-cycle basis. DSPs are Digital Signal Processing components. They are used for additions and multiplications, which is the bulk of the convolution work. Finally the BRAM, or Block Random Access Memory is used to rapidly load or store information. These are used by the AXI interfaces. It can be clearly seen that the usage on each of these is extremely low. While this is a good thing, and is partially because the convolutional kernel implemented was extremely small, the small size also means there could have been performance benefits in further parallelising the design. There would be a trade-off with resource usage, but that is fine given the low resource usage. This requirement is fulfilled, but not as well as it could have been. The source code for the HLS kernel and the accompanying host code can be found in github repository described in Appendix \ref{Source}.
+
+\subsection{SEM Testing}
+\label{sec:ProjSpec-Necessary-SocDrawer}
+
+The hardware kernel was added to a existing board design that included the SEM core, as described in section \ref{sec:Imp-HW}. The overall hardware block built successfully, and worked fine with the SEU inactive. Then the system was integrated into the SocDrawer experiment setup.The SoCs were all configured and individually ran the host code perfectly, so the hardware kernel and host code were integrated into the SocDrawer. Everything designed as part of this project worked on the SocDrawer setup. Using the scripts described in Section \ref{sec:Imp-socdrawer}, the results shown in Section \ref{sec:results} were achieved. Unfortunately, this was completed very late, and as a result, an unforseen error manifested and caused the tests to fail unexpectedly. This was fixed only at the very last moment, and only 12 test results were captured. These are shown in Figure \ref{fig:histo} and Appendix \ref{result}. It can be seen that in each of these 12 tests, the convolution kernel was able to produce the correct result for all 196 values of the 14*14 output. Given a little bit more time, a much more conclusive range of results would have been achieved.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/histo1.png}
+\caption{A view of the implementation design}
+\label{fig:histo}
+\end{figure}
+
+\subsection{Desireables}
+\label{sec:Eval-FullCNN}
+
+The CNN was only partially implemented in software, so this requirement was not completed. Additionally, there was not time to complete hardware optimisations on the kernel, so this requirement was also not completed.
 
 \newpage
 
 \section{Conclusion and Future Work}
 \label{sec:Conclusion}
 
-\hl{TODO}
+In summary, this report describes the investigation of the effects of Single Event Upsets upon the operation of a Convolutional Neural Network. After the introduction, Background information about neural networks and single event upsets was provided. The Project Specification laid out what the project aimed to achieve. The CNN Design section described the process of creating the CNN and all of its layers. The System Design section described how the rest of the system was conceived. The Implementation section provided a summary of how the setup and execution of the design was achieved, including what wasn't completed. The Testing section showed how the systems constructed were validated and corrected. Finally the Evaluation gave an overview of what was achieved, and what was not accomplished in the given time frame.
 
-\begin{itemize}
-\item Summary of report sections
-\item Summary of results and conclusion
-\item Suggestions for future investigations
-\end{itemize}
+The results of our testing take an extremely small sample. It's impossible to determine from 12 results whether a convolution kernel is guaranteed to work in a high radiation environment. However, what can be safely determined is that there are definitely cases where the convolution kernel does work properly. This is demonstrated by the fact that all 12 of the tests performed gave the correct output.
 
-\subsection{Future Work}
-\label{sec:Conclusion - FW}
-
-\subsection{Conclusion}
-\label{sec:Conclusion - C}
 
 \newpage
 
@@ -923,7 +919,23 @@ All of the source code for the project is stored in a public git repository and 
 
 \url{https://github.com/JHertz5/space_brain}
 
+\section{Results}
+\label{result}
+This show the results gathered. The first column is the linear address of the error, and the second column is the number of error out of a potential 196 produced.
 
-\hl{TODO}
+\begin{verbatim}
+28505810,       0
+28612501,       0
+28662336,       0
+28689688,       0
+28762927,       0
+28801388,       0
+28821924,       0
+29255163,       0
+29849546,       0
+30153000,       0
+30303300,       0
+30496777,       0
+\end{verbatim}
 
 \end{document}
